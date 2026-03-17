@@ -26,42 +26,42 @@ export function PolicyEnactedScreen({ state, dispatch }: ScreenProps) {
   const bgAccent = isLiberal ? "bg-liberal-deep/20" : "bg-fascist-deep/20";
 
   return (
-    <div className="flex flex-col items-center justify-center h-full px-4 py-4 gap-4">
-      {/* Chaos banner */}
+    <div className="mx-auto flex h-full w-full max-w-4xl flex-col items-center justify-center gap-5">
       {isChaos && (
         <div className="text-center flex-shrink-0 slide-up">
-          <h3 className="font-heading text-xl text-fascist mb-1">The Country Is in Chaos!</h3>
-          <p className="text-text-secondary font-body text-xs max-w-sm">
+          <h3 className="mb-1 font-heading text-2xl text-fascist">The Country Is in Chaos!</h3>
+          <p className="max-w-md text-sm text-text-secondary">
             3 elections failed in a row. A policy was enacted automatically from the top of the
             deck.
           </p>
         </div>
       )}
 
-      {/* Policy reveal */}
       <div
         className={[
-          "flex flex-col items-center px-8 py-5 rounded-[var(--radius-card)] flex-shrink-0",
+          "w-full max-w-3xl rounded-[24px] px-6 py-6 flex-shrink-0 border border-white/8 shadow-[var(--shadow-card)]",
           bgAccent,
         ].join(" ")}
       >
-        <p className="text-text-secondary font-body text-xs uppercase tracking-widest mb-4">
+        <p className="mb-5 text-center text-[11px] font-semibold uppercase tracking-[0.28em] text-text-secondary">
           {isChaos ? "Chaos Policy" : "Policy Enacted"}
         </p>
 
-        {/* Stamp animation wrapper */}
-        <div className={["stamp mb-4", glowClass].join(" ")}>
-          <PolicyCard type={policy} size="lg" revealed />
-        </div>
+        <div className="flex flex-col items-center gap-4 md:flex-row md:items-center md:justify-center md:gap-7">
+          <div className={["stamp", glowClass].join(" ")}>
+            <PolicyCard type={policy} size="md" revealed />
+          </div>
 
-        <h2 className={["font-heading text-2xl sm:text-3xl mb-1 text-center", teamColor].join(" ")}>
-          A {teamLabel} Policy
-        </h2>
-        <p className="text-text-secondary font-body text-sm">has been enacted!</p>
+          <div className="text-center md:text-left">
+            <h2 className={["mb-1 font-heading text-4xl", teamColor].join(" ")}>
+              A {teamLabel} Policy
+            </h2>
+            <p className="text-base text-text-secondary">has been enacted!</p>
+          </div>
+        </div>
       </div>
 
-      {/* Board state */}
-      <div className="flex items-center gap-8 flex-shrink-0">
+      <div className="flex items-center gap-8 rounded-full border border-white/8 bg-bg-card/70 px-8 py-3 flex-shrink-0">
         <div className="text-center">
           <p className="text-liberal font-heading text-2xl">{state.board.liberalPolicies}</p>
           <p className="text-text-muted font-body text-xs uppercase tracking-wider">Liberal</p>
@@ -83,7 +83,6 @@ export function PolicyEnactedScreen({ state, dispatch }: ScreenProps) {
         </div>
       )}
 
-      {/* Continue */}
       <button
         type="button"
         onClick={() =>
@@ -91,7 +90,7 @@ export function PolicyEnactedScreen({ state, dispatch }: ScreenProps) {
             type: isChaos ? "ACKNOWLEDGE_CHAOS" : "ACKNOWLEDGE_POLICY",
           })
         }
-        className="flex-shrink-0 w-full max-w-md py-3 rounded-[var(--radius-button)] font-heading text-lg bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] transition-all duration-[var(--transition-normal)] cursor-pointer"
+        className="flex-shrink-0 w-full max-w-2xl rounded-[18px] bg-fascist py-3 font-heading text-xl text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] hover:bg-fascist-hover active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)] cursor-pointer"
       >
         Continue
       </button>

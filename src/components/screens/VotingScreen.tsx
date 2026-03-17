@@ -51,10 +51,10 @@ interface ScreenProps {
 function PrivacyGate({ playerName, onReady }: { playerName: string; onReady: () => void }) {
   return (
     <div className="privacy-screen">
-      <div className="text-center px-6">
-        <h2 className="font-heading text-3xl text-gold mb-4">Pass the Device</h2>
-        <p className="text-text-secondary text-base font-body mb-1">Hand the device to</p>
-        <p className="font-heading text-4xl text-text-primary mb-10">{playerName}</p>
+      <div className="gameplay-panel w-full max-w-xl px-8 py-10 text-center">
+        <h2 className="mb-4 font-heading text-4xl text-gold">Pass the Device</h2>
+        <p className="mb-1 text-base text-text-secondary">Hand the device to</p>
+        <p className="mb-10 font-heading text-5xl text-text-primary">{playerName}</p>
         <button
           type="button"
           onClick={onReady}
@@ -125,58 +125,55 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
     const passed = jaCount > neinCount;
 
     return (
-      <div className="flex flex-col h-full px-4 py-3 gap-3">
-        {/* Result header */}
+      <div className="mx-auto flex h-full w-full max-w-5xl flex-col gap-4">
         <div className="text-center flex-shrink-0 slide-up">
-          <p className="text-text-secondary font-body text-xs uppercase tracking-widest mb-1">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Election Result
           </p>
           <h2
             className={[
-              "font-heading text-3xl mb-1",
+              "mb-1 font-heading text-3xl md:text-4xl",
               passed ? "text-liberal" : "text-fascist",
             ].join(" ")}
           >
             {passed ? "JA! Election Passes" : "NEIN! Election Fails"}
           </h2>
-          <p className="text-text-secondary font-body text-sm">
+          <p className="text-sm text-text-secondary md:text-base">
             {jaCount} Ja — {neinCount} Nein
           </p>
         </div>
 
-        {/* Government row */}
-        <div className="flex items-center justify-center gap-6 flex-shrink-0">
+        <div className="grid flex-shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-5 rounded-[22px] border border-white/8 bg-bg-card/70 px-4 py-3 shadow-[var(--shadow-card)]">
           {president && (
             <div className="text-center">
-              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gold mx-auto mb-1">
+              <div className="mx-auto mb-1 h-14 w-14 overflow-hidden rounded-full border-2 border-gold">
                 <img
                   src={PORTRAITS[president.portraitIndex]?.src}
                   alt={president.name}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <p className="font-body text-xs text-text-secondary">President</p>
-              <p className="font-body text-xs font-medium text-text-primary">{president.name}</p>
+              <p className="text-xs uppercase tracking-[0.18em] text-text-muted">President</p>
+              <p className="text-sm font-medium text-text-primary">{president.name}</p>
             </div>
           )}
-          <span className="text-text-muted font-heading text-xl">&amp;</span>
+          <span className="font-heading text-2xl text-gold">&amp;</span>
           {chancellor && (
             <div className="text-center">
-              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gold mx-auto mb-1">
+              <div className="mx-auto mb-1 h-14 w-14 overflow-hidden rounded-full border-2 border-gold">
                 <img
                   src={PORTRAITS[chancellor.portraitIndex]?.src}
                   alt={chancellor.name}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <p className="font-body text-xs text-text-secondary">Chancellor</p>
-              <p className="font-body text-xs font-medium text-text-primary">{chancellor.name}</p>
+              <p className="text-xs uppercase tracking-[0.18em] text-text-muted">Chancellor</p>
+              <p className="text-sm font-medium text-text-primary">{chancellor.name}</p>
             </div>
           )}
         </div>
 
-        {/* Individual votes — scrollable */}
-        <div className="flex-1 overflow-y-auto min-h-0 space-y-1.5">
+        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto">
           {state.votes.map((voteRecord) => {
             const player = state.players.find((p) => p.id === voteRecord.playerId);
             if (!player) return null;
@@ -184,7 +181,7 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
             return (
               <div
                 key={voteRecord.playerId}
-                className="flex items-center gap-3 bg-bg-card rounded-[var(--radius-button)] px-3 py-2 fade-in"
+                className="fade-in flex items-center gap-3 rounded-[18px] border border-white/6 bg-bg-card/70 px-4 py-3"
               >
                 <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0">
                   <img
@@ -193,9 +190,9 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <span className="flex-1 font-body text-sm text-text-primary">{player.name}</span>
+                <span className="flex-1 text-sm text-text-primary md:text-base">{player.name}</span>
                 <span
-                  className={["font-heading text-base", isJa ? "text-liberal" : "text-fascist"].join(" ")}
+                  className={["font-heading text-lg", isJa ? "text-liberal" : "text-fascist"].join(" ")}
                 >
                   {isJa ? "JA" : "NEIN"}
                 </span>
@@ -206,7 +203,7 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 
         {/* Election tracker (on fail) */}
         {!passed && (
-          <p className="text-text-muted font-body text-xs text-center flex-shrink-0">
+          <p className="flex-shrink-0 text-center text-xs text-text-muted">
             Failed elections:{" "}
             <span className="text-fascist font-semibold">
               {state.electionTracker.failedElections}
@@ -219,7 +216,7 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
         <button
           type="button"
           onClick={() => dispatch({ type: "ACKNOWLEDGE_VOTE_RESULT" })}
-          className="flex-shrink-0 w-full py-3 rounded-[var(--radius-button)] font-heading text-lg bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] transition-all duration-[var(--transition-normal)] cursor-pointer"
+          className="flex-shrink-0 w-full rounded-[18px] bg-fascist py-3 font-heading text-xl text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] hover:bg-fascist-hover active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)] cursor-pointer"
         >
           Continue
         </button>
@@ -253,26 +250,25 @@ function VoteCastView({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-full px-4 py-4 gap-6">
+    <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center justify-center gap-6">
       <div className="text-center slide-up">
-        <p className="text-text-muted font-body text-xs uppercase tracking-widest mb-3">
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
           {voter.name}&apos;s Vote
         </p>
-        <h2 className="font-heading text-2xl text-text-primary mb-1">
+        <h2 className="mb-1 font-heading text-3xl text-text-primary md:text-4xl">
           Vote on the Government
         </h2>
-        <p className="text-text-secondary font-body text-sm">
+        <p className="text-sm text-text-secondary md:text-base">
           President <span className="text-gold font-semibold">{presidentName}</span>
-          {" + "}
+          {" · "}
           Chancellor <span className="text-gold font-semibold">{chancellorName}</span>
         </p>
-        <p className="text-text-muted font-body text-xs mt-2">
+        <p className="mt-2 text-xs text-text-muted">
           Failed elections: {state.electionTracker.failedElections} / 3
         </p>
       </div>
 
-      {/* Vote cards */}
-      <div className="flex items-center gap-8">
+      <div className="flex w-full items-center justify-center gap-8 md:gap-12">
         <VoteCard vote="ja" size="lg" onClick={() => handleVote(Vote.Ja)} />
         <VoteCard vote="nein" size="lg" onClick={() => handleVote(Vote.Nein)} />
       </div>

@@ -99,28 +99,31 @@ function GameInner({ initialState }: { initialState: GameState | undefined }) {
   const chancellor = state.players.find((p) => p.id === state.chancellorNomineeId);
 
   return (
-    <div className="h-dvh w-full flex flex-col overflow-hidden">
-      {/* Header — compact fixed-height bar */}
-      <Header
-        round={state.round}
-        phase={state.phase}
-        presidentName={president?.name}
-        chancellorName={chancellor?.name}
-      />
-
-      {/* Board Track — compact, always visible */}
-      <div className="shrink-0 px-3 py-1.5 bg-bg-darker/60 border-b border-white/5">
-        <BoardTrack
-          board={state.board}
-          electionTracker={state.electionTracker}
-          playerCount={state.players.length}
-          vetoUnlocked={state.vetoUnlocked}
+    <div className="game-shell relative h-dvh w-full overflow-hidden">
+      <div className="relative z-10 grid h-full grid-rows-[auto_auto_minmax(0,1fr)] overflow-hidden">
+        <Header
+          round={state.round}
+          phase={state.phase}
+          presidentName={president?.name}
+          chancellorName={chancellor?.name}
         />
-      </div>
 
-      {/* Screen content — takes remaining height, scrollable only inside */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
-        <PhaseRouter phase={state.phase} game={game} />
+        <div className="px-3 pb-3 pt-2 md:px-5 md:pb-4 md:pt-3">
+          <div className="tabletop-stage mx-auto w-full max-w-7xl rounded-[26px] px-4 py-4 md:px-6 md:py-5">
+            <BoardTrack
+              board={state.board}
+              electionTracker={state.electionTracker}
+              playerCount={state.players.length}
+              vetoUnlocked={state.vetoUnlocked}
+            />
+          </div>
+        </div>
+
+        <div className="min-h-0 px-3 pb-3 md:px-5 md:pb-5">
+          <div className="gameplay-panel mx-auto h-full w-full max-w-7xl min-h-0 overflow-y-auto overflow-x-hidden px-4 py-4 md:px-6 md:py-5">
+            <PhaseRouter phase={state.phase} game={game} />
+          </div>
+        </div>
       </div>
     </div>
   );

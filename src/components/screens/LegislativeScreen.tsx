@@ -31,10 +31,10 @@ function PrivacyGate({
 }) {
   return (
     <div className="privacy-screen">
-      <div className="text-center px-6">
-        <h2 className="font-heading text-3xl text-gold mb-4">Pass the Device</h2>
-        <p className="text-text-secondary text-base font-body mb-1">Hand the device to the {role}</p>
-        <p className="font-heading text-4xl text-text-primary mb-10">{playerName}</p>
+      <div className="gameplay-panel w-full max-w-xl px-8 py-10 text-center">
+        <h2 className="mb-4 font-heading text-4xl text-gold">Pass the Device</h2>
+        <p className="mb-1 text-base text-text-secondary">Hand the device to the {role}</p>
+        <p className="mb-10 font-heading text-5xl text-text-primary">{playerName}</p>
         <button
           type="button"
           onClick={onReady}
@@ -72,21 +72,20 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
     }
 
     return (
-      <div className="flex flex-col items-center justify-center h-full px-4 py-4 gap-5">
+      <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center justify-center gap-5">
         <div className="text-center flex-shrink-0 slide-up">
-          <p className="text-text-muted font-body text-xs uppercase tracking-widest mb-1">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Legislative Session
           </p>
-          <h2 className="font-heading text-2xl text-gold mb-1">President {president.name}</h2>
-          <p className="text-text-secondary font-body text-sm">
+          <h2 className="mb-1 font-heading text-3xl text-gold">President {president.name}</h2>
+          <p className="text-sm text-text-secondary md:text-base">
             Examine these 3 policies.{" "}
             <span className="text-fascist font-semibold">Discard one</span> and pass the remaining
             two to the Chancellor.
           </p>
         </div>
 
-        {/* Policy cards */}
-        <div className="flex items-end gap-4 sm:gap-6 flex-shrink-0">
+        <div className="grid w-full max-w-4xl grid-cols-3 place-items-center gap-4 md:gap-8">
           {state.presidentHand.map((policy, index) => (
             <div key={index} className="flex flex-col items-center gap-2">
               <PolicyCard
@@ -116,7 +115,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
           }}
           disabled={selectedIndex === null}
           className={[
-            "flex-shrink-0 w-full max-w-md py-3 rounded-[var(--radius-button)] font-heading text-lg tracking-wide transition-all duration-[var(--transition-normal)]",
+            "flex-shrink-0 w-full max-w-2xl rounded-[18px] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
             selectedIndex !== null
               ? "bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] cursor-pointer"
               : "bg-btn-disabled text-text-muted cursor-not-allowed",
@@ -146,20 +145,19 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
     }
 
     return (
-      <div className="flex flex-col items-center justify-center h-full px-4 py-4 gap-5">
+      <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center justify-center gap-5">
         <div className="text-center flex-shrink-0 slide-up">
-          <p className="text-text-muted font-body text-xs uppercase tracking-widest mb-1">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Legislative Session
           </p>
-          <h2 className="font-heading text-2xl text-gold mb-1">Chancellor {chancellor.name}</h2>
-          <p className="text-text-secondary font-body text-sm">
+          <h2 className="mb-1 font-heading text-3xl text-gold">Chancellor {chancellor.name}</h2>
+          <p className="text-sm text-text-secondary md:text-base">
             The President has passed you 2 policies.{" "}
             <span className="text-liberal font-semibold">Enact one</span> into law.
           </p>
         </div>
 
-        {/* Policy cards */}
-        <div className="flex items-end gap-6 sm:gap-8 flex-shrink-0">
+        <div className="grid w-full max-w-3xl grid-cols-2 place-items-center gap-6 md:gap-10">
           {state.chancellorHand.map((policy, index) => (
             <div key={index} className="flex flex-col items-center gap-2">
               <PolicyCard
@@ -177,8 +175,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
           ))}
         </div>
 
-        {/* Action buttons */}
-        <div className="flex-shrink-0 w-full max-w-md space-y-2">
+        <div className="flex-shrink-0 w-full max-w-2xl space-y-3">
           <button
             type="button"
             onClick={() => {
@@ -190,7 +187,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
             }}
             disabled={selectedIndex === null}
             className={[
-              "w-full py-3 rounded-[var(--radius-button)] font-heading text-lg tracking-wide transition-all duration-[var(--transition-normal)]",
+              "w-full rounded-[18px] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
               selectedIndex !== null
                 ? "bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] cursor-pointer"
                 : "bg-btn-disabled text-text-muted cursor-not-allowed",
@@ -204,7 +201,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
             <button
               type="button"
               onClick={() => dispatch({ type: "REQUEST_VETO" })}
-              className="w-full py-2.5 rounded-[var(--radius-button)] font-body font-semibold text-sm text-fascist border-2 border-fascist/50 bg-transparent hover:bg-fascist/10 transition-all duration-[var(--transition-fast)] cursor-pointer"
+              className="w-full rounded-[16px] border-2 border-fascist/45 bg-transparent py-3 text-base font-semibold text-fascist transition-all duration-[var(--transition-fast)] hover:bg-fascist/10 cursor-pointer"
             >
               Request Veto
             </button>

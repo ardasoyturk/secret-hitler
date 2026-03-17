@@ -25,27 +25,30 @@
   --font-flavor: "Courier Prime", monospace;
 
   /* Brand colors */
-  --color-fascist: #e05b2b;
-  --color-fascist-hover: #e67a53;
-  --color-fascist-dark: #b4431a;
-  --color-fascist-deep: #8b2500;
+  --color-fascist: #f0642d;
+  --color-fascist-hover: #ff7f4b;
+  --color-fascist-dark: #b9461d;
+  --color-fascist-deep: #7c2410;
 
-  --color-liberal: #5a9ba6;
-  --color-liberal-hover: #7abcca;
-  --color-liberal-dark: #386f8b;
-  --color-liberal-deep: #264d5c;
+  --color-liberal: #7bc4d1;
+  --color-liberal-hover: #99dce6;
+  --color-liberal-dark: #3b7485;
+  --color-liberal-deep: #203f48;
 
   /* Backgrounds */
-  --color-bg-primary: #4d4945;
-  --color-bg-dark: #372e25;
-  --color-bg-darker: #2a2118;
-  --color-bg-overlay: #141414;
-  --color-bg-card: #3d3730;
+  --color-bg-primary: #4f3f31;
+  --color-bg-dark: #2b1f16;
+  --color-bg-darker: #1b130d;
+  --color-bg-overlay: #0d0a08;
+  --color-bg-card: #342820;
+  --color-bg-board-stage: #241811;
+  --color-bg-board-rail: #130d09;
+  --color-bg-panel: rgba(41, 29, 22, 0.88);
 
   /* Text */
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #bbbbbb;
-  --color-text-muted: #69645e;
+  --color-text-primary: #fff7eb;
+  --color-text-secondary: #d8c8b3;
+  --color-text-muted: #988573;
 
   /* Buttons */
   --color-btn-primary: #e05b2b;
@@ -58,10 +61,10 @@
   --color-btn-alt-shadow: #386f8b;
 
   /* Selection / highlight */
-  --color-select-hover: rgba(246, 181, 63, 1);
-  --color-select-active: rgba(205, 135, 9, 1);
-  --color-gold: #f6b53f;
-  --color-gold-dark: #cd8709;
+  --color-select-hover: rgba(255, 204, 93, 1);
+  --color-select-active: rgba(226, 155, 25, 1);
+  --color-gold: #ffca61;
+  --color-gold-dark: #d08a12;
 
   /* Player border colors */
   --color-player-red: #e74c3c;
@@ -76,10 +79,10 @@
   --color-player-gray: #95a5a6;
 
   /* Shadows */
-  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 14px 30px rgba(0, 0, 0, 0.35);
   --shadow-button: 0 4px 0 var(--color-btn-primary-shadow);
-  --shadow-glow-fascist: 0 0 20px rgba(224, 91, 43, 0.4);
-  --shadow-glow-liberal: 0 0 20px rgba(90, 155, 166, 0.4);
+  --shadow-glow-fascist: 0 0 22px rgba(240, 100, 45, 0.34);
+  --shadow-glow-liberal: 0 0 22px rgba(123, 196, 209, 0.34);
 
   /* Spacing */
   --spacing-safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -106,6 +109,9 @@
 
 html {
   font-family: var(--font-body);
+  background:
+    radial-gradient(circle at top, rgba(255, 202, 97, 0.08), transparent 30%),
+    linear-gradient(180deg, #3a2a1f 0%, #261a12 45%, #17100c 100%);
   background-color: var(--color-bg-dark);
   color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
@@ -119,6 +125,9 @@ body {
   margin: 0;
   height: 100%;
   overflow: hidden;
+  background:
+    radial-gradient(circle at top, rgba(255, 202, 97, 0.08), transparent 30%),
+    linear-gradient(180deg, #3a2a1f 0%, #261a12 45%, #17100c 100%);
   background-color: var(--color-bg-dark);
 }
 
@@ -148,7 +157,7 @@ h3 {
   content: "";
   position: absolute;
   inset: 0;
-  opacity: 0.03;
+  opacity: 0.018;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 0;
@@ -172,7 +181,9 @@ h3 {
 
 /* Privacy screen background — fully opaque, cannot see through */
 .privacy-screen {
-  background: var(--color-bg-overlay);
+  background:
+    radial-gradient(circle at top, rgba(255, 202, 97, 0.08), transparent 32%),
+    linear-gradient(180deg, rgba(18, 13, 9, 0.98), rgba(10, 8, 6, 0.98));
   position: fixed;
   inset: 0;
   z-index: var(--z-privacy);
@@ -249,6 +260,48 @@ h3 {
 
 .fade-in {
   animation: fade-in 0.3s ease-out;
+}
+
+.game-shell {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 202, 97, 0.09), transparent 24%),
+    linear-gradient(180deg, rgba(62, 45, 33, 0.45), transparent 24%),
+    linear-gradient(180deg, #33251b 0%, #241912 44%, #19110c 100%);
+}
+
+.game-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03), transparent 12%, transparent 88%, rgba(255, 255, 255, 0.03)),
+    radial-gradient(circle at center, transparent 52%, rgba(0, 0, 0, 0.18) 100%);
+  opacity: 0.7;
+}
+
+.gameplay-panel {
+  background: linear-gradient(180deg, rgba(55, 40, 30, 0.92), rgba(35, 24, 18, 0.94));
+  border: 1px solid rgba(255, 232, 190, 0.08);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(12px);
+}
+
+.tabletop-stage {
+  background:
+    linear-gradient(180deg, rgba(20, 13, 9, 0.96), rgba(33, 23, 17, 0.96)),
+    var(--color-bg-board-stage);
+  border: 1px solid rgba(255, 202, 97, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 235, 198, 0.06),
+    0 22px 40px rgba(0, 0, 0, 0.34);
+}
+
+.status-chip {
+  border: 1px solid rgba(255, 202, 97, 0.14);
+  background: rgba(20, 13, 9, 0.54);
+  backdrop-filter: blur(10px);
 }
 
 /* Scale pop */

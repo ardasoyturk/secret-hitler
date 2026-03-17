@@ -72,19 +72,20 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
   }
 
   return (
-    <form className="flex flex-col h-full px-3 py-3 gap-3" onSubmit={handleSubmit}>
-      {/* Compact header */}
+    <form className="mx-auto flex h-full w-full max-w-6xl flex-col gap-4" onSubmit={handleSubmit}>
       <div className="flex-shrink-0 text-center">
-        <h2 className="font-heading text-2xl text-gold leading-tight">Chancellor Nomination</h2>
-        <p className="text-text-secondary font-body text-xs mt-0.5">
+        <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
+          Government Formation
+        </p>
+        <h2 className="font-heading text-3xl text-gold leading-tight md:text-4xl">Chancellor Nomination</h2>
+        <p className="mt-1 text-sm text-text-secondary md:text-base">
           President <span className="text-text-primary font-semibold">{president.name}</span>, nominate a Chancellor
         </p>
       </div>
 
-      {/* Player grid — scrollable if needed */}
       <div
-        className="flex-1 overflow-y-auto min-h-0"
-        style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`, gap: "8px", alignContent: "start" }}
+        className="grid flex-1 min-h-0 overflow-y-auto content-start gap-3 md:gap-4"
+        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
       >
         {state.players.map((player) => {
           const isEligible = eligibleSet.has(player.id);
@@ -94,10 +95,10 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
             <label
               key={player.id}
               className={[
-                "relative rounded-xl border-2 transition-all duration-150",
+                "relative overflow-hidden rounded-[22px] border transition-all duration-150",
                 isEligible
-                  ? "border-text-muted/20 bg-bg-card cursor-pointer hover:border-text-secondary has-[:checked]:border-gold has-[:checked]:bg-gold/10 has-[:checked]:ring-1 has-[:checked]:ring-gold/30 has-[:checked]:scale-[1.02]"
-                  : "border-transparent bg-bg-card/40 opacity-40 cursor-not-allowed",
+                  ? "border-white/8 bg-bg-card/80 cursor-pointer hover:border-gold/35 has-[:checked]:border-gold/45 has-[:checked]:bg-gold/8 has-[:checked]:shadow-[0_0_0_1px_rgba(255,202,97,0.24)]"
+                  : "border-transparent bg-bg-card/40 opacity-45 cursor-not-allowed",
               ].join(" ")}
             >
               <input
@@ -108,16 +109,17 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
                 className="sr-only peer"
                 required
               />
-              <div className="flex flex-col items-center gap-1.5 p-2.5">
-                <div className={["w-12 h-12 rounded-full overflow-hidden border-2 flex-shrink-0", "border-text-muted/30 peer-checked:border-gold", !isEligible && "grayscale"].join(" ")}>
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-gold/35 to-transparent opacity-0 transition-opacity duration-150 peer-checked:opacity-100" />
+              <div className="flex min-h-[120px] flex-col items-center justify-center gap-2 p-3 md:min-h-[128px]">
+                <div className={["h-14 w-14 rounded-full overflow-hidden border-2 flex-shrink-0 shadow-[0_8px_16px_rgba(0,0,0,0.22)]", "border-text-muted/30 peer-checked:border-gold", !isEligible && "grayscale"].join(" ")}>
                   <img src={PORTRAITS[player.portraitIndex]?.src} alt={player.name} className="w-full h-full object-cover" draggable={false} />
                 </div>
-                <span className={["font-body text-xs font-medium truncate w-full text-center leading-tight", "text-text-primary peer-checked:text-gold", !isEligible && "text-text-muted"].join(" ")}>
+                <span className={["w-full truncate text-center text-sm font-medium leading-tight", "text-text-primary peer-checked:text-gold", !isEligible && "text-text-muted"].join(" ")}>
                   {player.name}
                 </span>
               </div>
               {reason && (
-                <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 bg-bg-darker text-text-muted text-[9px] font-body px-1.5 py-0.5 rounded-full border border-text-muted/20 whitespace-nowrap">
+                <span className="absolute left-1/2 top-2 -translate-x-1/2 whitespace-nowrap rounded-full border border-text-muted/20 bg-bg-darker/90 px-2 py-0.5 text-[10px] font-medium text-text-muted">
                   {reason}
                 </span>
               )}
@@ -126,11 +128,10 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
         })}
       </div>
 
-      {/* Confirm — pinned to bottom */}
-      <div className="flex-shrink-0">
+      <div className="flex flex-shrink-0 justify-center pt-1">
         <button
           type="submit"
-          className="w-full py-3 rounded-lg font-heading text-lg tracking-wide transition-all duration-200 bg-fascist text-white shadow-[0_4px_0_var(--color-fascist-dark)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[2px] cursor-pointer"
+          className="w-full max-w-2xl rounded-[18px] bg-fascist px-6 py-3 font-heading text-xl tracking-wide text-white shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-200 hover:bg-fascist-hover active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-fascist-dark)] cursor-pointer"
         >
           Confirm Nomination
         </button>

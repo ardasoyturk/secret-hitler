@@ -90,7 +90,7 @@ function PlayerSelectionGrid({
 
   return (
     <>
-      <div className={`w-full max-w-lg grid ${colClass} gap-2 flex-1 overflow-y-auto min-h-0`}>
+      <div className={`w-full max-w-4xl grid ${colClass} gap-3 md:gap-4 flex-1 overflow-y-auto min-h-0`}>
         {alivePlayers.map((player) => {
           const isEligible = eligibleSet.has(player.id);
           const isSelected = selectedId === player.id;
@@ -102,7 +102,7 @@ function PlayerSelectionGrid({
               onClick={() => isEligible && onSelect(player.id)}
               disabled={!isEligible}
               className={[
-                "flex flex-col items-center gap-1.5 p-3 rounded-[var(--radius-card)] border-2 transition-all duration-[var(--transition-fast)]",
+                "flex min-h-[118px] flex-col items-center justify-center gap-2 rounded-[20px] border-2 p-3 transition-all duration-[var(--transition-fast)]",
                 isSelected
                   ? dangerConfirm
                     ? "border-fascist bg-fascist/10 ring-2 ring-fascist/30 scale-[1.03]"
@@ -151,7 +151,7 @@ function PlayerSelectionGrid({
         onClick={onConfirm}
         disabled={selectedId === null}
         className={[
-          "flex-shrink-0 w-full max-w-md py-3 rounded-[var(--radius-button)] font-heading text-lg tracking-wide transition-all duration-[var(--transition-normal)]",
+          "flex-shrink-0 w-full max-w-2xl rounded-[18px] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
           selectedId !== null
             ? dangerConfirm
               ? "bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] cursor-pointer"
@@ -180,13 +180,13 @@ export function ExecutiveScreen({
   // ── INVESTIGATE ───────────────────────────────────────────────────
   if (state.phase === GamePhase.ExecutiveInvestigate) {
     return (
-      <div className="flex flex-col items-center h-full px-4 py-3 gap-3">
+      <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center gap-4">
         <div className="text-center flex-shrink-0 slide-up">
-          <p className="text-text-muted font-body text-xs uppercase tracking-widest mb-1">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Executive Power
           </p>
-          <h2 className="font-heading text-2xl text-gold mb-1">Investigate Loyalty</h2>
-          <p className="text-text-secondary font-body text-sm">
+          <h2 className="mb-1 font-heading text-3xl text-gold">Investigate Loyalty</h2>
+          <p className="text-sm text-text-secondary md:text-base">
             President <span className="text-text-primary font-semibold">{president.name}</span>,
             choose a player to investigate their party membership.
           </p>
@@ -219,13 +219,13 @@ export function ExecutiveScreen({
     const membershipImg = isLiberal ? partyLiberalImg : partyFascistImg;
 
     return (
-      <div className="flex flex-col items-center justify-center h-full px-4 py-4 gap-4">
+      <div className="mx-auto flex h-full w-full max-w-4xl flex-col items-center justify-center gap-5">
         <div className="text-center flex-shrink-0 slide-up">
-          <p className="text-text-muted font-body text-xs uppercase tracking-widest mb-1">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Investigation Result
           </p>
-          <h2 className="font-heading text-2xl text-text-primary mb-0.5">{target.name}</h2>
-          <p className="text-text-secondary font-body text-sm">is a member of the...</p>
+          <h2 className="mb-0.5 font-heading text-3xl text-text-primary">{target.name}</h2>
+          <p className="text-sm text-text-secondary md:text-base">is a member of the...</p>
         </div>
 
         {/* Party membership card */}
@@ -259,7 +259,7 @@ export function ExecutiveScreen({
         <button
           type="button"
           onClick={() => dispatch({ type: "ACKNOWLEDGE_INVESTIGATION" })}
-          className="flex-shrink-0 w-full max-w-md py-3 rounded-[var(--radius-button)] font-heading text-lg bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] transition-all duration-[var(--transition-normal)] cursor-pointer"
+          className="flex-shrink-0 w-full max-w-2xl rounded-[18px] bg-fascist py-3 font-heading text-xl text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] hover:bg-fascist-hover active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)] cursor-pointer"
         >
           Understood
         </button>
@@ -270,13 +270,13 @@ export function ExecutiveScreen({
   // ── POLICY PEEK ───────────────────────────────────────────────────
   if (state.phase === GamePhase.ExecutivePeek) {
     return (
-      <div className="flex flex-col items-center justify-center h-full px-4 py-4 gap-4">
+      <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center justify-center gap-5">
         <div className="text-center flex-shrink-0 slide-up">
-          <p className="text-text-muted font-body text-xs uppercase tracking-widest mb-1">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Executive Power
           </p>
-          <h2 className="font-heading text-2xl text-gold mb-1">Policy Peek</h2>
-          <p className="text-text-secondary font-body text-sm">
+          <h2 className="mb-1 font-heading text-3xl text-gold">Policy Peek</h2>
+          <p className="text-sm text-text-secondary md:text-base">
             President <span className="text-text-primary font-semibold">{president.name}</span>,
             here are the top 3 policies in the deck.
           </p>
@@ -301,7 +301,7 @@ export function ExecutiveScreen({
         <button
           type="button"
           onClick={() => dispatch({ type: "ACKNOWLEDGE_PEEK" })}
-          className="flex-shrink-0 w-full max-w-md py-3 rounded-[var(--radius-button)] font-heading text-lg bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] transition-all duration-[var(--transition-normal)] cursor-pointer"
+          className="flex-shrink-0 w-full max-w-2xl rounded-[18px] bg-fascist py-3 font-heading text-xl text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] hover:bg-fascist-hover active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)] cursor-pointer"
         >
           Understood
         </button>
@@ -312,13 +312,13 @@ export function ExecutiveScreen({
   // ── SPECIAL ELECTION ──────────────────────────────────────────────
   if (state.phase === GamePhase.ExecutiveSpecialElection) {
     return (
-      <div className="flex flex-col items-center h-full px-4 py-3 gap-3">
+      <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center gap-4">
         <div className="text-center flex-shrink-0 slide-up">
-          <p className="text-text-muted font-body text-xs uppercase tracking-widest mb-1">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Executive Power
           </p>
-          <h2 className="font-heading text-2xl text-gold mb-1">Special Election</h2>
-          <p className="text-text-secondary font-body text-sm">
+          <h2 className="mb-1 font-heading text-3xl text-gold">Special Election</h2>
+          <p className="text-sm text-text-secondary md:text-base">
             President <span className="text-text-primary font-semibold">{president.name}</span>,
             choose the next Presidential Candidate.
           </p>
@@ -344,13 +344,13 @@ export function ExecutiveScreen({
   // ── EXECUTION ─────────────────────────────────────────────────────
   if (state.phase === GamePhase.ExecutiveExecution) {
     return (
-      <div className="flex flex-col items-center h-full px-4 py-3 gap-3">
+      <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center gap-4">
         <div className="text-center flex-shrink-0 slide-up">
-          <p className="text-text-muted font-body text-xs uppercase tracking-widest mb-1">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Executive Power
           </p>
-          <h2 className="font-heading text-2xl text-fascist mb-1">Execution</h2>
-          <p className="text-text-secondary font-body text-sm">
+          <h2 className="mb-1 font-heading text-3xl text-fascist">Execution</h2>
+          <p className="text-sm text-text-secondary md:text-base">
             President <span className="text-text-primary font-semibold">{president.name}</span>,
             choose a player to execute.
           </p>

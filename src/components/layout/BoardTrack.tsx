@@ -1,39 +1,119 @@
-/**
- * BoardTrack — The liberal and fascist policy boards, compact side-by-side layout.
- *
- * Designed to always be visible during active play without taking too much vertical space.
- * Uses a horizontal layout: liberal board | fascist board, with the election tracker inline.
- */
-
 import type { Board, ElectionTracker } from "@engine/types";
 import { ExecutivePower } from "@engine/types";
 import {
   getPlayerCountBracket,
   EXECUTIVE_POWERS,
-  LIBERAL_POLICIES_TO_WIN,
-  FASCIST_POLICIES_TO_WIN,
 } from "@engine/constants";
+import type { ReactNode } from "react";
 
-import boardLiberalImg from "@assets/boards/board-liberal.png";
-import boardFascist56Img from "@assets/boards/board-fascist-5-6.png";
-import boardFascist78Img from "@assets/boards/board-fascist-7-8.png";
-import boardFascist910Img from "@assets/boards/board-fascist-9-10.png";
+import boardLiberalImg from "@assets/boards/board-liberal.svg";
+import boardFascist56Img from "@assets/boards/board-fascist-5-6.svg";
+import boardFascist78Img from "@assets/boards/board-fascist-7-8.svg";
+import boardFascist910Img from "@assets/boards/board-fascist-9-10.svg";
 import policyLiberalImg from "@assets/boards/board-policy-liberal.png";
 import policyFascistImg from "@assets/boards/board-policy-fascist.png";
+import trackerMarkerImg from "@assets/boards/board-tracker.png";
 
-const FASCIST_BOARD_MAP: Record<string, { src: string }> = {
-  "5-6": boardFascist56Img,
-  "7-8": boardFascist78Img,
-  "9-10": boardFascist910Img,
+import boardLiberalRaw from "@assets/boards/board-liberal.svg?raw";
+import boardFascist56Raw from "@assets/boards/board-fascist-5-6.svg?raw";
+import boardFascist78Raw from "@assets/boards/board-fascist-7-8.svg?raw";
+import boardFascist910Raw from "@assets/boards/board-fascist-9-10.svg?raw";
+
+type AssetRef = string | { src: string };
+
+type SlotRect = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+type SvgLayout = {
+  policySlots: SlotRect[];
+  trackerSlots: SlotRect[];
+};
+
+const POLICY_SLOT_SIZE = { width: 194.3, height: 268 };
+const TRACKER_SLOT_SIZE = { width: 42, height: 46 };
+const POLICY_SIZE_TOLERANCE = 1.5;
+const TRACKER_SIZE_TOLERANCE = 0.6;
+
+const FASCIST_BOARD_MAP: Record<string, { src: AssetRef; layout: SvgLayout }> = {
+  "5-6": { src: boardFascist56Img, layout: parseSvgLayout(boardFascist56Raw) },
+  "7-8": { src: boardFascist78Img, layout: parseSvgLayout(boardFascist78Raw) },
+  "9-10": { src: boardFascist910Img, layout: parseSvgLayout(boardFascist910Raw) },
 };
 
 const EXECUTIVE_POWER_ICONS: Record<ExecutivePower, string> = {
   [ExecutivePower.None]: "",
-  [ExecutivePower.InvestigateLoyalty]: "🔍",
-  [ExecutivePower.PolicyPeek]: "👁",
-  [ExecutivePower.SpecialElection]: "🎯",
-  [ExecutivePower.Execution]: "💀",
+  [ExecutivePower.InvestigateLoyalty]: "Investigate",
+  [ExecutivePower.PolicyPeek]: "Peek",
+  [ExecutivePower.SpecialElection]: "Election",
+  [ExecutivePower.Execution]: "Execution",
 };
+
+const LIBERAL_LAYOUT = parseSvgLayout(boardLiberalRaw);
+
+function parseSvgLayout(svgRaw: string): SvgLayout {
+  const viewBox = svgRaw.match(/viewBox="([^"]+)"/)?.[1]?.split(/\s+/).map(Number);
+  if (!viewBox || viewBox.length !== 4) {
+    throw new Error("Board SVG is missing a valid viewBox.");
+  }
+
+  const [, , viewWidth, viewHeight] = viewBox;
+  const rectPattern = /<rect\b([^>]*)\/?>/g;
+  const rects: Array<{ x: number; y: number; width: number; height: number }> = [];
+
+  let match = rectPattern.exec(svgRaw);
+  while (match) {
+    const attrs = match[1];
+    const xAttr = attrs.match(/\bx="([^"]+)"/)?.[1];
+    const yAttr = attrs.match(/\by="([^"]+)"/)?.[1];
+    const widthAttr = attrs.match(/\bwidth="([^"]+)"/)?.[1];
+    const heightAttr = attrs.match(/\bheight="([^"]+)"/)?.[1];
+
+    if (xAttr && yAttr && widthAttr && heightAttr) {
+      rects.push({
+        x: Number(xAttr),
+        y: Number(yAttr),
+        width: Number(widthAttr),
+        height: Number(heightAttr),
+      });
+    }
+
+    match = rectPattern.exec(svgRaw);
+  }
+
+  const normalizedRects = rects
+    .filter((rect) => Number.isFinite(rect.x) && Number.isFinite(rect.y))
+    .map((rect) => ({
+      x: rect.x / viewWidth,
+      y: rect.y / viewHeight,
+      width: rect.width / viewWidth,
+      height: rect.height / viewHeight,
+      rawWidth: rect.width,
+      rawHeight: rect.height,
+    }))
+    .sort((a, b) => a.x - b.x);
+
+  return {
+    policySlots: normalizedRects
+      .filter((rect) => {
+        const widthMatches = Math.abs(rect.rawWidth - POLICY_SLOT_SIZE.width) <= POLICY_SIZE_TOLERANCE
+          || Math.abs(rect.rawWidth - 194) <= POLICY_SIZE_TOLERANCE;
+        const heightMatches = Math.abs(rect.rawHeight - POLICY_SLOT_SIZE.height) <= POLICY_SIZE_TOLERANCE;
+        return widthMatches && heightMatches;
+      })
+      .map(({ x, y, width, height }) => ({ x, y, width, height })),
+    trackerSlots: normalizedRects
+      .filter(
+        (rect) =>
+          Math.abs(rect.rawWidth - TRACKER_SLOT_SIZE.width) <= TRACKER_SIZE_TOLERANCE
+          && Math.abs(rect.rawHeight - TRACKER_SLOT_SIZE.height) <= TRACKER_SIZE_TOLERANCE,
+      )
+      .map(({ x, y, width, height }) => ({ x, y, width, height })),
+  };
+}
 
 interface BoardTrackProps {
   board: Board;
@@ -41,6 +121,118 @@ interface BoardTrackProps {
   playerCount: number;
   vetoUnlocked: boolean;
   className?: string;
+}
+
+function PolicySlots({
+  count,
+  slots,
+  imageSrc,
+  altPrefix,
+}: {
+  count: number;
+  slots: SlotRect[];
+  imageSrc: AssetRef;
+  altPrefix: string;
+}) {
+  return (
+    <>
+      {slots.map((slot, index) => (
+        <div
+          key={index}
+          className="absolute"
+          style={{
+            left: `${slot.x * 100}%`,
+            top: `${slot.y * 100}%`,
+            width: `${slot.width * 100}%`,
+            height: `${slot.height * 100}%`,
+          }}
+        >
+          {index < count && (
+            <img
+              src={assetSrc(imageSrc)}
+              alt={`${altPrefix} ${index + 1}`}
+              className="h-full w-full object-contain drop-shadow-[0_10px_12px_rgba(0,0,0,0.24)] scale-pop"
+              draggable={false}
+            />
+          )}
+        </div>
+      ))}
+    </>
+  );
+}
+
+function TrackerSlots({
+  count,
+  slots,
+  imageSrc,
+  altPrefix,
+}: {
+  count: number;
+  slots: SlotRect[];
+  imageSrc: AssetRef;
+  altPrefix: string;
+}) {
+  return (
+    <>
+      {slots.slice(0, 3).map((slot, index) => (
+        <div
+          key={index}
+          className="absolute"
+          style={{
+            left: `${slot.x * 100}%`,
+            top: `${slot.y * 100}%`,
+            width: `${slot.width * 100}%`,
+            height: `${slot.height * 100}%`,
+          }}
+        >
+          {index < count && (
+            <img
+              src={assetSrc(imageSrc)}
+              alt={`${altPrefix} ${index + 1}`}
+              className="h-full w-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.32)] scale-pop"
+              draggable={false}
+            />
+          )}
+        </div>
+      ))}
+    </>
+  );
+}
+
+function BoardPanel({
+  title,
+  imageSrc,
+  imageAlt,
+  accentClass,
+  children,
+  aspectClass,
+}: {
+  title: string;
+  imageSrc: AssetRef;
+  imageAlt: string;
+  accentClass: string;
+  children: ReactNode;
+  aspectClass?: string;
+}) {
+  return (
+    <section className="min-w-0 flex-1">
+      <div className="mb-2 flex items-center justify-center gap-3">
+        <span className={["h-px w-8 bg-gradient-to-r from-transparent to-current opacity-55", accentClass].join(" ")} />
+        <p className={["font-heading text-xl tracking-[0.12em]", accentClass].join(" ")}>{title}</p>
+        <span className={["h-px w-8 bg-gradient-to-l from-transparent to-current opacity-55", accentClass].join(" ")} />
+      </div>
+      <div className="relative overflow-hidden rounded-[20px] border border-white/8 bg-[#1a120d] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_34px_rgba(0,0,0,0.28)]">
+        <div className={["relative overflow-hidden rounded-[16px]", aspectClass ?? "aspect-[1683/650]"].join(" ")}>
+          <img src={assetSrc(imageSrc)} alt={imageAlt} className="h-full w-full object-cover" draggable={false} />
+          <div className="absolute inset-0">{children}</div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function assetSrc(asset: AssetRef): string {
+  return typeof asset === "string" ? asset : asset.src;
 }
 
 export function BoardTrack({
@@ -51,111 +243,102 @@ export function BoardTrack({
   className = "",
 }: BoardTrackProps) {
   const bracket = getPlayerCountBracket(playerCount);
-  const fascistBoardImg = FASCIST_BOARD_MAP[bracket] ?? FASCIST_BOARD_MAP["5-6"];
+  const fascistBoard = FASCIST_BOARD_MAP[bracket] ?? FASCIST_BOARD_MAP["5-6"];
   const executivePowers = EXECUTIVE_POWERS[bracket];
+  const failedElections = Math.max(0, Math.min(3, electionTracker.failedElections));
 
   return (
-    <div
-      className={[
-        "flex items-center gap-2 w-full max-w-3xl mx-auto",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
-    >
-      {/* Liberal Track */}
-      <div className="relative flex-1">
-        <img
-          src={boardLiberalImg.src}
-          alt="Liberal policy board"
-          className="w-full h-auto block rounded"
-          draggable={false}
-        />
-        {/* Policy slot overlays */}
-        <div className="absolute inset-0 flex items-center">
-          <div className="flex gap-[3.5%] ml-[9%]">
-            {Array.from({ length: LIBERAL_POLICIES_TO_WIN }).map((_, i) => (
-              <div
-                key={i}
-                className="w-[11.5%] aspect-[3/4] flex items-center justify-center"
+    <div className={["mx-auto w-full max-w-6xl", className].filter(Boolean).join(" ")}>
+      <div className="grid items-center gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <BoardPanel
+          title="Liberal Board"
+          imageSrc={boardLiberalImg}
+          imageAlt="Liberal policy board"
+          accentClass="text-liberal"
+        >
+          <PolicySlots
+            count={board.liberalPolicies}
+            slots={LIBERAL_LAYOUT.policySlots}
+            imageSrc={policyLiberalImg}
+            altPrefix="Liberal policy"
+          />
+          <TrackerSlots
+            count={failedElections}
+            slots={LIBERAL_LAYOUT.trackerSlots}
+            imageSrc={trackerMarkerImg}
+            altPrefix="Failed election marker"
+          />
+        </BoardPanel>
+
+        <BoardPanel
+          title="Fascist Board"
+          imageSrc={fascistBoard.src}
+          imageAlt="Fascist policy board"
+          accentClass="text-fascist"
+        >
+          <PolicySlots
+            count={board.fascistPolicies}
+            slots={fascistBoard.layout.policySlots}
+            imageSrc={policyFascistImg}
+            altPrefix="Fascist policy"
+          />
+          {fascistBoard.layout.policySlots.map((slot, index) => {
+            const power = executivePowers[index + 1];
+            if (!power || power === ExecutivePower.None || index < board.fascistPolicies) {
+              return null;
+            }
+
+            return (
+              <span
+                key={`power-${index}`}
+                className="absolute rounded-full bg-black/52 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-[0.18em] text-text-secondary"
+                style={{
+                  left: `${(slot.x + slot.width / 2) * 100}%`,
+                  top: `${(slot.y + slot.height / 2) * 100 + 18.2}%`,
+                  transform: "translate(-50%, -50%)",
+                }}
               >
-                {i < board.liberalPolicies && (
-                  <img
-                    src={policyLiberalImg.src}
-                    alt={`Liberal policy ${i + 1}`}
-                    className="w-full h-full object-contain scale-pop"
-                    draggable={false}
-                  />
-                )}
-              </div>
+                {EXECUTIVE_POWER_ICONS[power]}
+              </span>
+            );
+          })}
+          {vetoUnlocked && fascistBoard.layout.policySlots[4] && (
+            <span
+              className="absolute rounded-full border border-gold/30 bg-black/62 px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.2em] text-gold"
+              style={{
+                left: `${(fascistBoard.layout.policySlots[4].x + fascistBoard.layout.policySlots[4].width / 2) * 100}%`,
+                top: `${(fascistBoard.layout.policySlots[4].y + fascistBoard.layout.policySlots[4].height / 2) * 100 - 18.8}%`,
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              Veto
+            </span>
+          )}
+        </BoardPanel>
+      </div>
+
+      <div className="mt-4 flex items-center justify-center">
+        <div className="status-chip flex items-center gap-4 rounded-full px-4 py-2.5 md:px-5">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-text-muted">
+              Election Tracker
+            </p>
+            <p className="text-sm font-semibold text-text-secondary">Three failed votes trigger chaos</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                className={[
+                  "h-4 w-4 rounded-full border transition-all duration-[var(--transition-normal)]",
+                  index < failedElections
+                    ? "scale-110 border-fascist-dark bg-fascist shadow-[0_0_12px_rgba(240,100,45,0.55)]"
+                    : "border-text-muted/50 bg-transparent",
+                ].join(" ")}
+              />
             ))}
           </div>
         </div>
-      </div>
-
-      {/* Fascist Track */}
-      <div className="relative flex-[1.25]">
-        <img
-          src={fascistBoardImg.src}
-          alt="Fascist policy board"
-          className="w-full h-auto block rounded"
-          draggable={false}
-        />
-        {/* Policy slot overlays */}
-        <div className="absolute inset-0 flex items-center">
-          <div className="flex gap-[2.4%] ml-[3.5%]">
-            {Array.from({ length: FASCIST_POLICIES_TO_WIN }).map((_, i) => {
-              const power = executivePowers[i + 1];
-              const isVetoSlot = i === 4;
-
-              return (
-                <div
-                  key={i}
-                  className="relative w-[10%] aspect-[3/4] flex items-center justify-center"
-                >
-                  {i < board.fascistPolicies && (
-                    <img
-                      src={policyFascistImg.src}
-                      alt={`Fascist policy ${i + 1}`}
-                      className="w-full h-full object-contain scale-pop"
-                      draggable={false}
-                    />
-                  )}
-                  {/* Executive power icon */}
-                  {power && power !== ExecutivePower.None && i >= board.fascistPolicies && (
-                    <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 text-[9px] opacity-50 leading-none">
-                      {EXECUTIVE_POWER_ICONS[power]}
-                    </span>
-                  )}
-                  {/* Veto indicator */}
-                  {isVetoSlot && vetoUnlocked && (
-                    <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[7px] font-body font-bold text-gold uppercase tracking-wider whitespace-nowrap">
-                      VETO
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Election Tracker — compact vertical dots */}
-      <div className="flex flex-col items-center gap-1 flex-shrink-0 px-1">
-        <span className="text-[8px] font-body text-text-muted uppercase tracking-wider leading-none mb-0.5">
-          Elect
-        </span>
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div
-            key={i}
-            className={[
-              "w-3 h-3 rounded-full border transition-all duration-[var(--transition-normal)]",
-              i < electionTracker.failedElections
-                ? "bg-fascist border-fascist-dark shadow-[0_0_6px_rgba(224,91,43,0.6)] scale-pop"
-                : "bg-transparent border-text-muted/40",
-            ].join(" ")}
-          />
-        ))}
       </div>
     </div>
   );
