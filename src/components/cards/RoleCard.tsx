@@ -15,6 +15,7 @@ import roleLiberal3Img from "@assets/roles/role-liberal-3.png";
 import roleLiberal4Img from "@assets/roles/role-liberal-4.png";
 import roleLiberal5Img from "@assets/roles/role-liberal-5.png";
 import roleLiberal6Img from "@assets/roles/role-liberal-6.png";
+import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 
 const LIBERAL_CARDS = [
   roleLiberal1Img,
@@ -36,13 +37,31 @@ interface RoleCardProps {
 
 function getRoleImage(
   role: "liberal" | "fascist" | "hitler",
+  assetMap: Record<string, string>,
   variantIndex?: number,
 ): { src: string; alt: string } {
   if (role === "hitler") {
-    return { src: roleHitlerImg.src, alt: "Secret Role: Hitler" };
+    return {
+      src: assetMap["roles/role-hitler.png"] ?? roleHitlerImg.src,
+      alt: "Secret Role: Hitler",
+    };
   }
 
   const pool = role === "fascist" ? FASCIST_CARDS : LIBERAL_CARDS;
+  const poolKeys = role === "fascist"
+    ? [
+        "roles/role-fascist-1.png",
+        "roles/role-fascist-2.png",
+        "roles/role-fascist-3.png",
+      ]
+    : [
+        "roles/role-liberal-1.png",
+        "roles/role-liberal-2.png",
+        "roles/role-liberal-3.png",
+        "roles/role-liberal-4.png",
+        "roles/role-liberal-5.png",
+        "roles/role-liberal-6.png",
+      ];
 
   // Determine index: use provided (1-based), fall back to a stable random pick
   let idx: number;
@@ -53,13 +72,25 @@ function getRoleImage(
   }
 
   return {
-    src: pool[idx].src,
+    src: assetMap[poolKeys[idx]] ?? pool[idx].src,
     alt: `Secret Role: ${role}`,
   };
 }
 
 export function RoleCard({ role, variantIndex, className = "" }: RoleCardProps) {
-  const { src, alt } = getRoleImage(role, variantIndex);
+  const assetMap = {
+    "roles/role-hitler.png": useOptimizedAsset("roles/role-hitler.png", roleHitlerImg.src),
+    "roles/role-fascist-1.png": useOptimizedAsset("roles/role-fascist-1.png", roleFascist1Img.src),
+    "roles/role-fascist-2.png": useOptimizedAsset("roles/role-fascist-2.png", roleFascist2Img.src),
+    "roles/role-fascist-3.png": useOptimizedAsset("roles/role-fascist-3.png", roleFascist3Img.src),
+    "roles/role-liberal-1.png": useOptimizedAsset("roles/role-liberal-1.png", roleLiberal1Img.src),
+    "roles/role-liberal-2.png": useOptimizedAsset("roles/role-liberal-2.png", roleLiberal2Img.src),
+    "roles/role-liberal-3.png": useOptimizedAsset("roles/role-liberal-3.png", roleLiberal3Img.src),
+    "roles/role-liberal-4.png": useOptimizedAsset("roles/role-liberal-4.png", roleLiberal4Img.src),
+    "roles/role-liberal-5.png": useOptimizedAsset("roles/role-liberal-5.png", roleLiberal5Img.src),
+    "roles/role-liberal-6.png": useOptimizedAsset("roles/role-liberal-6.png", roleLiberal6Img.src),
+  };
+  const { src, alt } = getRoleImage(role, assetMap, variantIndex);
 
   const glowClass =
     role === "liberal"

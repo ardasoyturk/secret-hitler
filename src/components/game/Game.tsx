@@ -29,8 +29,16 @@ import { GameOverScreen } from "@components/screens/GameOverScreen";
 // Layout
 import { Header } from "@components/layout/Header";
 import { BoardTrack } from "@components/layout/BoardTrack";
+import {
+  OptimizedAssetsProvider,
+} from "@components/game/OptimizedAssets";
+import type { OptimizedAssetMap } from "@components/game/OptimizedAssets";
 
-export function Game() {
+export function Game({
+  optimizedAssets = {},
+}: {
+  optimizedAssets?: OptimizedAssetMap;
+}) {
   const [appState, setAppState] = useState<
     | { status: "checking" }
     | { status: "prompting"; savedState: GameState }
@@ -54,20 +62,26 @@ export function Game() {
 
   if (appState.status === "prompting") {
     return (
-      <ResumePrompt
-        savedState={appState.savedState}
-        onResume={() => {
-          setAppState({ status: "playing", initialState: appState.savedState });
-        }}
-        onNewGame={() => {
-          clearGameState();
-          setAppState({ status: "playing", initialState: undefined });
-        }}
-      />
+      <OptimizedAssetsProvider assets={optimizedAssets}>
+        <ResumePrompt
+          savedState={appState.savedState}
+          onResume={() => {
+            setAppState({ status: "playing", initialState: appState.savedState });
+          }}
+          onNewGame={() => {
+            clearGameState();
+            setAppState({ status: "playing", initialState: undefined });
+          }}
+        />
+      </OptimizedAssetsProvider>
     );
   }
 
-  return <GameInner initialState={appState.initialState} />;
+  return (
+    <OptimizedAssetsProvider assets={optimizedAssets}>
+      <GameInner initialState={appState.initialState} />
+    </OptimizedAssetsProvider>
+  );
 }
 
 function GameInner({ initialState }: { initialState: GameState | undefined }) {
@@ -99,28 +113,30 @@ function GameInner({ initialState }: { initialState: GameState | undefined }) {
   const chancellor = state.players.find((p) => p.id === state.chancellorNomineeId);
 
   return (
-    <div className="game-shell relative h-dvh w-full overflow-hidden">
-      <div className="relative z-10 grid h-full grid-rows-[auto_auto_minmax(0,1fr)] overflow-hidden">
-        <Header
-          round={state.round}
-          phase={state.phase}
-          presidentName={president?.name}
-          chancellorName={chancellor?.name}
-        />
+    <div className="game-shell relative h-dvh w-full overflow-y-auto overflow-x-hidden">
+      <div className="relative z-10 min-h-full px-3 pb-5 md:px-5 md:pb-6">
+        <div className="game-sticky-stage sticky top-0 z-30 -mx-3 px-3 pb-3 md:-mx-5 md:px-5 md:pb-4">
+          <Header
+            round={state.round}
+            phase={state.phase}
+            presidentName={president?.name}
+            chancellorName={chancellor?.name}
+          />
 
-        <div className="px-3 pb-3 pt-2 md:px-5 md:pb-4 md:pt-3">
-          <div className="tabletop-stage mx-auto w-full max-w-7xl rounded-[26px] px-4 py-4 md:px-6 md:py-5">
-            <BoardTrack
-              board={state.board}
-              electionTracker={state.electionTracker}
-              playerCount={state.players.length}
-              vetoUnlocked={state.vetoUnlocked}
-            />
+          <div className="pt-2 md:pt-3">
+            <div className="tabletop-stage mx-auto w-full max-w-7xl rounded-[26px] px-4 py-4 md:px-6 md:py-5">
+              <BoardTrack
+                board={state.board}
+                electionTracker={state.electionTracker}
+                playerCount={state.players.length}
+                vetoUnlocked={state.vetoUnlocked}
+              />
+            </div>
           </div>
         </div>
 
-        <div className="min-h-0 px-3 pb-3 md:px-5 md:pb-5">
-          <div className="gameplay-panel mx-auto h-full w-full max-w-7xl min-h-0 overflow-y-auto overflow-x-hidden px-4 py-4 md:px-6 md:py-5">
+        <div className="pt-1 md:pt-2">
+          <div className="gameplay-panel mx-auto w-full max-w-7xl px-4 py-4 md:px-6 md:py-6">
             <PhaseRouter phase={state.phase} game={game} />
           </div>
         </div>

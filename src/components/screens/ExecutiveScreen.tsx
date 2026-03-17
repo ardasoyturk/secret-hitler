@@ -16,9 +16,7 @@ import type { GameState, GameAction } from "@engine/types";
 import { GamePhase, PartyMembership } from "@engine/types";
 import { getPartyMembership } from "@engine/reducer";
 import { PolicyCard } from "@components/cards/PolicyCard";
-
-import partyFascistImg from "@assets/cards/party-membership-fascist.png";
-import partyLiberalImg from "@assets/cards/party-membership-liberal.png";
+import { PartyCard } from "@components/cards/PartyCard";
 
 import portrait1 from "@assets/portraits/player-portrait-1.svg";
 import portrait2 from "@assets/portraits/player-portrait-2.svg";
@@ -90,7 +88,7 @@ function PlayerSelectionGrid({
 
   return (
     <>
-      <div className={`w-full max-w-4xl grid ${colClass} gap-3 md:gap-4 flex-1 overflow-y-auto min-h-0`}>
+      <div className={`grid w-full max-w-4xl ${colClass} gap-3 md:gap-4`}>
         {alivePlayers.map((player) => {
           const isEligible = eligibleSet.has(player.id);
           const isSelected = selectedId === player.id;
@@ -146,21 +144,23 @@ function PlayerSelectionGrid({
         })}
       </div>
 
-      <button
-        type="button"
-        onClick={onConfirm}
-        disabled={selectedId === null}
-        className={[
-          "flex-shrink-0 w-full max-w-2xl rounded-[18px] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
-          selectedId !== null
-            ? dangerConfirm
-              ? "bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] cursor-pointer"
-              : "bg-btn-alt text-text-primary shadow-[0_6px_0_var(--color-btn-alt-shadow),var(--shadow-card)] hover:bg-btn-alt-hover active:shadow-[0_2px_0_var(--color-btn-alt-shadow)] active:translate-y-[4px] cursor-pointer"
-            : "bg-btn-disabled text-text-muted cursor-not-allowed",
-        ].join(" ")}
-      >
-        {selectedId !== null ? confirmLabel : "Select a Player"}
-      </button>
+      <div className="phase-action-bar max-w-2xl">
+        <button
+          type="button"
+          onClick={onConfirm}
+          disabled={selectedId === null}
+          className={[
+            "flex-shrink-0 w-full rounded-[18px] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
+            selectedId !== null
+              ? dangerConfirm
+                ? "bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] cursor-pointer"
+                : "bg-btn-alt text-text-primary shadow-[0_6px_0_var(--color-btn-alt-shadow),var(--shadow-card)] hover:bg-btn-alt-hover active:shadow-[0_2px_0_var(--color-btn-alt-shadow)] active:translate-y-[4px] cursor-pointer"
+              : "bg-btn-disabled text-text-muted cursor-not-allowed",
+          ].join(" ")}
+        >
+          {selectedId !== null ? confirmLabel : "Select a Player"}
+        </button>
+      </div>
     </>
   );
 }
@@ -180,7 +180,7 @@ export function ExecutiveScreen({
   // ── INVESTIGATE ───────────────────────────────────────────────────
   if (state.phase === GamePhase.ExecutiveInvestigate) {
     return (
-      <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center gap-4">
+      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
         <div className="text-center flex-shrink-0 slide-up">
           <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Executive Power
@@ -216,10 +216,8 @@ export function ExecutiveScreen({
 
     const membership = getPartyMembership(target);
     const isLiberal = membership === PartyMembership.Liberal;
-    const membershipImg = isLiberal ? partyLiberalImg : partyFascistImg;
-
     return (
-      <div className="mx-auto flex h-full w-full max-w-4xl flex-col items-center justify-center gap-5">
+      <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-5 px-1 py-3 md:py-5">
         <div className="text-center flex-shrink-0 slide-up">
           <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Investigation Result
@@ -229,19 +227,7 @@ export function ExecutiveScreen({
         </div>
 
         {/* Party membership card */}
-        <div
-          className={[
-            "w-40 sm:w-48 rounded-[var(--radius-card)] overflow-hidden flex-shrink-0 stamp",
-            isLiberal ? "glow-liberal" : "glow-fascist",
-          ].join(" ")}
-        >
-          <img
-            src={membershipImg.src}
-            alt={`${membership} party membership`}
-            className="w-full h-auto block"
-            draggable={false}
-          />
-        </div>
+        <PartyCard party={membership} className={isLiberal ? "glow-liberal" : "glow-fascist"} />
 
         <h3
           className={[
@@ -270,7 +256,7 @@ export function ExecutiveScreen({
   // ── POLICY PEEK ───────────────────────────────────────────────────
   if (state.phase === GamePhase.ExecutivePeek) {
     return (
-      <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center justify-center gap-5">
+      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:py-4">
         <div className="text-center flex-shrink-0 slide-up">
           <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Executive Power
@@ -312,7 +298,7 @@ export function ExecutiveScreen({
   // ── SPECIAL ELECTION ──────────────────────────────────────────────
   if (state.phase === GamePhase.ExecutiveSpecialElection) {
     return (
-      <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center gap-4">
+      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
         <div className="text-center flex-shrink-0 slide-up">
           <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Executive Power
@@ -344,7 +330,7 @@ export function ExecutiveScreen({
   // ── EXECUTION ─────────────────────────────────────────────────────
   if (state.phase === GamePhase.ExecutiveExecution) {
     return (
-      <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center gap-4">
+      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
         <div className="text-center flex-shrink-0 slide-up">
           <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Executive Power

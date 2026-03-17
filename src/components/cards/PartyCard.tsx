@@ -6,6 +6,7 @@
 
 import partyLiberalImg from "@assets/cards/party-membership-liberal.png";
 import partyFascistImg from "@assets/cards/party-membership-fascist.png";
+import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 
 interface PartyCardProps {
   party: "liberal" | "fascist";
@@ -13,7 +14,15 @@ interface PartyCardProps {
 }
 
 export function PartyCard({ party, className = "" }: PartyCardProps) {
-  const imgSrc = party === "liberal" ? partyLiberalImg.src : partyFascistImg.src;
+  const liberalSrc = useOptimizedAsset(
+    "cards/party-membership-liberal.png",
+    partyLiberalImg.src,
+  );
+  const fascistSrc = useOptimizedAsset(
+    "cards/party-membership-fascist.png",
+    partyFascistImg.src,
+  );
+  const imgSrc = party === "liberal" ? liberalSrc : fascistSrc;
   const altText = `Party Membership: ${party}`;
 
   const glowClass =

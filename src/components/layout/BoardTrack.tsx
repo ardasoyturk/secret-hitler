@@ -13,6 +13,7 @@ import boardFascist910Img from "@assets/boards/board-fascist-9-10.svg";
 import policyLiberalImg from "@assets/boards/board-policy-liberal.png";
 import policyFascistImg from "@assets/boards/board-policy-fascist.png";
 import trackerMarkerImg from "@assets/boards/board-tracker.png";
+import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 
 import boardLiberalRaw from "@assets/boards/board-liberal.svg?raw";
 import boardFascist56Raw from "@assets/boards/board-fascist-5-6.svg?raw";
@@ -246,6 +247,15 @@ export function BoardTrack({
   const fascistBoard = FASCIST_BOARD_MAP[bracket] ?? FASCIST_BOARD_MAP["5-6"];
   const executivePowers = EXECUTIVE_POWERS[bracket];
   const failedElections = Math.max(0, Math.min(3, electionTracker.failedElections));
+  const liberalPolicySrc = useOptimizedAsset(
+    "boards/board-policy-liberal.png",
+    assetSrc(policyLiberalImg),
+  );
+  const fascistPolicySrc = useOptimizedAsset(
+    "boards/board-policy-fascist.png",
+    assetSrc(policyFascistImg),
+  );
+  const trackerSrc = useOptimizedAsset("boards/board-tracker.png", assetSrc(trackerMarkerImg));
 
   return (
     <div className={["mx-auto w-full max-w-6xl", className].filter(Boolean).join(" ")}>
@@ -259,13 +269,13 @@ export function BoardTrack({
           <PolicySlots
             count={board.liberalPolicies}
             slots={LIBERAL_LAYOUT.policySlots}
-            imageSrc={policyLiberalImg}
+            imageSrc={liberalPolicySrc}
             altPrefix="Liberal policy"
           />
           <TrackerSlots
             count={failedElections}
             slots={LIBERAL_LAYOUT.trackerSlots}
-            imageSrc={trackerMarkerImg}
+            imageSrc={trackerSrc}
             altPrefix="Failed election marker"
           />
         </BoardPanel>
@@ -279,7 +289,7 @@ export function BoardTrack({
           <PolicySlots
             count={board.fascistPolicies}
             slots={fascistBoard.layout.policySlots}
-            imageSrc={policyFascistImg}
+            imageSrc={fascistPolicySrc}
             altPrefix="Fascist policy"
           />
           {fascistBoard.layout.policySlots.map((slot, index) => {
@@ -315,30 +325,6 @@ export function BoardTrack({
             </span>
           )}
         </BoardPanel>
-      </div>
-
-      <div className="mt-4 flex items-center justify-center">
-        <div className="status-chip flex items-center gap-4 rounded-full px-4 py-2.5 md:px-5">
-          <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-text-muted">
-              Election Tracker
-            </p>
-            <p className="text-sm font-semibold text-text-secondary">Three failed votes trigger chaos</p>
-          </div>
-          <div className="flex items-center gap-2">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <div
-                key={index}
-                className={[
-                  "h-4 w-4 rounded-full border transition-all duration-[var(--transition-normal)]",
-                  index < failedElections
-                    ? "scale-110 border-fascist-dark bg-fascist shadow-[0_0_12px_rgba(240,100,45,0.55)]"
-                    : "border-text-muted/50 bg-transparent",
-                ].join(" ")}
-              />
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );

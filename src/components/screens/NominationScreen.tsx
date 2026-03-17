@@ -55,10 +55,6 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 
   const eligibleSet = new Set(eligibleIds);
 
-  // Determine column count for grid
-  const totalPlayers = state.players.length;
-  const cols = totalPlayers <= 6 ? 3 : totalPlayers <= 8 ? 4 : 5;
-
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -72,7 +68,7 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
   }
 
   return (
-    <form className="mx-auto flex h-full w-full max-w-6xl flex-col gap-4" onSubmit={handleSubmit}>
+    <form className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-1 py-3 md:gap-5 md:py-5" onSubmit={handleSubmit}>
       <div className="flex-shrink-0 text-center">
         <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
           Government Formation
@@ -84,8 +80,8 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
       </div>
 
       <div
-        className="grid flex-1 min-h-0 overflow-y-auto content-start gap-3 md:gap-4"
-        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+        className="grid content-start gap-3 md:gap-4"
+        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
       >
         {state.players.map((player) => {
           const isEligible = eligibleSet.has(player.id);
@@ -110,16 +106,21 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
                 required
               />
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-gold/35 to-transparent opacity-0 transition-opacity duration-150 peer-checked:opacity-100" />
-              <div className="flex min-h-[120px] flex-col items-center justify-center gap-2 p-3 md:min-h-[128px]">
-                <div className={["h-14 w-14 rounded-full overflow-hidden border-2 flex-shrink-0 shadow-[0_8px_16px_rgba(0,0,0,0.22)]", "border-text-muted/30 peer-checked:border-gold", !isEligible && "grayscale"].join(" ")}>
+              <div className="flex min-h-[92px] items-center gap-3 p-3 md:min-h-[96px] md:p-3.5">
+                <div className={["h-13 w-13 rounded-full overflow-hidden border-2 flex-shrink-0 shadow-[0_8px_16px_rgba(0,0,0,0.22)] md:h-14 md:w-14", "border-text-muted/30 peer-checked:border-gold", !isEligible && "grayscale"].join(" ")}>
                   <img src={PORTRAITS[player.portraitIndex]?.src} alt={player.name} className="w-full h-full object-cover" draggable={false} />
                 </div>
-                <span className={["w-full truncate text-center text-sm font-medium leading-tight", "text-text-primary peer-checked:text-gold", !isEligible && "text-text-muted"].join(" ")}>
-                  {player.name}
-                </span>
+                <div className="min-w-0 flex-1">
+                  <span className={["block truncate text-left text-sm font-medium leading-tight md:text-base", "text-text-primary peer-checked:text-gold", !isEligible && "text-text-muted"].join(" ")}>
+                    {player.name}
+                  </span>
+                  <span className="mt-1 block text-left text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                    {isEligible ? "Eligible" : reason ?? "Unavailable"}
+                  </span>
+                </div>
               </div>
               {reason && (
-                <span className="absolute left-1/2 top-2 -translate-x-1/2 whitespace-nowrap rounded-full border border-text-muted/20 bg-bg-darker/90 px-2 py-0.5 text-[10px] font-medium text-text-muted">
+                <span className="absolute right-2 top-2 whitespace-nowrap rounded-full border border-text-muted/20 bg-bg-darker/90 px-2 py-0.5 text-[10px] font-medium text-text-muted">
                   {reason}
                 </span>
               )}
@@ -128,7 +129,7 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
         })}
       </div>
 
-      <div className="flex flex-shrink-0 justify-center pt-1">
+      <div className="phase-action-bar flex flex-shrink-0 justify-center">
         <button
           type="submit"
           className="w-full max-w-2xl rounded-[18px] bg-fascist px-6 py-3 font-heading text-xl tracking-wide text-white shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-200 hover:bg-fascist-hover active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-fascist-dark)] cursor-pointer"

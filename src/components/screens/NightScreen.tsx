@@ -9,6 +9,7 @@
 import type { GameState, GameAction } from "@engine/types";
 import { GamePhase, Role } from "@engine/types";
 import { getNightInfo } from "@/hooks/useGame";
+import { ViewportOverlay } from "@components/layout/ViewportOverlay";
 
 import roleFascist1 from "@assets/roles/role-fascist-1.png";
 import roleFascist2 from "@assets/roles/role-fascist-2.png";
@@ -20,25 +21,38 @@ import roleLiberal3 from "@assets/roles/role-liberal-3.png";
 import roleLiberal4 from "@assets/roles/role-liberal-4.png";
 import roleLiberal5 from "@assets/roles/role-liberal-5.png";
 import roleLiberal6 from "@assets/roles/role-liberal-6.png";
+import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 
 const LIBERAL_ROLE_IMAGES = [
-  roleLiberal1,
-  roleLiberal2,
-  roleLiberal3,
-  roleLiberal4,
-  roleLiberal5,
-  roleLiberal6,
+  { image: roleLiberal1, key: "roles/role-liberal-1.png" },
+  { image: roleLiberal2, key: "roles/role-liberal-2.png" },
+  { image: roleLiberal3, key: "roles/role-liberal-3.png" },
+  { image: roleLiberal4, key: "roles/role-liberal-4.png" },
+  { image: roleLiberal5, key: "roles/role-liberal-5.png" },
+  { image: roleLiberal6, key: "roles/role-liberal-6.png" },
 ];
 
-const FASCIST_ROLE_IMAGES = [roleFascist1, roleFascist2, roleFascist3];
+const FASCIST_ROLE_IMAGES = [
+  { image: roleFascist1, key: "roles/role-fascist-1.png" },
+  { image: roleFascist2, key: "roles/role-fascist-2.png" },
+  { image: roleFascist3, key: "roles/role-fascist-3.png" },
+];
 
 /** Get a deterministic role card image based on player index */
-function getRoleImage(role: Role, playerIndex: number) {
-  if (role === Role.Hitler) return roleHitler;
-  if (role === Role.Fascist) {
-    return FASCIST_ROLE_IMAGES[playerIndex % FASCIST_ROLE_IMAGES.length];
+function getRoleImage(
+  role: Role,
+  playerIndex: number,
+  optimizedAssets: Record<string, string>,
+) {
+  if (role === Role.Hitler) {
+    return optimizedAssets["roles/role-hitler.png"] ?? roleHitler.src;
   }
-  return LIBERAL_ROLE_IMAGES[playerIndex % LIBERAL_ROLE_IMAGES.length];
+  if (role === Role.Fascist) {
+    const card = FASCIST_ROLE_IMAGES[playerIndex % FASCIST_ROLE_IMAGES.length];
+    return optimizedAssets[card.key] ?? card.image.src;
+  }
+  const card = LIBERAL_ROLE_IMAGES[playerIndex % LIBERAL_ROLE_IMAGES.length];
+  return optimizedAssets[card.key] ?? card.image.src;
 }
 
 interface ScreenProps {
@@ -49,41 +63,55 @@ interface ScreenProps {
 export function NightScreen({ state, dispatch }: ScreenProps) {
   const playerIndex = state.nightRoundPlayerIndex;
   const player = state.players[playerIndex];
+  const optimizedRoleAssets = {
+    "roles/role-hitler.png": useOptimizedAsset("roles/role-hitler.png", roleHitler.src),
+    "roles/role-fascist-1.png": useOptimizedAsset("roles/role-fascist-1.png", roleFascist1.src),
+    "roles/role-fascist-2.png": useOptimizedAsset("roles/role-fascist-2.png", roleFascist2.src),
+    "roles/role-fascist-3.png": useOptimizedAsset("roles/role-fascist-3.png", roleFascist3.src),
+    "roles/role-liberal-1.png": useOptimizedAsset("roles/role-liberal-1.png", roleLiberal1.src),
+    "roles/role-liberal-2.png": useOptimizedAsset("roles/role-liberal-2.png", roleLiberal2.src),
+    "roles/role-liberal-3.png": useOptimizedAsset("roles/role-liberal-3.png", roleLiberal3.src),
+    "roles/role-liberal-4.png": useOptimizedAsset("roles/role-liberal-4.png", roleLiberal4.src),
+    "roles/role-liberal-5.png": useOptimizedAsset("roles/role-liberal-5.png", roleLiberal5.src),
+    "roles/role-liberal-6.png": useOptimizedAsset("roles/role-liberal-6.png", roleLiberal6.src),
+  };
 
   if (!player) return null;
 
   // Privacy gate — hand the device to the next player
   if (state.phase === GamePhase.NightRound) {
     return (
-      <div className="privacy-screen">
-        <div className="text-center px-6">
-          <h2 className="font-heading text-3xl text-gold mb-6">Pass the Device</h2>
-          <p className="text-text-secondary text-lg font-body mb-2">Hand the device to</p>
-          <p className="font-heading text-4xl text-text-primary mb-4">{player.name}</p>
-          <p className="text-text-muted text-sm font-body mb-12">
-            Player {playerIndex + 1} of {state.players.length}
-          </p>
-          <button
-            type="button"
-            onClick={() =>
-              dispatch({
-                type: "ACKNOWLEDGE_NIGHT",
-                playerIndex,
-              })
-            }
-            className="px-10 py-4 bg-btn-primary text-text-primary font-heading text-xl rounded-[var(--radius-button)] shadow-[var(--shadow-button)] hover:bg-btn-primary-hover active:shadow-none active:translate-y-[2px] transition-all duration-[var(--transition-fast)] cursor-pointer"
-          >
-            I&apos;m Ready
-          </button>
+      <ViewportOverlay>
+        <div className="privacy-screen">
+          <div className="privacy-dialog text-center">
+            <h2 className="mb-6 font-heading text-3xl text-gold">Pass the Device</h2>
+            <p className="mb-2 text-lg text-text-secondary">Hand the device to</p>
+            <p className="mb-4 font-heading text-4xl text-text-primary">{player.name}</p>
+            <p className="mb-12 text-sm text-text-muted">
+              Player {playerIndex + 1} of {state.players.length}
+            </p>
+            <button
+              type="button"
+              onClick={() =>
+                dispatch({
+                  type: "ACKNOWLEDGE_NIGHT",
+                  playerIndex,
+                })
+              }
+              className="px-10 py-4 bg-btn-primary text-text-primary font-heading text-xl rounded-[var(--radius-button)] shadow-[var(--shadow-button)] hover:bg-btn-primary-hover active:shadow-none active:translate-y-[2px] transition-all duration-[var(--transition-fast)] cursor-pointer"
+            >
+              I&apos;m Ready
+            </button>
+          </div>
         </div>
-      </div>
+      </ViewportOverlay>
     );
   }
 
   // Role reveal
   if (state.phase === GamePhase.NightReveal) {
     const info = getNightInfo(state, playerIndex);
-    const roleImage = getRoleImage(player.role, playerIndex);
+    const roleImage = getRoleImage(player.role, playerIndex, optimizedRoleAssets);
 
     const roleLabel =
       player.role === Role.Hitler ? "HITLER" : player.role === Role.Fascist ? "FASCIST" : "LIBERAL";
@@ -103,7 +131,7 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
             ].join(" ")}
           >
             <img
-              src={roleImage.src}
+              src={roleImage}
               alt={`${roleLabel} role card`}
               className="w-full h-auto block"
               draggable={false}

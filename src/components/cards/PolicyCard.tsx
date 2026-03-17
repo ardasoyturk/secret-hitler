@@ -8,6 +8,7 @@
 import policyFascistImg from "@assets/cards/policy-fascist.png";
 import policyLiberalImg from "@assets/cards/policy-liberal.png";
 import policyBackImg from "@assets/cards/policy-folder-cover-back.png";
+import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 
 const SIZE_CLASSES = {
   sm: "w-[60px]",
@@ -35,7 +36,12 @@ export function PolicyCard({
   const isClickable = !!onClick;
 
   const policyImg = type === "fascist" ? policyFascistImg : policyLiberalImg;
-  const imgSrc = revealed ? policyImg.src : policyBackImg.src;
+  const revealedSrc = useOptimizedAsset(
+    type === "fascist" ? "cards/policy-fascist.png" : "cards/policy-liberal.png",
+    policyImg.src,
+  );
+  const backSrc = useOptimizedAsset("cards/policy-folder-cover-back.png", policyBackImg.src);
+  const imgSrc = revealed ? revealedSrc : backSrc;
   const altText = revealed ? `${type} policy` : "Policy card (face down)";
 
   return (

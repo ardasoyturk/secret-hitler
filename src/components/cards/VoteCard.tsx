@@ -6,6 +6,7 @@
 
 import voteYesImg from "@assets/votes/vote-yes.png";
 import voteNoImg from "@assets/votes/vote-no.png";
+import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 
 const SIZE_CLASSES = {
   sm: "w-[80px]",
@@ -28,7 +29,9 @@ export function VoteCard({
   disabled = false,
   className = "",
 }: VoteCardProps) {
-  const imgSrc = vote === "ja" ? voteYesImg.src : voteNoImg.src;
+  const yesSrc = useOptimizedAsset("votes/vote-yes.png", voteYesImg.src);
+  const noSrc = useOptimizedAsset("votes/vote-no.png", voteNoImg.src);
+  const imgSrc = vote === "ja" ? yesSrc : noSrc;
   const altText = vote === "ja" ? "Ja! (Yes)" : "Nein! (No)";
 
   return (

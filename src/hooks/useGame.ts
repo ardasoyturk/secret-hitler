@@ -125,7 +125,10 @@ export function getNightInfo(
 				p.id !== player.id &&
 				(p.role === Role.Fascist || p.role === Role.Hitler),
 		)
-		.map((p) => `${p.name}${p.role === Role.Hitler ? " (Hitler)" : ""}`);
+		.map(
+			(p) =>
+				`${p.name}${p.role === Role.Hitler ? " (Hitler)" : " (Fascist)"}`,
+		);
 
 	return { teammates, isHitler: false, knowsFascists: true };
 }

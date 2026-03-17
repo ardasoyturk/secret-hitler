@@ -19,7 +19,7 @@ export function VetoScreen({ state, dispatch }: ScreenProps) {
   if (!president || !chancellor) return null;
 
   return (
-    <div className="mx-auto flex h-full w-full max-w-4xl flex-col items-center justify-center gap-6">
+    <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 px-1 py-3 md:gap-7 md:py-5">
       <div className="text-center slide-up">
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
           Veto Requested
@@ -43,7 +43,7 @@ export function VetoScreen({ state, dispatch }: ScreenProps) {
         </p>
       </div>
 
-      <div className="w-full max-w-2xl space-y-3">
+      <div className="phase-action-bar max-w-2xl space-y-3">
         <button
           type="button"
           onClick={() => dispatch({ type: "APPROVE_VETO" })}

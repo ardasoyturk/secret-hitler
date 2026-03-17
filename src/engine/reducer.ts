@@ -622,10 +622,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 			if (state.phase !== GamePhase.VetoRequested) return state;
 
 			// Both policies are discarded, election tracker advances
-			const discardedDeck = state.chancellorHand.reduce(
-				(d, policy) => discardPolicy(d, policy),
-				state.deck,
-			);
+			let discardedDeck = state.deck;
+			for (const policy of state.chancellorHand) {
+				discardedDeck = discardPolicy(discardedDeck, policy);
+			}
 
 			const newFailedElections =
 				state.electionTracker.failedElections + 1;

@@ -26,7 +26,7 @@ export function PolicyEnactedScreen({ state, dispatch }: ScreenProps) {
   const bgAccent = isLiberal ? "bg-liberal-deep/20" : "bg-fascist-deep/20";
 
   return (
-    <div className="mx-auto flex h-full w-full max-w-4xl flex-col items-center justify-center gap-5">
+    <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-5 px-1 py-3 md:gap-6 md:py-5">
       {isChaos && (
         <div className="text-center flex-shrink-0 slide-up">
           <h3 className="mb-1 font-heading text-2xl text-fascist">The Country Is in Chaos!</h3>
@@ -83,17 +83,19 @@ export function PolicyEnactedScreen({ state, dispatch }: ScreenProps) {
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={() =>
-          dispatch({
-            type: isChaos ? "ACKNOWLEDGE_CHAOS" : "ACKNOWLEDGE_POLICY",
-          })
-        }
-        className="flex-shrink-0 w-full max-w-2xl rounded-[18px] bg-fascist py-3 font-heading text-xl text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] hover:bg-fascist-hover active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)] cursor-pointer"
-      >
-        Continue
-      </button>
+      <div className="phase-action-bar max-w-2xl">
+        <button
+          type="button"
+          onClick={() =>
+            dispatch({
+              type: isChaos ? "ACKNOWLEDGE_CHAOS" : "ACKNOWLEDGE_POLICY",
+            })
+          }
+          className="flex-shrink-0 w-full rounded-[18px] bg-fascist py-3 font-heading text-xl text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] hover:bg-fascist-hover active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)] cursor-pointer"
+        >
+          Continue
+        </button>
+      </div>
     </div>
   );
 }

@@ -10,6 +10,7 @@ import victoryFascistHeader from "@assets/victory/victory-fascist-header.png";
 import victoryFascistFooter from "@assets/victory/victory-fascist-footer.png";
 import victoryLiberalHeader from "@assets/victory/victory-liberal-header.png";
 import victoryLiberalFooter from "@assets/victory/victory-liberal-footer.png";
+import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 
 import portrait1 from "@assets/portraits/player-portrait-1.svg";
 import portrait2 from "@assets/portraits/player-portrait-2.svg";
@@ -92,12 +93,28 @@ interface ScreenProps {
 export function GameOverScreen({ state, dispatch }: ScreenProps) {
   const winner = state.winner;
   const reason = state.victoryReason;
+  const liberalHeaderSrc = useOptimizedAsset(
+    "victory/victory-liberal-header.png",
+    victoryLiberalHeader.src,
+  );
+  const liberalFooterSrc = useOptimizedAsset(
+    "victory/victory-liberal-footer.png",
+    victoryLiberalFooter.src,
+  );
+  const fascistHeaderSrc = useOptimizedAsset(
+    "victory/victory-fascist-header.png",
+    victoryFascistHeader.src,
+  );
+  const fascistFooterSrc = useOptimizedAsset(
+    "victory/victory-fascist-footer.png",
+    victoryFascistFooter.src,
+  );
 
   if (!winner || !reason) return null;
 
   const isLiberalWin = winner === Team.Liberal;
-  const headerImg = isLiberalWin ? victoryLiberalHeader : victoryFascistHeader;
-  const footerImg = isLiberalWin ? victoryLiberalFooter : victoryFascistFooter;
+  const headerImg = isLiberalWin ? liberalHeaderSrc : fascistHeaderSrc;
+  const footerImg = isLiberalWin ? liberalFooterSrc : fascistFooterSrc;
   const teamColor = isLiberalWin ? "text-liberal" : "text-fascist";
   const glowClass = isLiberalWin ? "glow-liberal" : "glow-fascist";
 
@@ -120,7 +137,7 @@ export function GameOverScreen({ state, dispatch }: ScreenProps) {
       {/* Victory header image */}
       <div className={["w-full max-w-md mx-auto flex-shrink-0 stamp mb-3", glowClass].join(" ")}>
         <img
-          src={headerImg.src}
+          src={headerImg}
           alt={`${winner} victory`}
           className="w-full h-auto block rounded-t-[var(--radius-card)]"
           draggable={false}
@@ -218,7 +235,7 @@ export function GameOverScreen({ state, dispatch }: ScreenProps) {
       {/* Victory footer image */}
       <div className="w-full max-w-md mx-auto flex-shrink-0 mb-3">
         <img
-          src={footerImg.src}
+          src={footerImg}
           alt=""
           className="w-full h-auto block rounded-b-[var(--radius-card)] opacity-80"
           draggable={false}

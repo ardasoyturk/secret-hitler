@@ -14,6 +14,7 @@ import { useState } from "react";
 import type { GameState, GameAction } from "@engine/types";
 import { GamePhase, Vote } from "@engine/types";
 import { VoteCard } from "@components/cards/VoteCard";
+import { ViewportOverlay } from "@components/layout/ViewportOverlay";
 
 import portrait1 from "@assets/portraits/player-portrait-1.svg";
 import portrait2 from "@assets/portraits/player-portrait-2.svg";
@@ -50,20 +51,22 @@ interface ScreenProps {
 
 function PrivacyGate({ playerName, onReady }: { playerName: string; onReady: () => void }) {
   return (
-    <div className="privacy-screen">
-      <div className="gameplay-panel w-full max-w-xl px-8 py-10 text-center">
-        <h2 className="mb-4 font-heading text-4xl text-gold">Pass the Device</h2>
-        <p className="mb-1 text-base text-text-secondary">Hand the device to</p>
-        <p className="mb-10 font-heading text-5xl text-text-primary">{playerName}</p>
-        <button
-          type="button"
-          onClick={onReady}
-          className="px-10 py-4 bg-btn-primary text-text-primary font-heading text-xl rounded-[var(--radius-button)] shadow-[var(--shadow-button)] hover:bg-btn-primary-hover active:shadow-none active:translate-y-[2px] transition-all duration-[var(--transition-fast)] cursor-pointer"
-        >
-          I&apos;m Ready
-        </button>
+    <ViewportOverlay>
+      <div className="privacy-screen">
+        <div className="privacy-dialog text-center">
+          <h2 className="mb-4 font-heading text-4xl text-gold">Pass the Device</h2>
+          <p className="mb-1 text-base text-text-secondary">Hand the device to</p>
+          <p className="mb-10 font-heading text-5xl text-text-primary">{playerName}</p>
+          <button
+            type="button"
+            onClick={onReady}
+            className="px-10 py-4 bg-btn-primary text-text-primary font-heading text-xl rounded-[var(--radius-button)] shadow-[var(--shadow-button)] hover:bg-btn-primary-hover active:shadow-none active:translate-y-[2px] transition-all duration-[var(--transition-fast)] cursor-pointer"
+          >
+            I&apos;m Ready
+          </button>
+        </div>
       </div>
-    </div>
+    </ViewportOverlay>
   );
 }
 
@@ -125,7 +128,7 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
     const passed = jaCount > neinCount;
 
     return (
-      <div className="mx-auto flex h-full w-full max-w-5xl flex-col gap-4">
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-1 py-3 md:gap-5 md:py-5">
         <div className="text-center flex-shrink-0 slide-up">
           <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Election Result
@@ -213,13 +216,15 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
         )}
 
         {/* Continue button */}
-        <button
-          type="button"
-          onClick={() => dispatch({ type: "ACKNOWLEDGE_VOTE_RESULT" })}
-          className="flex-shrink-0 w-full rounded-[18px] bg-fascist py-3 font-heading text-xl text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] hover:bg-fascist-hover active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)] cursor-pointer"
-        >
-          Continue
-        </button>
+        <div className="phase-action-bar">
+          <button
+            type="button"
+            onClick={() => dispatch({ type: "ACKNOWLEDGE_VOTE_RESULT" })}
+            className="flex-shrink-0 w-full rounded-[18px] bg-fascist py-3 font-heading text-xl text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] hover:bg-fascist-hover active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)] cursor-pointer"
+          >
+            Continue
+          </button>
+        </div>
       </div>
     );
   }
@@ -250,7 +255,7 @@ function VoteCastView({
   }
 
   return (
-    <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center justify-center gap-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-6 px-1 py-3 md:gap-7 md:py-5">
       <div className="text-center slide-up">
         <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
           {voter.name}&apos;s Vote
@@ -268,7 +273,7 @@ function VoteCastView({
         </p>
       </div>
 
-      <div className="flex w-full items-center justify-center gap-8 md:gap-12">
+      <div className="flex w-full flex-wrap items-center justify-center gap-6 md:gap-10">
         <VoteCard vote="ja" size="lg" onClick={() => handleVote(Vote.Ja)} />
         <VoteCard vote="nein" size="lg" onClick={() => handleVote(Vote.Nein)} />
       </div>

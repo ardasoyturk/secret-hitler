@@ -14,6 +14,7 @@ import { useState } from "react";
 import type { GameState, GameAction } from "@engine/types";
 import { GamePhase } from "@engine/types";
 import { PolicyCard } from "@components/cards/PolicyCard";
+import { ViewportOverlay } from "@components/layout/ViewportOverlay";
 
 interface ScreenProps {
   state: GameState;
@@ -22,28 +23,30 @@ interface ScreenProps {
 
 function PrivacyGate({
   playerName,
-  role,
+  officeLabel,
   onReady,
 }: {
   playerName: string;
-  role: string;
+  officeLabel: string;
   onReady: () => void;
 }) {
   return (
-    <div className="privacy-screen">
-      <div className="gameplay-panel w-full max-w-xl px-8 py-10 text-center">
-        <h2 className="mb-4 font-heading text-4xl text-gold">Pass the Device</h2>
-        <p className="mb-1 text-base text-text-secondary">Hand the device to the {role}</p>
-        <p className="mb-10 font-heading text-5xl text-text-primary">{playerName}</p>
-        <button
-          type="button"
-          onClick={onReady}
-          className="px-10 py-4 bg-btn-primary text-text-primary font-heading text-xl rounded-[var(--radius-button)] shadow-[var(--shadow-button)] hover:bg-btn-primary-hover active:shadow-none active:translate-y-[2px] transition-all duration-[var(--transition-fast)] cursor-pointer"
-        >
-          I&apos;m Ready
-        </button>
+    <ViewportOverlay>
+      <div className="privacy-screen">
+        <div className="privacy-dialog text-center">
+          <h2 className="mb-4 font-heading text-4xl text-gold">Pass the Device</h2>
+          <p className="mb-1 text-base text-text-secondary">Hand the device to the {officeLabel}</p>
+          <p className="mb-10 font-heading text-5xl text-text-primary">{playerName}</p>
+          <button
+            type="button"
+            onClick={onReady}
+            className="px-10 py-4 bg-btn-primary text-text-primary font-heading text-xl rounded-[var(--radius-button)] shadow-[var(--shadow-button)] hover:bg-btn-primary-hover active:shadow-none active:translate-y-[2px] transition-all duration-[var(--transition-fast)] cursor-pointer"
+          >
+            I&apos;m Ready
+          </button>
+        </div>
       </div>
-    </div>
+    </ViewportOverlay>
   );
 }
 
@@ -62,7 +65,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
       return (
         <PrivacyGate
           playerName={president.name}
-          role="President"
+          officeLabel="President"
           onReady={() => {
             setShowPrivacy(false);
             setSelectedIndex(null);
@@ -72,7 +75,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
     }
 
     return (
-      <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center justify-center gap-5">
+      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:gap-6 md:py-5">
         <div className="text-center flex-shrink-0 slide-up">
           <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Legislative Session
@@ -85,7 +88,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
           </p>
         </div>
 
-        <div className="flex w-full max-w-3xl items-start justify-center gap-3 md:gap-4">
+        <div className="flex w-full max-w-3xl flex-wrap items-start justify-center gap-3 md:gap-4">
           {state.presidentHand.map((policy, index) => (
             <div key={index} className="flex flex-col items-center gap-2">
               <PolicyCard
@@ -104,25 +107,27 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
         </div>
 
         {/* Confirm discard */}
-        <button
-          type="button"
-          onClick={() => {
-            if (selectedIndex !== null) {
-              dispatch({ type: "PRESIDENT_DISCARD", policyIndex: selectedIndex });
-              setShowPrivacy(true);
-              setSelectedIndex(null);
-            }
-          }}
-          disabled={selectedIndex === null}
-          className={[
-            "flex-shrink-0 w-full max-w-2xl rounded-[18px] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
-            selectedIndex !== null
-              ? "bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] cursor-pointer"
-              : "bg-btn-disabled text-text-muted cursor-not-allowed",
-          ].join(" ")}
-        >
-          {selectedIndex !== null ? "Discard Selected Policy" : "Tap a Policy to Discard"}
-        </button>
+        <div className="phase-action-bar max-w-2xl">
+          <button
+            type="button"
+            onClick={() => {
+              if (selectedIndex !== null) {
+                dispatch({ type: "PRESIDENT_DISCARD", policyIndex: selectedIndex });
+                setShowPrivacy(true);
+                setSelectedIndex(null);
+              }
+            }}
+            disabled={selectedIndex === null}
+            className={[
+              "flex-shrink-0 w-full rounded-[18px] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
+              selectedIndex !== null
+                ? "bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] cursor-pointer"
+                : "bg-btn-disabled text-text-muted cursor-not-allowed",
+            ].join(" ")}
+          >
+            {selectedIndex !== null ? "Discard Selected Policy" : "Tap a Policy to Discard"}
+          </button>
+        </div>
       </div>
     );
   }
@@ -135,7 +140,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
       return (
         <PrivacyGate
           playerName={chancellor.name}
-          role="Chancellor"
+          officeLabel="Chancellor"
           onReady={() => {
             setShowPrivacy(false);
             setSelectedIndex(null);
@@ -145,7 +150,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
     }
 
     return (
-      <div className="mx-auto flex h-full w-full max-w-5xl flex-col items-center justify-center gap-5">
+      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:gap-6 md:py-5">
         <div className="text-center flex-shrink-0 slide-up">
           <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-text-muted">
             Legislative Session
@@ -157,7 +162,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
           </p>
         </div>
 
-        <div className="flex w-full max-w-2xl items-start justify-center gap-4 md:gap-6">
+        <div className="flex w-full max-w-2xl flex-wrap items-start justify-center gap-4 md:gap-6">
           {state.chancellorHand.map((policy, index) => (
             <div key={index} className="flex flex-col items-center gap-2">
               <PolicyCard
@@ -175,7 +180,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
           ))}
         </div>
 
-        <div className="flex-shrink-0 w-full max-w-2xl space-y-3">
+        <div className="phase-action-bar max-w-2xl space-y-3">
           <button
             type="button"
             onClick={() => {
