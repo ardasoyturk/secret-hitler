@@ -4,6 +4,8 @@ import react from "@astrojs/react";
 import AstroPWA from "@vite-pwa/astro";
 import tailwindcss from "@tailwindcss/vite";
 
+import cloudflare from "@astrojs/cloudflare";
+
 // https://astro.build/config
 export default defineConfig({
   integrations: [
@@ -48,11 +50,14 @@ export default defineConfig({
       },
     }),
   ],
+
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: ["react", "react-dom", "react-dom/client"],
     },
   },
+
   output: "static",
+  adapter: cloudflare(),
 });
