@@ -331,6 +331,22 @@ h3 {
   backdrop-filter: blur(14px);
 }
 
+.privacy-title {
+  @apply mb-4 font-heading text-4xl text-gold;
+}
+
+.privacy-subtitle {
+  @apply mb-1 text-base text-text-secondary;
+}
+
+.privacy-name {
+  @apply mb-10 font-heading text-5xl text-text-primary;
+}
+
+.primary-action-button {
+  @apply rounded-[var(--radius-button)] bg-btn-primary px-10 py-4 font-heading text-xl text-text-primary shadow-[var(--shadow-button)] transition-all duration-[var(--transition-fast)] cursor-pointer hover:bg-btn-primary-hover active:translate-y-[2px] active:shadow-none;
+}
+
 .phase-action-bar {
   position: sticky;
   bottom: 0;
@@ -339,6 +355,62 @@ h3 {
   padding-bottom: 0.25rem;
   background:
     linear-gradient(180deg, rgba(49, 35, 26, 0), rgba(49, 35, 26, 0.92) 34%, rgba(49, 35, 26, 0.98));
+}
+
+.night-role-description {
+  @apply mx-auto text-sm font-body text-text-secondary;
+}
+
+.night-role-note {
+  @apply mx-auto text-sm font-flavor italic text-text-muted;
+}
+
+.night-team-card {
+  @apply mx-auto w-full max-w-sm rounded-[var(--radius-card)] border p-4 text-left shadow-[var(--shadow-card)];
+}
+
+.night-team-card-fascist {
+  @apply border-fascist/30 bg-fascist/8;
+}
+
+.night-team-card-hitler {
+  @apply border-gold/30 bg-gold/8;
+}
+
+.night-team-card-title {
+  @apply mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest;
+}
+
+.night-team-list {
+  @apply space-y-2;
+}
+
+.night-team-member {
+  @apply flex items-center justify-between gap-3 rounded-xl border border-white/8 bg-black/18 px-3 py-2;
+}
+
+.night-team-member-name {
+  @apply font-heading text-lg text-text-primary;
+}
+
+.night-team-member-badge {
+  @apply inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em];
+}
+
+.night-team-member-badge-fascist {
+  @apply border-fascist/35 bg-fascist/12 text-fascist;
+}
+
+.night-team-member-badge-hitler {
+  @apply border-gold/35 bg-gold/12 text-gold;
+}
+
+.home-credit-card {
+  @apply mx-auto mt-4 w-full max-w-5xl rounded-[18px] border border-white/8 bg-black/18 px-4 py-3 text-center text-xs leading-6 text-text-muted md:px-5;
+}
+
+.home-credit-link {
+  @apply text-gold underline-offset-2 transition-colors hover:text-gold/80 hover:underline;
 }
 
 /* Scale pop */

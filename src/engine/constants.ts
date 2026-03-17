@@ -31,12 +31,6 @@ export const MIN_FASCIST_POLICIES_FOR_HITLER_CHANCELLOR_WIN = 3;
 // ─── Elections ──────────────────────────────────────────────────────
 
 /**
- * Voting requires a strict majority (>50%).
- * Ties fail. We use > rather than >= to enforce strict majority.
- */
-export const VOTING_STRICT_MAJORITY = true;
-
-/**
  * After 3 consecutive failed elections, the top policy is
  * enacted automatically ("chaos"). The election tracker resets,
  * all term limits are cleared, and any executive power is skipped.

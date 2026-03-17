@@ -1,6 +1,6 @@
 # Secret Hitler — Pass & Play Edition
 
-A single-device, pass-and-play implementation of the [Secret Hitler](https://secrethitler.com) board game for 5–10 players. Built as a fully offline Progressive Web App.
+A single-device, pass-and-play implementation of the [Secret Hitler](https://secrethitler.com) board game for 5–10 players. The current app is built as a tablet-first Astro + React Progressive Web App with offline caching, install support, optimized assets, and a rules-accurate engine.
 
 ## Play
 
@@ -10,6 +10,16 @@ bun run dev
 ```
 
 Open [http://localhost:4321](http://localhost:4321) in your browser.
+
+For a production-like PWA build:
+
+```bash
+bun run build
+bun run preview
+```
+
+Then open the preview URL and install the app from the browser UI.
+`bun run dev` is for UI iteration; install/offline behavior should be verified in preview or production builds.
 
 ## Rules
 
@@ -28,9 +38,14 @@ This implementation is faithful to the official Secret Hitler rules:
 ## Features
 
 - **Pass-and-play** — one device, pass it around the table
+- **Tablet-first gameplay shell** — fixed board rail with a scrollable action area for mixed tablet sizes
 - **Privacy gates** — role reveals and votes are hidden behind "hand the device to…" screens
-- **Offline-capable** — installable as a PWA, works without internet after first load
+- **Offline-capable PWA** — installable, aggressively cached, works without internet after first load
 - **Game persistence** — saves to localStorage, survives page refresh
+- **Optimized media pipeline** — Astro converts image assets to modern formats for production
+- **SVG-aligned boards** — liberal and fascist policy placement is driven by SVG board geometry
+- **Touch-first setup flow** — larger player cards with drag-and-drop reordering
+- **Lean asset footprint** — unused legacy assets and components were removed from the codebase
 - **20 player portraits** — each player picks a unique portrait
 - **Colored player borders** — visually distinct at table distance
 - **Rules-accurate engine** — 108 unit tests covering all game logic
@@ -42,6 +57,7 @@ This implementation is faithful to the official Secret Hitler rules:
 | Framework  | Astro 6 + React 19 |
 | Language   | TypeScript         |
 | Styling    | Tailwind CSS v4    |
+| PWA        | `@vite-pwa/astro`  |
 | Runtime    | Bun                |
 | Linting    | oxlint             |
 | Formatting | oxfmt              |
@@ -64,13 +80,13 @@ This implementation is faithful to the official Secret Hitler rules:
 
 ```
 secret-hitler/
-├── public/              # Static assets (icons, manifest, SW)
+├── public/              # Static assets (favicons, install icons)
 ├── src/
-│   ├── assets/          # Game images (boards, cards, portraits, etc.)
+│   ├── assets/          # Active game images (boards, cards, portraits, etc.)
 │   ├── components/
-│   │   ├── cards/       # PolicyCard, VoteCard, RoleCard, PartyCard
+│   │   ├── cards/       # PolicyCard, VoteCard, PartyCard
 │   │   ├── game/        # Game orchestrator
-│   │   ├── layout/      # PlayerBadge, PlayerCircle, BoardTrack, Header
+│   │   ├── layout/      # BoardTrack, Header, viewport overlay helpers
 │   │   └── screens/     # Setup, Night, Nomination, Voting, Legislative,
 │   │                    #   PolicyEnacted, Executive, Veto, GameOver
 │   ├── engine/          # Pure TypeScript rules engine
@@ -87,6 +103,8 @@ secret-hitler/
 │   └── styles/          # global.css (Tailwind v4 theme)
 └── tests/               # 108 unit tests
 ```
+
+`manifest.webmanifest` and `sw.js` are generated at build time by `@vite-pwa/astro`, and the service-worker registration code is bundled into the Astro client output.
 
 ## License
 

@@ -21,7 +21,7 @@ interface PersistedData {
 /**
  * Save game state to localStorage.
  */
-export function saveGameState(state: GameState): void {
+function saveGameState(state: GameState): void {
 	try {
 		const data: PersistedData = {
 			version: SCHEMA_VERSION,
@@ -95,11 +95,4 @@ export function useGamePersistence(state: GameState): void {
 			clearGameState();
 		}
 	}, [state]);
-}
-
-/**
- * Check if there is a saved game.
- */
-export function hasSavedGame(): boolean {
-	return loadGameState() !== null;
 }

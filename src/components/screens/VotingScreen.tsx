@@ -54,13 +54,13 @@ function PrivacyGate({ playerName, onReady }: { playerName: string; onReady: () 
     <ViewportOverlay>
       <div className="privacy-screen">
         <div className="privacy-dialog text-center">
-          <h2 className="mb-4 font-heading text-4xl text-gold">Pass the Device</h2>
-          <p className="mb-1 text-base text-text-secondary">Hand the device to</p>
-          <p className="mb-10 font-heading text-5xl text-text-primary">{playerName}</p>
+          <h2 className="privacy-title">Pass the Device</h2>
+          <p className="privacy-subtitle">Hand the device to</p>
+          <p className="privacy-name">{playerName}</p>
           <button
             type="button"
             onClick={onReady}
-            className="px-10 py-4 bg-btn-primary text-text-primary font-heading text-xl rounded-[var(--radius-button)] shadow-[var(--shadow-button)] hover:bg-btn-primary-hover active:shadow-none active:translate-y-[2px] transition-all duration-[var(--transition-fast)] cursor-pointer"
+            className="primary-action-button"
           >
             I&apos;m Ready
           </button>

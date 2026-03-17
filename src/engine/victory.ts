@@ -19,7 +19,7 @@ import {
 } from "./constants";
 import { Role, Team, VictoryReason, type Board, type Player } from "./types";
 
-export interface VictoryCheck {
+interface VictoryCheck {
   isGameOver: boolean;
   winner: Team | null;
   reason: VictoryReason | null;

@@ -9,6 +9,7 @@ export default defineConfig({
   integrations: [
     react(),
     AstroPWA({
+      injectRegister: null,
       registerType: "autoUpdate",
       manifest: {
         name: "Secret Hitler - Pass & Play",
@@ -40,7 +41,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,svg,webp,png,ico,json}"],
+        globPatterns: ["**/*.{js,css,html,svg,webp,png,ico,json,webmanifest,woff,woff2}"],
       },
       devOptions: {
         enabled: false,

@@ -13,8 +13,7 @@
     "test:watch": "bun test --watch",
     "lint": "oxlint",
     "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check",
-    "check": "astro check"
+    "fmt:check": "oxfmt --check"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.1",

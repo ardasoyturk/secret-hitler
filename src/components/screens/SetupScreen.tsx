@@ -332,6 +332,33 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
             </section>
           </div>
         </div>
+
+        <footer className="home-credit-card">
+          <p>
+            The project is open-source, and is licensed under{" "}
+            <a
+              href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              target="_blank"
+              rel="noreferrer"
+              className="home-credit-link"
+            >
+              CC BY-NC-SA 4.0
+            </a>
+            . You can read more about the project on GitHub.
+          </p>
+          <p>
+            Adapted from the original{" "}
+            <a
+              href="https://secrethitler.com"
+              target="_blank"
+              rel="noreferrer"
+              className="home-credit-link"
+            >
+              Secret Hitler
+            </a>{" "}
+            board game by Goat, Wolf, &amp; Cabbage (c) 2016-2020.
+          </p>
+        </footer>
       </div>
     </div>
   );

@@ -9,6 +9,7 @@
 import type { GameState, GameAction } from "@engine/types";
 import { GamePhase, Role } from "@engine/types";
 import { getNightInfo } from "@/hooks/useGame";
+import { Crown, Shield } from "lucide-react";
 import { ViewportOverlay } from "@components/layout/ViewportOverlay";
 
 import roleFascist1 from "@assets/roles/role-fascist-1.png";
@@ -60,6 +61,16 @@ interface ScreenProps {
   dispatch: (action: GameAction) => void;
 }
 
+function parseTeammateLabel(label: string) {
+  if (label.endsWith(" (Hitler)")) {
+    return { name: label.replace(" (Hitler)", ""), role: "Hitler" as const };
+  }
+  if (label.endsWith(" (Fascist)")) {
+    return { name: label.replace(" (Fascist)", ""), role: "Fascist" as const };
+  }
+  return { name: label, role: "Fascist" as const };
+}
+
 export function NightScreen({ state, dispatch }: ScreenProps) {
   const playerIndex = state.nightRoundPlayerIndex;
   const player = state.players[playerIndex];
@@ -84,9 +95,9 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
       <ViewportOverlay>
         <div className="privacy-screen">
           <div className="privacy-dialog text-center">
-            <h2 className="mb-6 font-heading text-3xl text-gold">Pass the Device</h2>
-            <p className="mb-2 text-lg text-text-secondary">Hand the device to</p>
-            <p className="mb-4 font-heading text-4xl text-text-primary">{player.name}</p>
+            <h2 className="privacy-title mb-6 text-3xl">Pass the Device</h2>
+            <p className="privacy-subtitle mb-2 text-lg">Hand the device to</p>
+            <p className="privacy-name mb-4 text-4xl">{player.name}</p>
             <p className="mb-12 text-sm text-text-muted">
               Player {playerIndex + 1} of {state.players.length}
             </p>
@@ -98,7 +109,7 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
                   playerIndex,
                 })
               }
-              className="px-10 py-4 bg-btn-primary text-text-primary font-heading text-xl rounded-[var(--radius-button)] shadow-[var(--shadow-button)] hover:bg-btn-primary-hover active:shadow-none active:translate-y-[2px] transition-all duration-[var(--transition-fast)] cursor-pointer"
+              className="primary-action-button"
             >
               I&apos;m Ready
             </button>
@@ -139,7 +150,7 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
           </div>
 
           {/* Role declaration */}
-          <p className="text-text-secondary font-body text-sm mb-1 uppercase tracking-widest">
+          <p className="mx-auto mb-1 text-sm font-body uppercase tracking-widest text-text-secondary">
             You are a
           </p>
           <h2
@@ -152,27 +163,50 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 
           {/* Team description */}
           {player.role === Role.Liberal && (
-            <p className="text-text-secondary font-body text-sm max-w-xs mb-8">
+            <p className="night-role-description max-w-xs mb-8">
               You must work to enact 5 Liberal policies or find and execute Hitler. Trust no one.
             </p>
           )}
 
           {player.role === Role.Fascist && (
             <div className="mb-8">
-              <p className="text-text-secondary font-body text-sm max-w-xs mb-4">
+              <p className="night-role-description max-w-xs mb-4">
                 You must sabotage the government and help enact 6 Fascist policies — or get Hitler
                 elected Chancellor after 3 Fascist policies.
               </p>
               {info.teammates.length > 0 && (
-                <div className="bg-bg-card rounded-[var(--radius-card)] p-4 border border-fascist/30">
-                  <p className="text-fascist font-body text-xs uppercase tracking-widest mb-2">
+                <div className="night-team-card night-team-card-fascist">
+                  <p className="night-team-card-title text-fascist">
+                    <Shield className="h-4 w-4" strokeWidth={2.1} />
                     Your Teammates
                   </p>
-                  {info.teammates.map((t) => (
-                    <p key={t} className="font-heading text-lg text-text-primary">
-                      {t}
-                    </p>
-                  ))}
+                  <div className="night-team-list">
+                    {info.teammates.map((teammateLabel) => {
+                      const teammate = parseTeammateLabel(teammateLabel);
+                      const isHitler = teammate.role === "Hitler";
+
+                      return (
+                        <div key={teammateLabel} className="night-team-member">
+                          <span className="night-team-member-name">{teammate.name}</span>
+                          <span
+                            className={[
+                              "night-team-member-badge",
+                              isHitler
+                                ? "night-team-member-badge-hitler"
+                                : "night-team-member-badge-fascist",
+                            ].join(" ")}
+                          >
+                            {isHitler ? (
+                              <Crown className="h-3.5 w-3.5" strokeWidth={2.1} />
+                            ) : (
+                              <Shield className="h-3.5 w-3.5" strokeWidth={2.1} />
+                            )}
+                            {teammate.role}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </div>
@@ -180,23 +214,30 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 
           {player.role === Role.Hitler && (
             <div className="mb-8">
-              <p className="text-text-secondary font-body text-sm max-w-xs mb-4">
+              <p className="night-role-description max-w-xs mb-4">
                 You are on the Fascist team, but you must stay hidden. If you are executed, the
                 Liberals win.
               </p>
               {info.knowsFascists && info.teammates.length > 0 ? (
-                <div className="bg-bg-card rounded-[var(--radius-card)] p-4 border border-fascist/30">
-                  <p className="text-fascist font-body text-xs uppercase tracking-widest mb-2">
+                <div className="night-team-card night-team-card-hitler">
+                  <p className="night-team-card-title text-gold">
+                    <Shield className="h-4 w-4" strokeWidth={2.1} />
                     Your Fascist Ally
                   </p>
-                  {info.teammates.map((t) => (
-                    <p key={t} className="font-heading text-lg text-text-primary">
-                      {t}
-                    </p>
-                  ))}
+                  <div className="night-team-list">
+                    {info.teammates.map((teammateName) => (
+                      <div key={teammateName} className="night-team-member">
+                        <span className="night-team-member-name">{teammateName}</span>
+                        <span className="night-team-member-badge night-team-member-badge-fascist">
+                          <Shield className="h-3.5 w-3.5" strokeWidth={2.1} />
+                          Fascist
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ) : (
-                <p className="text-text-muted font-flavor text-sm italic">
+                <p className="night-role-note max-w-sm">
                   You do not know who the other Fascists are.
                 </p>
               )}
@@ -212,7 +253,7 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
                 playerIndex,
               })
             }
-            className="px-10 py-4 bg-btn-primary text-text-primary font-heading text-xl rounded-[var(--radius-button)] shadow-[var(--shadow-button)] hover:bg-btn-primary-hover active:shadow-none active:translate-y-[2px] transition-all duration-[var(--transition-fast)] cursor-pointer"
+            className="primary-action-button"
           >
             Got It
           </button>

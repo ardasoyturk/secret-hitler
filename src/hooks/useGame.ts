@@ -26,7 +26,7 @@ import { HITLER_KNOWS_FASCISTS_MAX_PLAYERS } from "@engine/constants";
 import type { GameState, GameAction } from "@engine/types";
 import { Role } from "@engine/types";
 
-export interface UseGameReturn {
+interface UseGameReturn {
 	state: GameState;
 	dispatch: (action: GameAction) => void;
 
