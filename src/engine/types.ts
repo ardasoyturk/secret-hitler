@@ -281,6 +281,7 @@ export type GameAction =
   | { type: "ADD_PLAYER"; name: string; portraitIndex: number }
   | { type: "REMOVE_PLAYER"; playerId: number }
   | { type: "REORDER_PLAYER"; playerId: number; direction: "up" | "down" }
+  | { type: "REORDER_PLAYER_TO"; fromPlayerId: number; toPlayerId: number }
   | { type: "START_GAME" }
   | { type: "ACKNOWLEDGE_NIGHT"; playerIndex: number }
   | { type: "NOMINATE_CHANCELLOR"; playerId: number }

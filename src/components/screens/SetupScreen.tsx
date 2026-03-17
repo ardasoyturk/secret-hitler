@@ -1,12 +1,9 @@
-/**
- * SetupScreen — Pre-game lobby.
- *
- * Layout: full dvh, two-column on landscape (form left, player list right).
- * Features: name input, portrait picker, add/remove, reorder (↑↓).
- * Everything fits in the viewport with no outer scroll.
- */
-
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type {
+  KeyboardEvent as ReactKeyboardEvent,
+  PointerEvent as ReactPointerEvent,
+} from "react";
+import { GripVertical, Trash2, UserPlus } from "lucide-react";
 import type { GameState, GameAction } from "@engine/types";
 import { MIN_PLAYERS, MAX_PLAYERS } from "@engine/constants";
 
@@ -60,6 +57,9 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
   const [name, setName] = useState("");
   const [selectedPortrait, setSelectedPortrait] = useState(0);
   const [showPortraitPicker, setShowPortraitPicker] = useState(false);
+  const [draggingPlayerId, setDraggingPlayerId] = useState<number | null>(null);
+  const [dropTargetPlayerId, setDropTargetPlayerId] = useState<number | null>(null);
+  const activePointerIdRef = useRef<number | null>(null);
 
   const playerCount = state.players.length;
   const trimmedName = name.trim();
@@ -80,268 +80,259 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
     setSelectedPortrait(next >= 0 ? next : 0);
   }
 
-  function handleKeyDown(e: React.KeyboardEvent) {
+  function handleKeyDown(e: ReactKeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") handleAddPlayer();
   }
 
+  function beginDrag(playerId: number, event: ReactPointerEvent<HTMLButtonElement>) {
+    if (playerCount < 2) return;
+    event.preventDefault();
+    activePointerIdRef.current = event.pointerId;
+    setDraggingPlayerId(playerId);
+    setDropTargetPlayerId(playerId);
+  }
+
+  useEffect(() => {
+    if (draggingPlayerId === null) return;
+
+    function handlePointerMove(event: PointerEvent) {
+      if (activePointerIdRef.current !== null && event.pointerId !== activePointerIdRef.current) {
+        return;
+      }
+      const element = document.elementFromPoint(event.clientX, event.clientY);
+      const row = element?.closest("[data-player-id]") as HTMLElement | null;
+      if (!row?.dataset.playerId) return;
+      const targetId = Number(row.dataset.playerId);
+      if (Number.isNaN(targetId)) return;
+      setDropTargetPlayerId(targetId);
+    }
+
+    function handlePointerUp(event: PointerEvent) {
+      if (activePointerIdRef.current !== null && event.pointerId !== activePointerIdRef.current) {
+        return;
+      }
+
+      if (
+        draggingPlayerId !== null
+        && dropTargetPlayerId !== null
+        && draggingPlayerId !== dropTargetPlayerId
+      ) {
+        dispatch({
+          type: "REORDER_PLAYER_TO",
+          fromPlayerId: draggingPlayerId,
+          toPlayerId: dropTargetPlayerId,
+        });
+      }
+
+      activePointerIdRef.current = null;
+      setDraggingPlayerId(null);
+      setDropTargetPlayerId(null);
+    }
+
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
+    };
+  }, [dispatch, draggingPlayerId, dropTargetPlayerId]);
+
   return (
-    <div className="h-dvh w-full flex flex-col overflow-hidden bg-bg-darker">
-      {/* ── Title bar ── */}
-      <div className="flex-shrink-0 text-center pt-4 pb-2 px-4">
-        <h1 className="font-heading text-4xl sm:text-5xl text-fascist tracking-wide leading-none">
-          SECRET HITLER
-        </h1>
-        <p className="font-flavor text-text-muted text-xs mt-0.5">Pass &amp; Play Edition</p>
-      </div>
+    <div className="h-dvh w-full overflow-hidden bg-bg-darker">
+      <div className="mx-auto flex h-full w-full max-w-7xl flex-col px-4 pb-4 pt-3 md:px-6 md:pb-6">
+        <div className="flex-shrink-0 text-center">
+          <h1 className="font-heading text-4xl text-fascist tracking-wide leading-none md:text-5xl">
+            SECRET HITLER
+          </h1>
+          <p className="font-flavor text-text-muted text-xs mt-1">Pass &amp; Play Edition</p>
+        </div>
 
-      {/* ── Main content: left form + right player list ── */}
-      <div className="flex-1 flex min-h-0 gap-0">
+        <div className="mt-3 min-h-0 flex-1 overflow-hidden rounded-[24px] border border-gold/15 bg-[linear-gradient(180deg,rgba(43,31,22,0.88),rgba(25,17,12,0.9))] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.34)] md:p-6">
+          <div className="grid h-full min-h-0 gap-4 lg:grid-cols-[minmax(380px,520px)_minmax(260px,1fr)]">
+            <section className="flex min-h-0 flex-col justify-between rounded-[20px] border border-white/8 bg-black/18 px-5 py-5 md:px-6 md:py-6">
+              <div className="space-y-4">
+                <p className="text-center text-[11px] font-semibold uppercase tracking-[0.24em] text-text-muted">
+                  Player Initialization
+                </p>
 
-        {/* Left column: form */}
-        <div className="flex flex-col min-h-0 w-full max-w-sm mx-auto lg:mx-0 px-4 py-2 gap-3 lg:border-r lg:border-white/10">
+                <div className="mx-auto flex w-full max-w-[560px] items-center justify-center gap-3 px-1 md:px-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowPortraitPicker((v) => !v)}
+                    className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-full border-2 border-gold shadow-[0_10px_24px_rgba(0,0,0,0.35)] transition-transform duration-200 hover:scale-[1.03] cursor-pointer"
+                    aria-label="Choose portrait"
+                  >
+                    <img
+                      src={PORTRAITS[selectedPortrait].src}
+                      alt="Selected portrait"
+                      className="h-full w-full object-cover"
+                    />
+                    <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">
+                      Pick
+                    </span>
+                  </button>
 
-          {/* Portrait + Name row */}
-          <div className="flex items-center gap-3">
-            {/* Portrait button */}
-            <button
-              type="button"
-              onClick={() => setShowPortraitPicker((v) => !v)}
-              className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gold flex-shrink-0 hover:border-select-hover transition-colors cursor-pointer"
-              aria-label="Choose portrait"
-            >
-              <img
-                src={PORTRAITS[selectedPortrait].src}
-                alt="Selected portrait"
-                className="w-full h-full object-cover"
-              />
-              <span className="absolute inset-0 flex items-end justify-center pb-0.5 bg-gradient-to-t from-black/60 to-transparent">
-                <span className="text-[9px] font-body font-semibold text-white uppercase tracking-wide">
-                  Pick
-                </span>
-              </span>
-            </button>
-
-            {/* Name input + Add */}
-            <div className="flex-1 flex gap-2">
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Player name"
-                maxLength={20}
-                className="flex-1 bg-bg-card border border-text-muted/30 rounded-lg px-3 py-2.5 text-text-primary font-body text-sm placeholder:text-text-muted focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 transition-colors"
-              />
-              <button
-                type="button"
-                onClick={handleAddPlayer}
-                disabled={!canAdd}
-                className={[
-                  "px-4 py-2.5 rounded-lg font-body font-semibold text-sm transition-all duration-150",
-                  canAdd
-                    ? "bg-fascist text-white shadow-[0_3px_0_var(--color-fascist-dark)] hover:bg-fascist-hover active:shadow-none active:translate-y-[2px] cursor-pointer"
-                    : "bg-btn-disabled text-text-muted cursor-not-allowed",
-                ].join(" ")}
-              >
-                Add
-              </button>
-            </div>
-          </div>
-
-          {/* Validation */}
-          {trimmedName.length > 0 && isDuplicate && (
-            <p className="text-fascist text-xs font-body -mt-1">Name already taken.</p>
-          )}
-
-          {/* Portrait picker grid */}
-          {showPortraitPicker && (
-            <div className="bg-bg-card rounded-xl p-3 border border-text-muted/20 slide-up">
-              <p className="text-text-muted text-[10px] font-body uppercase tracking-wider mb-2">
-                Choose a portrait
-              </p>
-              <div className="grid grid-cols-10 gap-1.5">
-                {PORTRAITS.map((portrait, index) => {
-                  const isUsed = state.players.some((p) => p.portraitIndex === index);
-                  const isSelected = selectedPortrait === index;
-                  return (
+                  <div className="flex flex-1 items-center gap-2.5">
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Player name"
+                      maxLength={20}
+                      className="h-12 flex-1 rounded-xl border border-gold/25 bg-bg-card/80 px-4 text-base text-text-primary placeholder:text-text-muted focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30"
+                    />
                     <button
-                      key={index}
                       type="button"
-                      onClick={() => {
-                        setSelectedPortrait(index);
-                        setShowPortraitPicker(false);
-                      }}
-                      disabled={isUsed}
+                      onClick={handleAddPlayer}
+                      disabled={!canAdd}
                       className={[
-                        "w-full aspect-square rounded-full overflow-hidden border-2 transition-all duration-150",
-                        isSelected && !isUsed
-                          ? "border-gold ring-1 ring-gold/40 scale-110"
-                          : "border-transparent",
-                        isUsed
-                          ? "opacity-30 grayscale cursor-not-allowed"
-                          : "hover:border-text-secondary cursor-pointer hover:scale-105",
+                        "inline-flex h-12 min-w-28 items-center justify-center gap-1.5 rounded-xl px-4 font-semibold text-base transition-all duration-150",
+                        canAdd
+                          ? "bg-gold text-bg-overlay shadow-[0_4px_0_var(--color-gold-dark)] hover:brightness-105 active:translate-y-[2px] active:shadow-[0_2px_0_var(--color-gold-dark)] cursor-pointer"
+                          : "bg-btn-disabled text-bg-dark/55 cursor-not-allowed",
                       ].join(" ")}
                     >
-                      <img src={portrait.src} alt={`Portrait ${index + 1}`} className="w-full h-full object-cover" />
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Player count + Start button */}
-          <div className="mt-auto pt-2 space-y-2">
-            <div className="flex items-center justify-between text-xs font-body">
-              <span className="text-text-muted">
-                {playerCount} / {MIN_PLAYERS}–{MAX_PLAYERS} players
-              </span>
-              {!canStart && playerCount > 0 && playerCount < MIN_PLAYERS && (
-                <span className="text-text-muted">
-                  Need {MIN_PLAYERS - playerCount} more
-                </span>
-              )}
-            </div>
-            <button
-              type="button"
-              onClick={() => dispatch({ type: "START_GAME" })}
-              disabled={!canStart}
-              className={[
-                "w-full py-3 rounded-lg font-heading text-xl tracking-wide transition-all duration-200",
-                canStart
-                  ? "bg-fascist text-white shadow-[0_5px_0_var(--color-fascist-dark)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[3px] cursor-pointer"
-                  : "bg-btn-disabled text-text-muted cursor-not-allowed",
-              ].join(" ")}
-            >
-              {canStart ? "Start Game" : "Start Game"}
-            </button>
-          </div>
-        </div>
-
-        {/* Right column: player list with reorder */}
-        {playerCount > 0 && (
-          <div className="hidden lg:flex flex-col flex-1 min-h-0 px-4 py-2">
-            <p className="text-text-muted text-xs font-body uppercase tracking-wider mb-2 flex-shrink-0">
-              Seating Order (First player becomes first President)
-            </p>
-            <div className="flex-1 overflow-y-auto space-y-1.5 pr-1">
-              {state.players.map((player, idx) => (
-                <div
-                  key={player.id}
-                  className={[
-                    "flex items-center gap-2.5 bg-bg-card rounded-lg px-3 py-2 border-l-4 fade-in",
-                    PLAYER_COLOR_STYLES[player.color] ?? "border-text-muted",
-                  ].join(" ")}
-                >
-                  {/* Seat number */}
-                  <span className="text-text-muted text-xs font-body w-4 text-right flex-shrink-0">
-                    {idx + 1}
-                  </span>
-                  {/* Portrait */}
-                  <img
-                    src={PORTRAITS[player.portraitIndex]?.src}
-                    alt={player.name}
-                    className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                  />
-                  {/* Name */}
-                  <span className="flex-1 font-body font-medium text-text-primary text-sm truncate">
-                    {player.name}
-                  </span>
-                  {/* Reorder buttons */}
-                  <div className="flex flex-col gap-0.5 flex-shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => dispatch({ type: "REORDER_PLAYER", playerId: player.id, direction: "up" })}
-                      disabled={idx === 0}
-                      className="w-5 h-5 flex items-center justify-center rounded text-text-muted hover:text-text-primary disabled:opacity-20 disabled:cursor-not-allowed transition-colors cursor-pointer text-xs leading-none"
-                      aria-label={`Move ${player.name} up`}
-                    >
-                      ▲
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => dispatch({ type: "REORDER_PLAYER", playerId: player.id, direction: "down" })}
-                      disabled={idx === playerCount - 1}
-                      className="w-5 h-5 flex items-center justify-center rounded text-text-muted hover:text-text-primary disabled:opacity-20 disabled:cursor-not-allowed transition-colors cursor-pointer text-xs leading-none"
-                      aria-label={`Move ${player.name} down`}
-                    >
-                      ▼
+                      <UserPlus className="h-4 w-4" strokeWidth={2.2} />
+                      Add
                     </button>
                   </div>
-                  {/* Remove */}
-                  <button
-                    type="button"
-                    onClick={() => dispatch({ type: "REMOVE_PLAYER", playerId: player.id })}
-                    className="text-text-muted hover:text-fascist transition-colors p-0.5 cursor-pointer flex-shrink-0"
-                    aria-label={`Remove ${player.name}`}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5">
-                      <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
-                    </svg>
-                  </button>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
 
-      {/* Mobile player list (below form on small screens) */}
-      {playerCount > 0 && (
-        <div className="lg:hidden flex-shrink-0 px-4 pb-2 max-h-[35vh] overflow-y-auto">
-          <p className="text-text-muted text-[10px] font-body uppercase tracking-wider mb-1.5">
-            Players — tap ▲▼ to reorder
-          </p>
-          <div className="space-y-1">
-            {state.players.map((player, idx) => (
-              <div
-                key={player.id}
-                className={[
-                  "flex items-center gap-2 bg-bg-card rounded-lg px-2.5 py-1.5 border-l-4 fade-in",
-                  PLAYER_COLOR_STYLES[player.color] ?? "border-text-muted",
-                ].join(" ")}
-              >
-                <span className="text-text-muted text-xs w-3.5 text-right flex-shrink-0">{idx + 1}</span>
-                <img
-                  src={PORTRAITS[player.portraitIndex]?.src}
-                  alt={player.name}
-                  className="w-7 h-7 rounded-full object-cover flex-shrink-0"
-                />
-                <span className="flex-1 font-body font-medium text-text-primary text-xs truncate">
-                  {player.name}
-                </span>
-                <div className="flex gap-0.5 flex-shrink-0">
+                {trimmedName.length > 0 && isDuplicate && (
+                  <p className="text-center text-sm text-fascist">Name already taken.</p>
+                )}
+
+                {showPortraitPicker && (
+                  <div className="rounded-xl border border-white/10 bg-black/20 p-3">
+                    <p className="mb-2 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-text-muted">
+                      Choose portrait
+                    </p>
+                    <div className="grid grid-cols-10 gap-1.5">
+                      {PORTRAITS.map((portrait, index) => {
+                        const isUsed = state.players.some((p) => p.portraitIndex === index);
+                        const isSelected = selectedPortrait === index;
+                        return (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => {
+                              setSelectedPortrait(index);
+                              setShowPortraitPicker(false);
+                            }}
+                            disabled={isUsed}
+                            className={[
+                              "aspect-square w-full overflow-hidden rounded-full border-2 transition-all duration-150",
+                              isSelected && !isUsed ? "border-gold scale-110" : "border-transparent",
+                              isUsed ? "opacity-30 grayscale cursor-not-allowed" : "hover:scale-105 cursor-pointer",
+                            ].join(" ")}
+                          >
+                            <img src={portrait.src} alt={`Portrait ${index + 1}`} className="h-full w-full object-cover" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-4">
+                <div className="mb-3 text-center text-sm text-text-muted">
+                  {playerCount} / {MAX_PLAYERS} players
+                  {!canStart && playerCount > 0 && playerCount < MIN_PLAYERS ? ` • Need ${MIN_PLAYERS - playerCount} more` : ""}
+                </div>
+                <div className="flex justify-center">
                   <button
                     type="button"
-                    onClick={() => dispatch({ type: "REORDER_PLAYER", playerId: player.id, direction: "up" })}
-                    disabled={idx === 0}
-                    className="w-5 h-5 flex items-center justify-center rounded text-text-muted hover:text-text-primary disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer text-[10px]"
+                    onClick={() => dispatch({ type: "START_GAME" })}
+                    disabled={!canStart}
+                    className={[
+                      "w-full max-w-sm rounded-[16px] py-3 font-heading text-3xl tracking-[0.04em] transition-all duration-200",
+                      canStart
+                        ? "bg-fascist text-white shadow-[0_6px_0_var(--color-fascist-dark),0_14px_24px_rgba(0,0,0,0.28)] hover:bg-fascist-hover active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-fascist-dark)] cursor-pointer"
+                        : "bg-btn-disabled text-bg-dark/55 cursor-not-allowed",
+                    ].join(" ")}
                   >
-                    ▲
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => dispatch({ type: "REORDER_PLAYER", playerId: player.id, direction: "down" })}
-                    disabled={idx === playerCount - 1}
-                    className="w-5 h-5 flex items-center justify-center rounded text-text-muted hover:text-text-primary disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer text-[10px]"
-                  >
-                    ▼
+                    Start Game
                   </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => dispatch({ type: "REMOVE_PLAYER", playerId: player.id })}
-                  className="text-text-muted hover:text-fascist transition-colors cursor-pointer flex-shrink-0"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5">
-                    <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
-                  </svg>
-                </button>
               </div>
-            ))}
+            </section>
+
+            <section className="flex min-h-0 flex-col rounded-[20px] border border-white/8 bg-black/18 p-4 md:p-5">
+              <div className="mb-2 flex items-center justify-between">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-text-muted">
+                  Seating Order
+                </p>
+                <p className="text-xs text-text-muted">Drag handle to reorder</p>
+              </div>
+
+              {playerCount === 0 ? (
+                <div className="flex flex-1 items-center justify-center rounded-xl border border-dashed border-white/15 text-text-muted">
+                  Add players to begin
+                </div>
+              ) : (
+                <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+                  <div className="space-y-2">
+                    {state.players.map((player, idx) => {
+                      const isDragging = draggingPlayerId === player.id;
+                      const isDropTarget = dropTargetPlayerId === player.id && draggingPlayerId !== null;
+
+                      return (
+                        <div
+                          key={player.id}
+                          data-player-id={player.id}
+                          className={[
+                            "fade-in flex items-center gap-3 rounded-xl border border-white/8 bg-bg-card/70 px-3 py-3 shadow-[0_10px_16px_rgba(0,0,0,0.18)] transition-all",
+                            PLAYER_COLOR_STYLES[player.color] ?? "border-text-muted",
+                            isDragging ? "scale-[1.01] ring-2 ring-gold/50 opacity-85" : "",
+                            isDropTarget ? "ring-2 ring-liberal/50" : "",
+                          ].join(" ")}
+                        >
+                          <span className="w-6 text-right text-sm font-semibold text-text-muted">{idx + 1}</span>
+
+                          <img
+                            src={PORTRAITS[player.portraitIndex]?.src}
+                            alt={player.name}
+                            className="h-14 w-14 rounded-full object-cover ring-2 ring-white/20"
+                          />
+
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-lg font-semibold text-text-primary">{player.name}</p>
+                            <p className="text-xs uppercase tracking-[0.16em] text-text-muted">Player</p>
+                          </div>
+
+                          <button
+                            type="button"
+                            onPointerDown={(event) => beginDrag(player.id, event)}
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gold/35 bg-black/25 text-gold touch-none cursor-grab active:cursor-grabbing"
+                            aria-label={`Drag to move ${player.name}`}
+                            title="Drag to reorder"
+                          >
+                            <GripVertical className="h-5 w-5" strokeWidth={2.2} />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => dispatch({ type: "REMOVE_PLAYER", playerId: player.id })}
+                            className="rounded-md p-2 text-text-muted transition-colors hover:text-fascist cursor-pointer"
+                            aria-label={`Remove ${player.name}`}
+                          >
+                            <Trash2 className="h-4 w-4" strokeWidth={2.1} />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </section>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

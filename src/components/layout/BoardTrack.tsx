@@ -21,17 +21,17 @@ import boardFascist910Raw from "@assets/boards/board-fascist-9-10.svg?raw";
 
 type AssetRef = string | { src: string };
 
-type SlotRect = {
+interface SlotRect {
   x: number;
   y: number;
   width: number;
   height: number;
-};
+}
 
-type SvgLayout = {
+interface SvgLayout {
   policySlots: SlotRect[];
   trackerSlots: SlotRect[];
-};
+}
 
 const POLICY_SLOT_SIZE = { width: 194.3, height: 268 };
 const TRACKER_SLOT_SIZE = { width: 42, height: 46 };
@@ -62,7 +62,7 @@ function parseSvgLayout(svgRaw: string): SvgLayout {
 
   const [, , viewWidth, viewHeight] = viewBox;
   const rectPattern = /<rect\b([^>]*)\/?>/g;
-  const rects: Array<{ x: number; y: number; width: number; height: number }> = [];
+  const rects: { x: number; y: number; width: number; height: number }[] = [];
 
   let match = rectPattern.exec(svgRaw);
   while (match) {

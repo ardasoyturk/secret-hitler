@@ -223,6 +223,31 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 			return { ...state, players: reordered };
 		}
 
+		case "REORDER_PLAYER_TO": {
+			if (state.phase !== GamePhase.Setup) return state;
+			const fromIndex = state.players.findIndex(
+				(p) => p.id === action.fromPlayerId,
+			);
+			const toIndex = state.players.findIndex(
+				(p) => p.id === action.toPlayerId,
+			);
+			if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) {
+				return state;
+			}
+
+			const reorderedPlayers = [...state.players];
+			const [moved] = reorderedPlayers.splice(fromIndex, 1);
+			reorderedPlayers.splice(toIndex, 0, moved);
+
+			const normalizedPlayers = reorderedPlayers.map((p, i) => ({
+				...p,
+				id: i,
+				color: PLAYER_COLORS[i % PLAYER_COLORS.length],
+			}));
+
+			return { ...state, players: normalizedPlayers };
+		}
+
 		case "START_GAME": {
 			if (state.phase !== GamePhase.Setup) return state;
 			if (state.players.length < MIN_PLAYERS) return state;

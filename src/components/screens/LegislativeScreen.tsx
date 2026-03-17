@@ -85,7 +85,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
           </p>
         </div>
 
-        <div className="grid w-full max-w-4xl grid-cols-3 place-items-center gap-4 md:gap-8">
+        <div className="flex w-full max-w-3xl items-start justify-center gap-3 md:gap-4">
           {state.presidentHand.map((policy, index) => (
             <div key={index} className="flex flex-col items-center gap-2">
               <PolicyCard
@@ -157,7 +157,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
           </p>
         </div>
 
-        <div className="grid w-full max-w-3xl grid-cols-2 place-items-center gap-6 md:gap-10">
+        <div className="flex w-full max-w-2xl items-start justify-center gap-4 md:gap-6">
           {state.chancellorHand.map((policy, index) => (
             <div key={index} className="flex flex-col items-center gap-2">
               <PolicyCard
