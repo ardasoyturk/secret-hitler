@@ -8,14 +8,17 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "bun run build && wrangler dev",
     "test": "bun test",
     "test:watch": "bun test --watch",
     "lint": "oxlint",
     "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check"
+    "fmt:check": "oxfmt --check",
+    "generate-types": "wrangler types",
+    "deploy": "bun run build && wrangler deploy"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.1.2",
     "@astrojs/react": "^4.2.1",
     "@fontsource/courier-prime": "^5.0.0",
     "@fontsource/germania-one": "^5.0.0",
@@ -23,7 +26,8 @@
     "astro": "^6.0.5",
     "lucide-react": "^0.577.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "wrangler": "^4.75.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",
