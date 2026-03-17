@@ -1,0 +1,49 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"plugins": ["typescript", "unicorn", "react", "react-perf", "oxc", "jsx-a11y"],
+	"env": {
+		"browser": true
+	},
+	"rules": {
+		"no-await-in-loop": "off",
+		"no-accumulating-spread": "error",
+		"no-else-return": "error",
+		"no-new-wrappers": "error",
+		"no-unneeded-ternary": "error",
+
+		"typescript/array-type": ["error", { "default": "array" }],
+		"typescript/consistent-type-definitions": ["error", "interface"],
+
+		"react/rules-of-hooks": "error",
+
+		// "react-perf/jsx-no-jsx-as-prop": "error",
+		// "react-perf/jsx-no-new-array-as-prop": "error",
+		// "react-perf/jsx-no-new-function-as-prop": "error",
+		// "react-perf/jsx-no-new-object-as-prop": "error",
+
+		"jsx-a11y/anchor-ambiguous-text": "error",
+		"jsx-a11y/iframe-has-title": "off", // doesn't work correctly
+
+		"unicorn/explicit-length-check": "error",
+		"unicorn/prefer-set-has": "error",
+		"unicorn/no-array-for-each": "error",
+		"unicorn/no-array-reduce": "error",
+		"unicorn/no-document-cookie": "error",
+		"unicorn/no-empty-file": "off",
+		"unicorn/no-instanceof-builtins": "error",
+		"unicorn/no-nested-ternary": "off",
+		"unicorn/prefer-array-some": "error",
+		"unicorn/prefer-node-protocol": "error",
+		"unicorn/prefer-number-properties": "error",
+		"unicorn/prefer-regexp-test": "error",
+		"unicorn/prefer-string-replace-all": "error",
+		"unicorn/prefer-string-raw": "error",
+		"unicorn/prefer-type-error": "error",
+		"unicorn/switch-case-braces": ["error", "avoid"],
+
+		"import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+		"import/no-commonjs": "error",
+		"import/no-cycle": "error",
+		"import/no-duplicates": "error"
+	}
+}

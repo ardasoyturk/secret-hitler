@@ -1,0 +1,36 @@
+---
+import "../styles/global.css";
+import { Game } from "../components/game/Game";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#2a2118" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="description" content="Secret Hitler — Pass & Play Edition. A single-device board game for 5-10 players." />
+    <title>Secret Hitler — Pass & Play</title>
+  </head>
+  <body class="noise-overlay">
+    <div id="app">
+      <Game client:only="react" />
+    </div>
+    <noscript>
+      <div style="display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:2rem;text-align:center;color:#bbb;">
+        <p>JavaScript is required to play Secret Hitler.</p>
+      </div>
+    </noscript>
+    <script is:inline>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js", { scope: "/" });
+        });
+      }
+    </script>
+  </body>
+</html>

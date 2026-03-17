@@ -1,0 +1,296 @@
+/**
+ * Secret Hitler — Global Styles
+ *
+ * Tailwind v4 with custom theme using CSS @theme.
+ * Fonts: Germania One (headers), Montserrat (UI), Courier Prime (flavor text)
+ * Colors: Extracted from the original Secret Hitler game assets.
+ */
+
+@import "tailwindcss";
+
+/* ── Font imports ─────────────────────────────────────────────────── */
+@import "@fontsource/germania-one/400.css";
+@import "@fontsource/montserrat/400.css";
+@import "@fontsource/montserrat/500.css";
+@import "@fontsource/montserrat/600.css";
+@import "@fontsource/montserrat/700.css";
+@import "@fontsource/courier-prime/400.css";
+@import "@fontsource/courier-prime/700.css";
+
+/* ── Tailwind v4 Theme ────────────────────────────────────────────── */
+@theme {
+  /* Fonts */
+  --font-heading: "Germania One", cursive;
+  --font-body: "Montserrat", sans-serif;
+  --font-flavor: "Courier Prime", monospace;
+
+  /* Brand colors */
+  --color-fascist: #e05b2b;
+  --color-fascist-hover: #e67a53;
+  --color-fascist-dark: #b4431a;
+  --color-fascist-deep: #8b2500;
+
+  --color-liberal: #5a9ba6;
+  --color-liberal-hover: #7abcca;
+  --color-liberal-dark: #386f8b;
+  --color-liberal-deep: #264d5c;
+
+  /* Backgrounds */
+  --color-bg-primary: #4d4945;
+  --color-bg-dark: #372e25;
+  --color-bg-darker: #2a2118;
+  --color-bg-overlay: #141414;
+  --color-bg-card: #3d3730;
+
+  /* Text */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #bbbbbb;
+  --color-text-muted: #69645e;
+
+  /* Buttons */
+  --color-btn-primary: #e05b2b;
+  --color-btn-primary-hover: #e67a53;
+  --color-btn-primary-shadow: #b4431a;
+  --color-btn-disabled: #928079;
+
+  --color-btn-alt: #5a9ba6;
+  --color-btn-alt-hover: #7abcca;
+  --color-btn-alt-shadow: #386f8b;
+
+  /* Selection / highlight */
+  --color-select-hover: rgba(246, 181, 63, 1);
+  --color-select-active: rgba(205, 135, 9, 1);
+  --color-gold: #f6b53f;
+  --color-gold-dark: #cd8709;
+
+  /* Player border colors */
+  --color-player-red: #e74c3c;
+  --color-player-blue: #3498db;
+  --color-player-green: #2ecc71;
+  --color-player-yellow: #f1c40f;
+  --color-player-purple: #9b59b6;
+  --color-player-orange: #e67e22;
+  --color-player-pink: #e84393;
+  --color-player-teal: #00cec9;
+  --color-player-brown: #a0522d;
+  --color-player-gray: #95a5a6;
+
+  /* Shadows */
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-button: 0 4px 0 var(--color-btn-primary-shadow);
+  --shadow-glow-fascist: 0 0 20px rgba(224, 91, 43, 0.4);
+  --shadow-glow-liberal: 0 0 20px rgba(90, 155, 166, 0.4);
+
+  /* Spacing */
+  --spacing-safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* Border radius */
+  --radius-card: 12px;
+  --radius-button: 8px;
+  --radius-portrait: 50%;
+
+  /* Z-index layers */
+  --z-board: 1;
+  --z-cards: 10;
+  --z-overlay: 50;
+  --z-modal: 100;
+  --z-privacy: 200;
+}
+
+/* ── Base styles ──────────────────────────────────────────────────── */
+
+html {
+  font-family: var(--font-body);
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  /* Lock the viewport — no scrolling on the html element */
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--color-bg-dark);
+}
+
+/* Blackletter headings */
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* Flavor text */
+.flavor-text {
+  font-family: var(--font-flavor);
+  font-style: italic;
+}
+
+/* ── Utility classes ──────────────────────────────────────────────── */
+
+/* Noise texture overlay for atmospheric backgrounds */
+.noise-overlay {
+  position: relative;
+}
+
+.noise-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Parchment / aged paper effect for cards */
+.parchment {
+  background: linear-gradient(135deg, #d4c5a9 0%, #c4b393 50%, #b8a67d 100%);
+  border: 2px solid #a08c6a;
+}
+
+/* Fascist red glow */
+.glow-fascist {
+  box-shadow: var(--shadow-glow-fascist);
+}
+
+/* Liberal blue glow */
+.glow-liberal {
+  box-shadow: var(--shadow-glow-liberal);
+}
+
+/* Privacy screen background — fully opaque, cannot see through */
+.privacy-screen {
+  background: var(--color-bg-overlay);
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-privacy);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Gold shimmer animation for highlights */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.gold-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-gold-dark) 0%,
+    var(--color-gold) 50%,
+    var(--color-gold-dark) 100%
+  );
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Pulse animation for attention */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.pulse {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Slide in from bottom */
+@keyframes slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-up {
+  animation: slide-up 0.4s ease-out;
+}
+
+/* Fade in */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Scale pop */
+@keyframes scale-pop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.scale-pop {
+  animation: scale-pop 0.35s ease-out;
+}
+
+/* Stamp effect for policy enactment */
+@keyframes stamp {
+  0% {
+    transform: scale(3) rotate(-15deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1) rotate(-3deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.stamp {
+  animation: stamp 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Safe area padding for mobile */
+.safe-bottom {
+  padding-bottom: max(1rem, var(--spacing-safe-bottom));
+}
