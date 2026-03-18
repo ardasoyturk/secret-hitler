@@ -2,6 +2,8 @@
 
 A single-device, pass-and-play implementation of the [Secret Hitler](https://secrethitler.com) board game for 5–10 players. The current app is built as a tablet-first Astro + React Progressive Web App with offline caching, install support, optimized assets, and a rules-accurate engine.
 
+![Secret Hitler Game Screenshot](https://github.com/user-attachments/assets/833ce11e-fed1-42ac-af89-c800e9e810f6)
+
 ## Play
 
 ```bash
