@@ -36,7 +36,7 @@ import { PolicyCard } from "@components/cards/PolicyCard";
 import { getPartyMembership } from "@engine/reducer";
 import type { GameState, GameAction } from "@engine/types";
 import { GamePhase, PartyMembership } from "@engine/types";
-import { useState } from "react";
+import { memo, useCallback, useState } from "react";
 
 const PORTRAITS = [
 	portrait1,
@@ -81,6 +81,59 @@ function getPolicyKey(policies: readonly string[], policy: string, index: number
 
 // ── Shared player selection grid ────────────────────────────────────
 
+const PlayerSelectionCard = memo(function PlayerSelectionCard({
+	playerId,
+	playerName,
+	portraitIndex,
+	isEligible,
+	isSelected,
+	dangerConfirm = false,
+	onSelect,
+}: {
+	playerId: number;
+	playerName: string;
+	portraitIndex: number;
+	isEligible: boolean;
+	isSelected: boolean;
+	dangerConfirm?: boolean;
+	onSelect: (id: number) => void;
+}) {
+	return (
+		<button
+			type="button"
+			onClick={() => isEligible && onSelect(playerId)}
+			disabled={!isEligible}
+			className={[
+				"flex min-h-[118px] flex-col items-center justify-center gap-2 rounded-[20px] border-2 p-3 transition-all duration-[var(--transition-fast)]",
+				isSelected
+					? dangerConfirm
+						? "border-fascist bg-fascist/10 ring-2 ring-fascist/30 scale-[1.03]"
+						: "border-gold bg-gold/10 ring-2 ring-gold/30 scale-[1.03]"
+					: isEligible
+						? "border-text-muted/20 bg-bg-card hover:border-text-secondary cursor-pointer"
+						: "border-transparent bg-bg-card/40 opacity-40 cursor-not-allowed",
+			].join(" ")}
+		>
+			<div
+				className={[
+					"w-12 h-12 rounded-full overflow-hidden border-2",
+					isSelected ? (dangerConfirm ? "border-fascist" : "border-gold") : "border-text-muted/30",
+				].join(" ")}
+			>
+				<img src={PORTRAITS[portraitIndex]?.src} alt={playerName} className="h-full w-full object-cover" draggable={false} />
+			</div>
+			<span
+				className={[
+					"font-body text-xs font-medium text-center leading-tight",
+					isSelected ? (dangerConfirm ? "text-fascist" : "text-gold") : "text-text-primary",
+				].join(" ")}
+			>
+				{playerName}
+			</span>
+		</button>
+	);
+});
+
 function PlayerSelectionGrid({
 	state,
 	eligibleIds,
@@ -108,47 +161,17 @@ function PlayerSelectionGrid({
 			<div className={`grid w-full max-w-4xl ${colClass} gap-3 md:gap-4`}>
 				{alivePlayers.map((player) => {
 					const isEligible = eligibleSet.has(player.id);
-					const isSelected = selectedId === player.id;
-
 					return (
-						<button
+						<PlayerSelectionCard
 							key={player.id}
-							type="button"
-							onClick={() => isEligible && onSelect(player.id)}
-							disabled={!isEligible}
-							className={[
-								"flex min-h-[118px] flex-col items-center justify-center gap-2 rounded-[20px] border-2 p-3 transition-all duration-[var(--transition-fast)]",
-								isSelected
-									? dangerConfirm
-										? "border-fascist bg-fascist/10 ring-2 ring-fascist/30 scale-[1.03]"
-										: "border-gold bg-gold/10 ring-2 ring-gold/30 scale-[1.03]"
-									: isEligible
-										? "border-text-muted/20 bg-bg-card hover:border-text-secondary cursor-pointer"
-										: "border-transparent bg-bg-card/40 opacity-40 cursor-not-allowed",
-							].join(" ")}
-						>
-							<div
-								className={[
-									"w-12 h-12 rounded-full overflow-hidden border-2",
-									isSelected ? (dangerConfirm ? "border-fascist" : "border-gold") : "border-text-muted/30",
-								].join(" ")}
-							>
-								<img
-									src={PORTRAITS[player.portraitIndex]?.src}
-									alt={player.name}
-									className="h-full w-full object-cover"
-									draggable={false}
-								/>
-							</div>
-							<span
-								className={[
-									"font-body text-xs font-medium text-center leading-tight",
-									isSelected ? (dangerConfirm ? "text-fascist" : "text-gold") : "text-text-primary",
-								].join(" ")}
-							>
-								{player.name}
-							</span>
-						</button>
+							playerId={player.id}
+							playerName={player.name}
+							portraitIndex={player.portraitIndex}
+							isEligible={isEligible}
+							isSelected={selectedId === player.id}
+							dangerConfirm={dangerConfirm}
+							onSelect={onSelect}
+						/>
 					);
 				})}
 			</div>
@@ -183,6 +206,27 @@ export function ExecutiveScreen({
 }: ExecutiveScreenProps) {
 	const [selectedId, setSelectedId] = useState<number | null>(null);
 	const president = state.players[state.presidentIndex];
+	const resetSelectedId = useCallback(() => {
+		setSelectedId(null);
+	}, []);
+	const investigateSelectedPlayer = useCallback(() => {
+		if (selectedId !== null) {
+			dispatch({ type: "INVESTIGATE_PLAYER", playerId: selectedId });
+			resetSelectedId();
+		}
+	}, [dispatch, resetSelectedId, selectedId]);
+	const chooseSpecialElectionPresident = useCallback(() => {
+		if (selectedId !== null) {
+			dispatch({ type: "SELECT_SPECIAL_ELECTION", playerId: selectedId });
+			resetSelectedId();
+		}
+	}, [dispatch, resetSelectedId, selectedId]);
+	const executeSelectedPlayer = useCallback(() => {
+		if (selectedId !== null) {
+			dispatch({ type: "EXECUTE_PLAYER", playerId: selectedId });
+			resetSelectedId();
+		}
+	}, [dispatch, resetSelectedId, selectedId]);
 
 	if (!president) return null;
 
@@ -204,12 +248,7 @@ export function ExecutiveScreen({
 					eligibleIds={investigableIds}
 					selectedId={selectedId}
 					onSelect={setSelectedId}
-					onConfirm={() => {
-						if (selectedId !== null) {
-							dispatch({ type: "INVESTIGATE_PLAYER", playerId: selectedId });
-							setSelectedId(null);
-						}
-					}}
+					onConfirm={investigateSelectedPlayer}
 					confirmLabel={`Investigate ${state.players.find((p) => p.id === selectedId)?.name ?? ""}`}
 				/>
 			</div>
@@ -313,12 +352,7 @@ export function ExecutiveScreen({
 					eligibleIds={specialElectionEligibleIds}
 					selectedId={selectedId}
 					onSelect={setSelectedId}
-					onConfirm={() => {
-						if (selectedId !== null) {
-							dispatch({ type: "SELECT_SPECIAL_ELECTION", playerId: selectedId });
-							setSelectedId(null);
-						}
-					}}
+					onConfirm={chooseSpecialElectionPresident}
 					confirmLabel={`Appoint ${state.players.find((p) => p.id === selectedId)?.name ?? ""}`}
 				/>
 			</div>
@@ -344,12 +378,7 @@ export function ExecutiveScreen({
 					eligibleIds={executionEligibleIds}
 					selectedId={selectedId}
 					onSelect={setSelectedId}
-					onConfirm={() => {
-						if (selectedId !== null) {
-							dispatch({ type: "EXECUTE_PLAYER", playerId: selectedId });
-							setSelectedId(null);
-						}
-					}}
+					onConfirm={executeSelectedPlayer}
 					confirmLabel={`Execute ${state.players.find((p) => p.id === selectedId)?.name ?? ""}`}
 					dangerConfirm
 				/>

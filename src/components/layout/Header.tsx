@@ -5,6 +5,7 @@
  */
 
 import { GamePhase } from "@engine/types";
+import { memo } from "react";
 
 const PHASE_LABELS: Record<GamePhase, string> = {
 	[GamePhase.Setup]: "Setting Up",
@@ -35,7 +36,13 @@ interface HeaderProps {
 	className?: string;
 }
 
-export function Header({ round, phase, presidentName, chancellorName, className = "" }: HeaderProps) {
+export const Header = memo(function Header({
+	round,
+	phase,
+	presidentName,
+	chancellorName,
+	className = "",
+}: HeaderProps) {
 	const phaseLabel = PHASE_LABELS[phase] ?? phase;
 	const showGovernment = presidentName && phase !== GamePhase.Setup && phase !== GamePhase.GameOver;
 
@@ -90,4 +97,4 @@ export function Header({ round, phase, presidentName, chancellorName, className 
 			</div>
 		</header>
 	);
-}
+});

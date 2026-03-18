@@ -32,6 +32,16 @@ const optimizedAssets = await buildOptimizedAssetMap();
 			)
 		}
 		<title>Secret Hitler — Pass & Play</title>
+
+		{
+			import.meta.env.REACT_SCAN === "true" && (
+				<script
+					is:inline
+					crossorigin="anonymous"
+					src="//unpkg.com/react-scan/dist/auto.global.js"
+				/>
+			)
+		}
 	</head>
 	<body class="noise-overlay">
 		<div id="app">

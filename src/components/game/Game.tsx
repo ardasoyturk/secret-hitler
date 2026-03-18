@@ -89,6 +89,8 @@ function GameInner({ initialState }: { initialState: GameState | undefined }) {
 
 	const president = state.players[state.presidentIndex];
 	const chancellor = state.players.find((p) => p.id === state.chancellorNomineeId);
+	const trackerPosition =
+		state.phase === GamePhase.ChaosPolicy ? 4 : Math.max(0, Math.min(3, state.electionTracker.failedElections)) + 1;
 
 	return (
 		<div className="game-shell relative h-dvh w-full overflow-x-hidden overflow-y-auto select-none">
@@ -107,7 +109,7 @@ function GameInner({ initialState }: { initialState: GameState | undefined }) {
 								board={state.board}
 								electionTracker={state.electionTracker}
 								playerCount={state.players.length}
-								phase={state.phase}
+								trackerPosition={trackerPosition}
 								vetoUnlocked={state.vetoUnlocked}
 							/>
 						</div>

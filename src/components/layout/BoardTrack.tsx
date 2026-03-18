@@ -8,7 +8,8 @@ import trackerMarkerImg from "@assets/boards/board-tracker.png";
 import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 import { getPlayerCountBracket, EXECUTIVE_POWERS } from "@engine/constants";
 import type { Board, ElectionTracker } from "@engine/types";
-import { ExecutivePower, GamePhase } from "@engine/types";
+import { ExecutivePower } from "@engine/types";
+import { memo } from "react";
 import type { ReactNode } from "react";
 
 type AssetRef = string | { src: string };
@@ -82,7 +83,7 @@ interface BoardTrackProps {
 	board: Board;
 	electionTracker: ElectionTracker;
 	playerCount: number;
-	phase: GamePhase;
+	trackerPosition: number;
 	vetoUnlocked: boolean;
 	className?: string;
 }
@@ -186,19 +187,17 @@ function assetSrc(asset: AssetRef): string {
 	return typeof asset === "string" ? asset : asset.src;
 }
 
-export function BoardTrack({
+export const BoardTrack = memo(function BoardTrack({
 	board,
 	electionTracker,
 	playerCount,
-	phase,
+	trackerPosition,
 	vetoUnlocked,
 	className = "",
 }: BoardTrackProps) {
 	const bracket = getPlayerCountBracket(playerCount);
 	const fascistBoard = FASCIST_BOARD_MAP[bracket] ?? FASCIST_BOARD_MAP["5-6"];
 	const executivePowers = EXECUTIVE_POWERS[bracket];
-	const failedElections = Math.max(0, Math.min(3, electionTracker.failedElections));
-	const trackerPosition = phase === GamePhase.ChaosPolicy ? 4 : failedElections + 1;
 	const liberalBoardSrc = useOptimizedAsset("boards/board-liberal.png", assetSrc(boardLiberalImg));
 	const fascistBoardSrc = useOptimizedAsset(fascistBoard.assetKey, assetSrc(fascistBoard.fallbackSrc));
 	const liberalPolicySrc = useOptimizedAsset("boards/board-policy-liberal.png", assetSrc(policyLiberalImg));
@@ -270,5 +269,17 @@ export function BoardTrack({
 				</BoardPanel>
 			</div>
 		</div>
+	);
+}, areBoardTrackPropsEqual);
+
+function areBoardTrackPropsEqual(previous: BoardTrackProps, next: BoardTrackProps) {
+	return (
+		previous.className === next.className &&
+		previous.playerCount === next.playerCount &&
+		previous.trackerPosition === next.trackerPosition &&
+		previous.vetoUnlocked === next.vetoUnlocked &&
+		previous.board.liberalPolicies === next.board.liberalPolicies &&
+		previous.board.fascistPolicies === next.board.fascistPolicies &&
+		previous.electionTracker.failedElections === next.electionTracker.failedElections
 	);
 }

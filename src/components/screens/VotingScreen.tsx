@@ -34,7 +34,7 @@ import { VoteCard } from "@components/cards/VoteCard";
 import { ViewportOverlay } from "@components/layout/ViewportOverlay";
 import type { GameState, GameAction } from "@engine/types";
 import { GamePhase, Vote } from "@engine/types";
-import { useState } from "react";
+import { memo, useState } from "react";
 
 const PORTRAITS = [
 	portrait1,
@@ -64,7 +64,7 @@ interface ScreenProps {
 	dispatch: (action: GameAction) => void;
 }
 
-function PrivacyGate({ playerName, onReady }: { playerName: string; onReady: () => void }) {
+const PrivacyGate = memo(function PrivacyGate({ playerName, onReady }: { playerName: string; onReady: () => void }) {
 	return (
 		<ViewportOverlay>
 			<div className="privacy-screen">
@@ -79,7 +79,7 @@ function PrivacyGate({ playerName, onReady }: { playerName: string; onReady: () 
 			</div>
 		</ViewportOverlay>
 	);
-}
+});
 
 export function VotingScreen({ state, dispatch }: ScreenProps) {
 	const [showPrivacy, setShowPrivacy] = useState(true);
@@ -225,7 +225,7 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 
 // ── Sub-component: Vote casting UI ──────────────────────────────────
 
-function VoteCastView({
+const VoteCastView = memo(function VoteCastView({
 	dispatch,
 	voter,
 	presidentName,
@@ -284,4 +284,4 @@ function VoteCastView({
 			</div>
 		</div>
 	);
-}
+});

@@ -14,7 +14,7 @@ import { PolicyCard } from "@components/cards/PolicyCard";
 import { ViewportOverlay } from "@components/layout/ViewportOverlay";
 import type { GameState, GameAction } from "@engine/types";
 import { GamePhase } from "@engine/types";
-import { useState } from "react";
+import { memo, useCallback, useState } from "react";
 
 interface ScreenProps {
 	state: GameState;
@@ -51,9 +51,37 @@ function PrivacyGate({
 	);
 }
 
+const PolicyChoice = memo(function PolicyChoice({
+	policy,
+	index,
+	isSelected,
+	selectionLabel,
+	onSelectIndex,
+}: {
+	policy: "liberal" | "fascist";
+	index: number;
+	isSelected: boolean;
+	selectionLabel: string;
+	onSelectIndex: (index: number) => void;
+}) {
+	return (
+		<div className="flex flex-col items-center gap-2">
+			<PolicyCard type={policy} size="lg" onClick={() => onSelectIndex(index)} selected={isSelected} />
+			{isSelected && (
+				<span className="font-body fade-in text-xs font-semibold tracking-wider uppercase">
+					{selectionLabel}
+				</span>
+			)}
+		</div>
+	);
+});
+
 export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 	const [showPrivacy, setShowPrivacy] = useState(true);
 	const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+	const toggleSelectedIndex = useCallback((index: number) => {
+		setSelectedIndex((current) => (current === index ? null : index));
+	}, []);
 
 	const president = state.players[state.presidentIndex];
 	const chancellor = state.players.find((p) => p.id === state.chancellorNomineeId);
@@ -90,19 +118,14 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 
 				<div className="flex w-full max-w-3xl flex-wrap items-start justify-center gap-3 md:gap-4">
 					{state.presidentHand.map((policy, index) => (
-						<div key={getPolicyKey(state.presidentHand, policy, index)} className="flex flex-col items-center gap-2">
-							<PolicyCard
-								type={policy}
-								size="lg"
-								onClick={() => setSelectedIndex(selectedIndex === index ? null : index)}
-								selected={selectedIndex === index}
-							/>
-							{selectedIndex === index && (
-								<span className="text-fascist font-body fade-in text-xs font-semibold tracking-wider uppercase">
-									Discard
-								</span>
-							)}
-						</div>
+						<PolicyChoice
+							key={getPolicyKey(state.presidentHand, policy, index)}
+							policy={policy}
+							index={index}
+							isSelected={selectedIndex === index}
+							selectionLabel="Discard"
+							onSelectIndex={toggleSelectedIndex}
+						/>
 					))}
 				</div>
 
@@ -122,7 +145,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 							"flex-shrink-0 w-full rounded-[18px] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
 							selectedIndex !== null
 								? "bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] cursor-pointer"
-								: "bg-btn-disabled text-text-muted cursor-not-allowed",
+								: "bg-btn-disabled text-gray-900 cursor-not-allowed",
 						].join(" ")}
 					>
 						{selectedIndex !== null ? "Discard Selected Policy" : "Tap a Policy to Discard"}
@@ -164,19 +187,14 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 
 				<div className="flex w-full max-w-2xl flex-wrap items-start justify-center gap-4 md:gap-6">
 					{state.chancellorHand.map((policy, index) => (
-						<div key={getPolicyKey(state.chancellorHand, policy, index)} className="flex flex-col items-center gap-2">
-							<PolicyCard
-								type={policy}
-								size="lg"
-								onClick={() => setSelectedIndex(selectedIndex === index ? null : index)}
-								selected={selectedIndex === index}
-							/>
-							{selectedIndex === index && (
-								<span className="text-gold font-body fade-in text-xs font-semibold tracking-wider uppercase">
-									Enact
-								</span>
-							)}
-						</div>
+						<PolicyChoice
+							key={getPolicyKey(state.chancellorHand, policy, index)}
+							policy={policy}
+							index={index}
+							isSelected={selectedIndex === index}
+							selectionLabel="Enact"
+							onSelectIndex={toggleSelectedIndex}
+						/>
 					))}
 				</div>
 
@@ -195,7 +213,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 							"w-full rounded-[18px] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
 							selectedIndex !== null
 								? "bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] cursor-pointer"
-								: "bg-btn-disabled text-text-muted cursor-not-allowed",
+								: "bg-btn-disabled text-gray-900 cursor-not-allowed",
 						].join(" ")}
 					>
 						{selectedIndex !== null ? "Enact Selected Policy" : "Tap a Policy to Enact"}

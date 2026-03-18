@@ -8,7 +8,11 @@ import { defineConfig } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
 	integrations: [
-		react(),
+		react({
+			babel: {
+				plugins: ["babel-plugin-react-compiler"],
+			},
+		}),
 		AstroPWA({
 			injectRegister: null,
 			registerType: "autoUpdate",

@@ -9,6 +9,7 @@ import policyFascistImg from "@assets/cards/policy-fascist.png";
 import policyBackImg from "@assets/cards/policy-folder-cover-back.png";
 import policyLiberalImg from "@assets/cards/policy-liberal.png";
 import { useOptimizedAsset } from "@components/game/OptimizedAssets";
+import { memo } from "react";
 
 const SIZE_CLASSES = {
 	sm: "w-[60px]",
@@ -25,7 +26,7 @@ interface PolicyCardProps {
 	className?: string;
 }
 
-export function PolicyCard({
+export const PolicyCard = memo(function PolicyCard({
 	type,
 	size = "md",
 	revealed = true,
@@ -80,4 +81,4 @@ export function PolicyCard({
 			)}
 		</button>
 	);
-}
+});

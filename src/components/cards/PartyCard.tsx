@@ -7,13 +7,14 @@
 import partyFascistImg from "@assets/cards/party-membership-fascist.png";
 import partyLiberalImg from "@assets/cards/party-membership-liberal.png";
 import { useOptimizedAsset } from "@components/game/OptimizedAssets";
+import { memo } from "react";
 
 interface PartyCardProps {
 	party: "liberal" | "fascist";
 	className?: string;
 }
 
-export function PartyCard({ party, className = "" }: PartyCardProps) {
+export const PartyCard = memo(function PartyCard({ party, className = "" }: PartyCardProps) {
 	const liberalSrc = useOptimizedAsset("cards/party-membership-liberal.png", partyLiberalImg.src);
 	const fascistSrc = useOptimizedAsset("cards/party-membership-fascist.png", partyFascistImg.src);
 	const imgSrc = party === "liberal" ? liberalSrc : fascistSrc;
@@ -31,4 +32,4 @@ export function PartyCard({ party, className = "" }: PartyCardProps) {
 			<img src={imgSrc} alt={altText} className="block h-auto w-full select-none" draggable={false} />
 		</div>
 	);
-}
+});
