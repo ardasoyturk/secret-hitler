@@ -720,7 +720,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
 			const targetPlayer = state.players.find((p) => p.id === action.playerId);
 			if (!targetPlayer || !targetPlayer.isAlive) return state;
-			if (action.playerId === state.players[state.presidentIndex].id) return state;
 
 			// Kill the player
 			const updatedPlayers = state.players.map((p) => (p.id === action.playerId ? { ...p, isAlive: false } : p));
