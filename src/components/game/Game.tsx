@@ -113,7 +113,7 @@ function GameInner({ initialState }: { initialState: GameState | undefined }) {
   const chancellor = state.players.find((p) => p.id === state.chancellorNomineeId);
 
   return (
-    <div className="game-shell relative h-dvh w-full overflow-y-auto overflow-x-hidden">
+    <div className="game-shell relative h-dvh w-full overflow-y-auto overflow-x-hidden select-none">
       <div className="relative z-10 min-h-full px-3 pb-5 md:px-5 md:pb-6">
         <div className="game-sticky-stage sticky top-0 z-30 -mx-3 px-3 pb-3 md:-mx-5 md:px-5 md:pb-4">
           <Header

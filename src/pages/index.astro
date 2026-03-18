@@ -13,6 +13,10 @@ const rawAssets = import.meta.glob("../assets/**/*.{png,jpg,jpeg}", {
 const optimizedAssets = Object.fromEntries(
 	await Promise.all(
 		Object.entries(rawAssets).map(async ([path, image]) => {
+			if (import.meta.env.DEV) {
+				return [path.replace("../assets/", ""), image.src] as const;
+			}
+
 			const transformed = await getImage({
 				src: image,
 				format: "webp",

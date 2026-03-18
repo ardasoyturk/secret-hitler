@@ -6,19 +6,14 @@ import {
 } from "@engine/constants";
 import type { ReactNode } from "react";
 
-import boardLiberalImg from "@assets/boards/board-liberal.svg";
-import boardFascist56Img from "@assets/boards/board-fascist-5-6.svg";
-import boardFascist78Img from "@assets/boards/board-fascist-7-8.svg";
-import boardFascist910Img from "@assets/boards/board-fascist-9-10.svg";
+import boardFascist56Img from "@assets/boards/board-fascist-5-6.png";
+import boardFascist78Img from "@assets/boards/board-fascist-7-8.png";
+import boardFascist910Img from "@assets/boards/board-fascist-9-10.png";
+import boardLiberalImg from "@assets/boards/board-liberal.png";
 import policyLiberalImg from "@assets/boards/board-policy-liberal.png";
 import policyFascistImg from "@assets/boards/board-policy-fascist.png";
 import trackerMarkerImg from "@assets/boards/board-tracker.png";
 import { useOptimizedAsset } from "@components/game/OptimizedAssets";
-
-import boardLiberalRaw from "@assets/boards/board-liberal.svg?raw";
-import boardFascist56Raw from "@assets/boards/board-fascist-5-6.svg?raw";
-import boardFascist78Raw from "@assets/boards/board-fascist-7-8.svg?raw";
-import boardFascist910Raw from "@assets/boards/board-fascist-9-10.svg?raw";
 
 type AssetRef = string | { src: string };
 
@@ -34,15 +29,49 @@ interface SvgLayout {
   trackerSlots: SlotRect[];
 }
 
-const POLICY_SLOT_SIZE = { width: 194.3, height: 268 };
-const TRACKER_SLOT_SIZE = { width: 42, height: 46 };
-const POLICY_SIZE_TOLERANCE = 1.5;
-const TRACKER_SIZE_TOLERANCE = 0.6;
+const VIEWBOX_WIDTH = 1683;
+const VIEWBOX_HEIGHT = 650;
 
-const FASCIST_BOARD_MAP: Record<string, { src: AssetRef; layout: SvgLayout }> = {
-  "5-6": { src: boardFascist56Img, layout: parseSvgLayout(boardFascist56Raw) },
-  "7-8": { src: boardFascist78Img, layout: parseSvgLayout(boardFascist78Raw) },
-  "9-10": { src: boardFascist910Img, layout: parseSvgLayout(boardFascist910Raw) },
+function rect(x: number, y: number, width: number, height: number): SlotRect {
+  return {
+    x: x / VIEWBOX_WIDTH,
+    y: y / VIEWBOX_HEIGHT,
+    width: width / VIEWBOX_WIDTH,
+    height: height / VIEWBOX_HEIGHT,
+  };
+}
+
+const LIBERAL_LAYOUT: SvgLayout = {
+  policySlots: [
+    rect(285, 182, 194, 268),
+    rect(515, 182, 194, 268),
+    rect(745, 182, 194, 268),
+    rect(975, 182, 194, 268),
+    rect(1205, 182, 194, 268),
+  ],
+  trackerSlots: [
+    rect(581, 495, 42, 46),
+    rect(736, 495, 42, 46),
+    rect(890, 495, 42, 46),
+  ],
+};
+
+const FASCIST_LAYOUT: SvgLayout = {
+  policySlots: [
+    rect(170, 182, 194.3, 268),
+    rect(400, 182, 194.3, 268),
+    rect(630, 182, 194.3, 268),
+    rect(860, 182, 194.3, 268),
+    rect(1090, 182, 194.3, 268),
+    rect(1320, 182, 194.3, 268),
+  ],
+  trackerSlots: [],
+};
+
+const FASCIST_BOARD_MAP: Record<string, { assetKey: string; fallbackSrc: AssetRef; layout: SvgLayout }> = {
+  "5-6": { assetKey: "boards/board-fascist-5-6.png", fallbackSrc: boardFascist56Img, layout: FASCIST_LAYOUT },
+  "7-8": { assetKey: "boards/board-fascist-7-8.png", fallbackSrc: boardFascist78Img, layout: FASCIST_LAYOUT },
+  "9-10": { assetKey: "boards/board-fascist-9-10.png", fallbackSrc: boardFascist910Img, layout: FASCIST_LAYOUT },
 };
 
 const EXECUTIVE_POWER_ICONS: Record<ExecutivePower, string> = {
@@ -52,69 +81,6 @@ const EXECUTIVE_POWER_ICONS: Record<ExecutivePower, string> = {
   [ExecutivePower.SpecialElection]: "Election",
   [ExecutivePower.Execution]: "Execution",
 };
-
-const LIBERAL_LAYOUT = parseSvgLayout(boardLiberalRaw);
-
-function parseSvgLayout(svgRaw: string): SvgLayout {
-  const viewBox = svgRaw.match(/viewBox="([^"]+)"/)?.[1]?.split(/\s+/).map(Number);
-  if (!viewBox || viewBox.length !== 4) {
-    throw new Error("Board SVG is missing a valid viewBox.");
-  }
-
-  const [, , viewWidth, viewHeight] = viewBox;
-  const rectPattern = /<rect\b([^>]*)\/?>/g;
-  const rects: { x: number; y: number; width: number; height: number }[] = [];
-
-  let match = rectPattern.exec(svgRaw);
-  while (match) {
-    const attrs = match[1];
-    const xAttr = attrs.match(/\bx="([^"]+)"/)?.[1];
-    const yAttr = attrs.match(/\by="([^"]+)"/)?.[1];
-    const widthAttr = attrs.match(/\bwidth="([^"]+)"/)?.[1];
-    const heightAttr = attrs.match(/\bheight="([^"]+)"/)?.[1];
-
-    if (xAttr && yAttr && widthAttr && heightAttr) {
-      rects.push({
-        x: Number(xAttr),
-        y: Number(yAttr),
-        width: Number(widthAttr),
-        height: Number(heightAttr),
-      });
-    }
-
-    match = rectPattern.exec(svgRaw);
-  }
-
-  const normalizedRects = rects
-    .filter((rect) => Number.isFinite(rect.x) && Number.isFinite(rect.y))
-    .map((rect) => ({
-      x: rect.x / viewWidth,
-      y: rect.y / viewHeight,
-      width: rect.width / viewWidth,
-      height: rect.height / viewHeight,
-      rawWidth: rect.width,
-      rawHeight: rect.height,
-    }))
-    .sort((a, b) => a.x - b.x);
-
-  return {
-    policySlots: normalizedRects
-      .filter((rect) => {
-        const widthMatches = Math.abs(rect.rawWidth - POLICY_SLOT_SIZE.width) <= POLICY_SIZE_TOLERANCE
-          || Math.abs(rect.rawWidth - 194) <= POLICY_SIZE_TOLERANCE;
-        const heightMatches = Math.abs(rect.rawHeight - POLICY_SLOT_SIZE.height) <= POLICY_SIZE_TOLERANCE;
-        return widthMatches && heightMatches;
-      })
-      .map(({ x, y, width, height }) => ({ x, y, width, height })),
-    trackerSlots: normalizedRects
-      .filter(
-        (rect) =>
-          Math.abs(rect.rawWidth - TRACKER_SLOT_SIZE.width) <= TRACKER_SIZE_TOLERANCE
-          && Math.abs(rect.rawHeight - TRACKER_SLOT_SIZE.height) <= TRACKER_SIZE_TOLERANCE,
-      )
-      .map(({ x, y, width, height }) => ({ x, y, width, height })),
-  };
-}
 
 interface BoardTrackProps {
   board: Board;
@@ -247,6 +213,14 @@ export function BoardTrack({
   const fascistBoard = FASCIST_BOARD_MAP[bracket] ?? FASCIST_BOARD_MAP["5-6"];
   const executivePowers = EXECUTIVE_POWERS[bracket];
   const failedElections = Math.max(0, Math.min(3, electionTracker.failedElections));
+  const liberalBoardSrc = useOptimizedAsset(
+    "boards/board-liberal.png",
+    assetSrc(boardLiberalImg),
+  );
+  const fascistBoardSrc = useOptimizedAsset(
+    fascistBoard.assetKey,
+    assetSrc(fascistBoard.fallbackSrc),
+  );
   const liberalPolicySrc = useOptimizedAsset(
     "boards/board-policy-liberal.png",
     assetSrc(policyLiberalImg),
@@ -262,7 +236,7 @@ export function BoardTrack({
       <div className="grid items-center gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <BoardPanel
           title="Liberal Board"
-          imageSrc={boardLiberalImg}
+          imageSrc={liberalBoardSrc}
           imageAlt="Liberal policy board"
           accentClass="text-liberal"
         >
@@ -282,7 +256,7 @@ export function BoardTrack({
 
         <BoardPanel
           title="Fascist Board"
-          imageSrc={fascistBoard.src}
+          imageSrc={fascistBoardSrc}
           imageAlt="Fascist policy board"
           accentClass="text-fascist"
         >
