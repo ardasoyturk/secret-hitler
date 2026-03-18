@@ -27,31 +27,31 @@ import { Vote, type VoteRecord } from "./types";
  * than half.
  */
 export function doesElectionPass(votes: VoteRecord[]): boolean {
-  const totalVotes = votes.length;
-  if (totalVotes === 0) return false;
+	const totalVotes = votes.length;
+	if (totalVotes === 0) return false;
 
-  const jaCount = votes.filter((v) => v.vote === Vote.Ja).length;
+	const jaCount = votes.filter((v) => v.vote === Vote.Ja).length;
 
-  // Strict majority: more than half
-  return jaCount > totalVotes / 2;
+	// Strict majority: more than half
+	return jaCount > totalVotes / 2;
 }
 
 /**
  * Count the votes.
  */
 export function countVotes(votes: VoteRecord[]): {
-  ja: number;
-  nein: number;
-  total: number;
+	ja: number;
+	nein: number;
+	total: number;
 } {
-  const ja = votes.filter((v) => v.vote === Vote.Ja).length;
-  const nein = votes.filter((v) => v.vote === Vote.Nein).length;
-  return { ja, nein, total: votes.length };
+	const ja = votes.filter((v) => v.vote === Vote.Ja).length;
+	const nein = votes.filter((v) => v.vote === Vote.Nein).length;
+	return { ja, nein, total: votes.length };
 }
 
 /**
  * Check if chaos should occur (election tracker reached max).
  */
 export function shouldChaosOccur(failedElections: number): boolean {
-  return failedElections >= MAX_FAILED_ELECTIONS;
+	return failedElections >= MAX_FAILED_ELECTIONS;
 }

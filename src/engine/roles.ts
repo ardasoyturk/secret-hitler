@@ -11,8 +11,8 @@
  */
 
 import { FASCIST_COUNT_BY_PLAYERS } from "./constants";
-import { Role } from "./types";
 import { shuffle } from "./deck";
+import { Role } from "./types";
 
 /**
  * Generate a shuffled array of roles for the given player count.
@@ -22,33 +22,33 @@ import { shuffle } from "./deck";
  * @throws If playerCount is outside 5-10
  */
 export function assignRoles(playerCount: number): Role[] {
-  if (playerCount < 5 || playerCount > 10) {
-    throw new Error(`Invalid player count: ${playerCount}. Must be between 5 and 10.`);
-  }
+	if (playerCount < 5 || playerCount > 10) {
+		throw new Error(`Invalid player count: ${playerCount}. Must be between 5 and 10.`);
+	}
 
-  const fascistCount = FASCIST_COUNT_BY_PLAYERS[playerCount];
-  const liberalCount = playerCount - fascistCount - 1; // -1 for Hitler
+	const fascistCount = FASCIST_COUNT_BY_PLAYERS[playerCount];
+	const liberalCount = playerCount - fascistCount - 1; // -1 for Hitler
 
-  const roles: Role[] = [
-    Role.Hitler,
-    ...Array(fascistCount).fill(Role.Fascist),
-    ...Array(liberalCount).fill(Role.Liberal),
-  ];
+	const roles: Role[] = [
+		Role.Hitler,
+		...Array(fascistCount).fill(Role.Fascist),
+		...Array(liberalCount).fill(Role.Liberal),
+	];
 
-  return shuffle(roles);
+	return shuffle(roles);
 }
 
 /**
  * Get the number of liberals for a given player count.
  */
 export function getLiberalCount(playerCount: number): number {
-  const fascistCount = FASCIST_COUNT_BY_PLAYERS[playerCount] ?? 0;
-  return playerCount - fascistCount - 1;
+	const fascistCount = FASCIST_COUNT_BY_PLAYERS[playerCount] ?? 0;
+	return playerCount - fascistCount - 1;
 }
 
 /**
  * Get the total number of fascist-team members (fascists + Hitler).
  */
 export function getFascistTeamCount(playerCount: number): number {
-  return (FASCIST_COUNT_BY_PLAYERS[playerCount] ?? 0) + 1;
+	return (FASCIST_COUNT_BY_PLAYERS[playerCount] ?? 0) + 1;
 }

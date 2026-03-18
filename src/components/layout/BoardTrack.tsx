@@ -1,305 +1,283 @@
-import type { Board, ElectionTracker } from "@engine/types";
-import { ExecutivePower } from "@engine/types";
-import {
-  getPlayerCountBracket,
-  EXECUTIVE_POWERS,
-} from "@engine/constants";
-import type { ReactNode } from "react";
-
 import boardFascist56Img from "@assets/boards/board-fascist-5-6.png";
 import boardFascist78Img from "@assets/boards/board-fascist-7-8.png";
 import boardFascist910Img from "@assets/boards/board-fascist-9-10.png";
 import boardLiberalImg from "@assets/boards/board-liberal.png";
-import policyLiberalImg from "@assets/boards/board-policy-liberal.png";
 import policyFascistImg from "@assets/boards/board-policy-fascist.png";
+import policyLiberalImg from "@assets/boards/board-policy-liberal.png";
 import trackerMarkerImg from "@assets/boards/board-tracker.png";
 import { useOptimizedAsset } from "@components/game/OptimizedAssets";
+import { getPlayerCountBracket, EXECUTIVE_POWERS } from "@engine/constants";
+import type { Board, ElectionTracker } from "@engine/types";
+import { ExecutivePower } from "@engine/types";
+import type { ReactNode } from "react";
 
 type AssetRef = string | { src: string };
 
 interface SlotRect {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+	x: number;
+	y: number;
+	width: number;
+	height: number;
 }
 
 interface SvgLayout {
-  policySlots: SlotRect[];
-  trackerSlots: SlotRect[];
+	policySlots: SlotRect[];
+	trackerSlots: SlotRect[];
 }
 
 const VIEWBOX_WIDTH = 1683;
 const VIEWBOX_HEIGHT = 650;
 
 function rect(x: number, y: number, width: number, height: number): SlotRect {
-  return {
-    x: x / VIEWBOX_WIDTH,
-    y: y / VIEWBOX_HEIGHT,
-    width: width / VIEWBOX_WIDTH,
-    height: height / VIEWBOX_HEIGHT,
-  };
+	return {
+		x: x / VIEWBOX_WIDTH,
+		y: y / VIEWBOX_HEIGHT,
+		width: width / VIEWBOX_WIDTH,
+		height: height / VIEWBOX_HEIGHT,
+	};
+}
+
+function getSlotKey(prefix: string, slot: SlotRect): string {
+	return `${prefix}-${slot.x}-${slot.y}-${slot.width}-${slot.height}`;
 }
 
 const LIBERAL_LAYOUT: SvgLayout = {
-  policySlots: [
-    rect(285, 182, 194, 268),
-    rect(515, 182, 194, 268),
-    rect(745, 182, 194, 268),
-    rect(975, 182, 194, 268),
-    rect(1205, 182, 194, 268),
-  ],
-  trackerSlots: [
-    rect(581, 495, 42, 46),
-    rect(736, 495, 42, 46),
-    rect(890, 495, 42, 46),
-  ],
+	policySlots: [
+		rect(285, 182, 194, 268),
+		rect(515, 182, 194, 268),
+		rect(745, 182, 194, 268),
+		rect(975, 182, 194, 268),
+		rect(1205, 182, 194, 268),
+	],
+	trackerSlots: [rect(581, 495, 42, 46), rect(736, 495, 42, 46), rect(890, 495, 42, 46)],
 };
 
 const FASCIST_LAYOUT: SvgLayout = {
-  policySlots: [
-    rect(170, 182, 194.3, 268),
-    rect(400, 182, 194.3, 268),
-    rect(630, 182, 194.3, 268),
-    rect(860, 182, 194.3, 268),
-    rect(1090, 182, 194.3, 268),
-    rect(1320, 182, 194.3, 268),
-  ],
-  trackerSlots: [],
+	policySlots: [
+		rect(170, 182, 194.3, 268),
+		rect(400, 182, 194.3, 268),
+		rect(630, 182, 194.3, 268),
+		rect(860, 182, 194.3, 268),
+		rect(1090, 182, 194.3, 268),
+		rect(1320, 182, 194.3, 268),
+	],
+	trackerSlots: [],
 };
 
 const FASCIST_BOARD_MAP: Record<string, { assetKey: string; fallbackSrc: AssetRef; layout: SvgLayout }> = {
-  "5-6": { assetKey: "boards/board-fascist-5-6.png", fallbackSrc: boardFascist56Img, layout: FASCIST_LAYOUT },
-  "7-8": { assetKey: "boards/board-fascist-7-8.png", fallbackSrc: boardFascist78Img, layout: FASCIST_LAYOUT },
-  "9-10": { assetKey: "boards/board-fascist-9-10.png", fallbackSrc: boardFascist910Img, layout: FASCIST_LAYOUT },
+	"5-6": { assetKey: "boards/board-fascist-5-6.png", fallbackSrc: boardFascist56Img, layout: FASCIST_LAYOUT },
+	"7-8": { assetKey: "boards/board-fascist-7-8.png", fallbackSrc: boardFascist78Img, layout: FASCIST_LAYOUT },
+	"9-10": { assetKey: "boards/board-fascist-9-10.png", fallbackSrc: boardFascist910Img, layout: FASCIST_LAYOUT },
 };
 
 const EXECUTIVE_POWER_ICONS: Record<ExecutivePower, string> = {
-  [ExecutivePower.None]: "",
-  [ExecutivePower.InvestigateLoyalty]: "Investigate",
-  [ExecutivePower.PolicyPeek]: "Peek",
-  [ExecutivePower.SpecialElection]: "Election",
-  [ExecutivePower.Execution]: "Execution",
+	[ExecutivePower.None]: "",
+	[ExecutivePower.InvestigateLoyalty]: "Investigate",
+	[ExecutivePower.PolicyPeek]: "Peek",
+	[ExecutivePower.SpecialElection]: "Election",
+	[ExecutivePower.Execution]: "Execution",
 };
 
 interface BoardTrackProps {
-  board: Board;
-  electionTracker: ElectionTracker;
-  playerCount: number;
-  vetoUnlocked: boolean;
-  className?: string;
+	board: Board;
+	electionTracker: ElectionTracker;
+	playerCount: number;
+	vetoUnlocked: boolean;
+	className?: string;
 }
 
 function PolicySlots({
-  count,
-  slots,
-  imageSrc,
-  altPrefix,
+	count,
+	slots,
+	imageSrc,
+	altPrefix,
 }: {
-  count: number;
-  slots: SlotRect[];
-  imageSrc: AssetRef;
-  altPrefix: string;
+	count: number;
+	slots: SlotRect[];
+	imageSrc: AssetRef;
+	altPrefix: string;
 }) {
-  return (
-    <>
-      {slots.map((slot, index) => (
-        <div
-          key={index}
-          className="absolute"
-          style={{
-            left: `${slot.x * 100}%`,
-            top: `${slot.y * 100}%`,
-            width: `${slot.width * 100}%`,
-            height: `${slot.height * 100}%`,
-          }}
-        >
-          {index < count && (
-            <img
-              src={assetSrc(imageSrc)}
-              alt={`${altPrefix} ${index + 1}`}
-              className="h-full w-full object-contain drop-shadow-[0_10px_12px_rgba(0,0,0,0.24)] scale-pop"
-              draggable={false}
-            />
-          )}
-        </div>
-      ))}
-    </>
-  );
+	return (
+		<>
+			{slots.map((slot, index) => (
+				<div
+					key={getSlotKey(altPrefix, slot)}
+					className="absolute"
+					style={{
+						left: `${slot.x * 100}%`,
+						top: `${slot.y * 100}%`,
+						width: `${slot.width * 100}%`,
+						height: `${slot.height * 100}%`,
+					}}
+				>
+					{index < count && (
+						<img
+							src={assetSrc(imageSrc)}
+							alt={`${altPrefix} ${index + 1}`}
+							className="scale-pop h-full w-full object-contain drop-shadow-[0_10px_12px_rgba(0,0,0,0.24)]"
+							draggable={false}
+						/>
+					)}
+				</div>
+			))}
+		</>
+	);
 }
 
 function TrackerSlots({
-  count,
-  slots,
-  imageSrc,
-  altPrefix,
+	count,
+	slots,
+	imageSrc,
+	altPrefix,
 }: {
-  count: number;
-  slots: SlotRect[];
-  imageSrc: AssetRef;
-  altPrefix: string;
+	count: number;
+	slots: SlotRect[];
+	imageSrc: AssetRef;
+	altPrefix: string;
 }) {
-  return (
-    <>
-      {slots.slice(0, 3).map((slot, index) => (
-        <div
-          key={index}
-          className="absolute"
-          style={{
-            left: `${slot.x * 100}%`,
-            top: `${slot.y * 100}%`,
-            width: `${slot.width * 100}%`,
-            height: `${slot.height * 100}%`,
-          }}
-        >
-          {index < count && (
-            <img
-              src={assetSrc(imageSrc)}
-              alt={`${altPrefix} ${index + 1}`}
-              className="h-full w-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.32)] scale-pop"
-              draggable={false}
-            />
-          )}
-        </div>
-      ))}
-    </>
-  );
+	return (
+		<>
+			{slots.slice(0, 3).map((slot, index) => (
+				<div
+					key={getSlotKey(altPrefix, slot)}
+					className="absolute"
+					style={{
+						left: `${slot.x * 100}%`,
+						top: `${slot.y * 100}%`,
+						width: `${slot.width * 100}%`,
+						height: `${slot.height * 100}%`,
+					}}
+				>
+					{index < count && (
+						<img
+							src={assetSrc(imageSrc)}
+							alt={`${altPrefix} ${index + 1}`}
+							className="scale-pop h-full w-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.32)]"
+							draggable={false}
+						/>
+					)}
+				</div>
+			))}
+		</>
+	);
 }
 
 function BoardPanel({
-  title,
-  imageSrc,
-  imageAlt,
-  accentClass,
-  children,
-  aspectClass,
+	title,
+	imageSrc,
+	imageAlt,
+	accentClass,
+	children,
+	aspectClass,
 }: {
-  title: string;
-  imageSrc: AssetRef;
-  imageAlt: string;
-  accentClass: string;
-  children: ReactNode;
-  aspectClass?: string;
+	title: string;
+	imageSrc: AssetRef;
+	imageAlt: string;
+	accentClass: string;
+	children: ReactNode;
+	aspectClass?: string;
 }) {
-  return (
-    <section className="min-w-0 flex-1">
-      <div className="mb-2 flex items-center justify-center gap-3">
-        <span className={["h-px w-8 bg-gradient-to-r from-transparent to-current opacity-55", accentClass].join(" ")} />
-        <p className={["font-heading text-xl tracking-[0.12em]", accentClass].join(" ")}>{title}</p>
-        <span className={["h-px w-8 bg-gradient-to-l from-transparent to-current opacity-55", accentClass].join(" ")} />
-      </div>
-      <div className="relative overflow-hidden rounded-[20px] border border-white/8 bg-[#1a120d] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_34px_rgba(0,0,0,0.28)]">
-        <div className={["relative overflow-hidden rounded-[16px]", aspectClass ?? "aspect-[1683/650]"].join(" ")}>
-          <img src={assetSrc(imageSrc)} alt={imageAlt} className="h-full w-full object-cover" draggable={false} />
-          <div className="absolute inset-0">{children}</div>
-        </div>
-      </div>
-    </section>
-  );
+	return (
+		<section className="min-w-0 flex-1">
+			<div className="mb-2 flex items-center justify-center gap-3">
+				<span className={["h-px w-8 bg-gradient-to-r from-transparent to-current opacity-55", accentClass].join(" ")} />
+				<p className={["font-heading text-xl tracking-[0.12em]", accentClass].join(" ")}>{title}</p>
+				<span className={["h-px w-8 bg-gradient-to-l from-transparent to-current opacity-55", accentClass].join(" ")} />
+			</div>
+			<div className="relative overflow-hidden rounded-[20px] border border-white/8 bg-[#1a120d] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_34px_rgba(0,0,0,0.28)]">
+				<div className={["relative overflow-hidden rounded-[16px]", aspectClass ?? "aspect-[1683/650]"].join(" ")}>
+					<img src={assetSrc(imageSrc)} alt={imageAlt} className="h-full w-full object-cover" draggable={false} />
+					<div className="absolute inset-0">{children}</div>
+				</div>
+			</div>
+		</section>
+	);
 }
 
 function assetSrc(asset: AssetRef): string {
-  return typeof asset === "string" ? asset : asset.src;
+	return typeof asset === "string" ? asset : asset.src;
 }
 
-export function BoardTrack({
-  board,
-  electionTracker,
-  playerCount,
-  vetoUnlocked,
-  className = "",
-}: BoardTrackProps) {
-  const bracket = getPlayerCountBracket(playerCount);
-  const fascistBoard = FASCIST_BOARD_MAP[bracket] ?? FASCIST_BOARD_MAP["5-6"];
-  const executivePowers = EXECUTIVE_POWERS[bracket];
-  const failedElections = Math.max(0, Math.min(3, electionTracker.failedElections));
-  const liberalBoardSrc = useOptimizedAsset(
-    "boards/board-liberal.png",
-    assetSrc(boardLiberalImg),
-  );
-  const fascistBoardSrc = useOptimizedAsset(
-    fascistBoard.assetKey,
-    assetSrc(fascistBoard.fallbackSrc),
-  );
-  const liberalPolicySrc = useOptimizedAsset(
-    "boards/board-policy-liberal.png",
-    assetSrc(policyLiberalImg),
-  );
-  const fascistPolicySrc = useOptimizedAsset(
-    "boards/board-policy-fascist.png",
-    assetSrc(policyFascistImg),
-  );
-  const trackerSrc = useOptimizedAsset("boards/board-tracker.png", assetSrc(trackerMarkerImg));
+export function BoardTrack({ board, electionTracker, playerCount, vetoUnlocked, className = "" }: BoardTrackProps) {
+	const bracket = getPlayerCountBracket(playerCount);
+	const fascistBoard = FASCIST_BOARD_MAP[bracket] ?? FASCIST_BOARD_MAP["5-6"];
+	const executivePowers = EXECUTIVE_POWERS[bracket];
+	const failedElections = Math.max(0, Math.min(3, electionTracker.failedElections));
+	const liberalBoardSrc = useOptimizedAsset("boards/board-liberal.png", assetSrc(boardLiberalImg));
+	const fascistBoardSrc = useOptimizedAsset(fascistBoard.assetKey, assetSrc(fascistBoard.fallbackSrc));
+	const liberalPolicySrc = useOptimizedAsset("boards/board-policy-liberal.png", assetSrc(policyLiberalImg));
+	const fascistPolicySrc = useOptimizedAsset("boards/board-policy-fascist.png", assetSrc(policyFascistImg));
+	const trackerSrc = useOptimizedAsset("boards/board-tracker.png", assetSrc(trackerMarkerImg));
 
-  return (
-    <div className={["mx-auto w-full max-w-6xl", className].filter(Boolean).join(" ")}>
-      <div className="grid items-center gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <BoardPanel
-          title="Liberal Board"
-          imageSrc={liberalBoardSrc}
-          imageAlt="Liberal policy board"
-          accentClass="text-liberal"
-        >
-          <PolicySlots
-            count={board.liberalPolicies}
-            slots={LIBERAL_LAYOUT.policySlots}
-            imageSrc={liberalPolicySrc}
-            altPrefix="Liberal policy"
-          />
-          <TrackerSlots
-            count={failedElections}
-            slots={LIBERAL_LAYOUT.trackerSlots}
-            imageSrc={trackerSrc}
-            altPrefix="Failed election marker"
-          />
-        </BoardPanel>
+	return (
+		<div className={["mx-auto w-full max-w-6xl", className].filter(Boolean).join(" ")}>
+			<div className="grid items-center gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+				<BoardPanel
+					title="Liberal Board"
+					imageSrc={liberalBoardSrc}
+					imageAlt="Liberal policy board"
+					accentClass="text-liberal"
+				>
+					<PolicySlots
+						count={board.liberalPolicies}
+						slots={LIBERAL_LAYOUT.policySlots}
+						imageSrc={liberalPolicySrc}
+						altPrefix="Liberal policy"
+					/>
+					<TrackerSlots
+						count={failedElections}
+						slots={LIBERAL_LAYOUT.trackerSlots}
+						imageSrc={trackerSrc}
+						altPrefix="Failed election marker"
+					/>
+				</BoardPanel>
 
-        <BoardPanel
-          title="Fascist Board"
-          imageSrc={fascistBoardSrc}
-          imageAlt="Fascist policy board"
-          accentClass="text-fascist"
-        >
-          <PolicySlots
-            count={board.fascistPolicies}
-            slots={fascistBoard.layout.policySlots}
-            imageSrc={fascistPolicySrc}
-            altPrefix="Fascist policy"
-          />
-          {fascistBoard.layout.policySlots.map((slot, index) => {
-            const power = executivePowers[index + 1];
-            if (!power || power === ExecutivePower.None || index < board.fascistPolicies) {
-              return null;
-            }
+				<BoardPanel
+					title="Fascist Board"
+					imageSrc={fascistBoardSrc}
+					imageAlt="Fascist policy board"
+					accentClass="text-fascist"
+				>
+					<PolicySlots
+						count={board.fascistPolicies}
+						slots={fascistBoard.layout.policySlots}
+						imageSrc={fascistPolicySrc}
+						altPrefix="Fascist policy"
+					/>
+					{fascistBoard.layout.policySlots.map((slot, index) => {
+						const power = executivePowers[index + 1];
+						if (!power || power === ExecutivePower.None || index < board.fascistPolicies) {
+							return null;
+						}
 
-            return (
-              <span
-                key={`power-${index}`}
-                className="absolute rounded-full bg-black/52 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-[0.18em] text-text-secondary"
-                style={{
-                  left: `${(slot.x + slot.width / 2) * 100}%`,
-                  top: `${(slot.y + slot.height / 2) * 100 + 18.2}%`,
-                  transform: "translate(-50%, -50%)",
-                }}
-              >
-                {EXECUTIVE_POWER_ICONS[power]}
-              </span>
-            );
-          })}
-          {vetoUnlocked && fascistBoard.layout.policySlots[4] && (
-            <span
-              className="absolute rounded-full border border-gold/30 bg-black/62 px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.2em] text-gold"
-              style={{
-                left: `${(fascistBoard.layout.policySlots[4].x + fascistBoard.layout.policySlots[4].width / 2) * 100}%`,
-                top: `${(fascistBoard.layout.policySlots[4].y + fascistBoard.layout.policySlots[4].height / 2) * 100 - 18.8}%`,
-                transform: "translate(-50%, -50%)",
-              }}
-            >
-              Veto
-            </span>
-          )}
-        </BoardPanel>
-      </div>
-    </div>
-  );
+						return (
+							<span
+								key={getSlotKey(`power-${power}`, slot)}
+								className="text-text-secondary absolute rounded-full bg-black/52 px-1.5 py-0.5 text-[8px] font-semibold tracking-[0.18em] uppercase"
+								style={{
+									left: `${(slot.x + slot.width / 2) * 100}%`,
+									top: `${(slot.y + slot.height / 2) * 100 + 18.2}%`,
+									transform: "translate(-50%, -50%)",
+								}}
+							>
+								{EXECUTIVE_POWER_ICONS[power]}
+							</span>
+						);
+					})}
+					{vetoUnlocked && fascistBoard.layout.policySlots[4] && (
+						<span
+							className="border-gold/30 text-gold absolute rounded-full border bg-black/62 px-2 py-0.5 text-[8px] font-bold tracking-[0.2em] uppercase"
+							style={{
+								left: `${(fascistBoard.layout.policySlots[4].x + fascistBoard.layout.policySlots[4].width / 2) * 100}%`,
+								top: `${(fascistBoard.layout.policySlots[4].y + fascistBoard.layout.policySlots[4].height / 2) * 100 - 18.8}%`,
+								transform: "translate(-50%, -50%)",
+							}}
+						>
+							Veto
+						</span>
+					)}
+				</BoardPanel>
+			</div>
+		</div>
+	);
 }

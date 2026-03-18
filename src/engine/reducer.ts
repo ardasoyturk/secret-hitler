@@ -24,19 +24,9 @@ import {
 	VETO_UNLOCK_FASCIST_POLICY_COUNT,
 	getExecutivePower,
 } from "./constants";
-import {
-	createDeck,
-	discardPolicy,
-	drawCards,
-	reshuffleIfNeeded,
-	peekCards,
-} from "./deck";
+import { createDeck, discardPolicy, drawCards, reshuffleIfNeeded, peekCards } from "./deck";
 import { doesElectionPass, shouldChaosOccur } from "./election";
-import {
-	getNextPresidentIndex,
-	isEligibleChancellor,
-	canInvestigate,
-} from "./eligibility";
+import { getNextPresidentIndex, isEligibleChancellor, canInvestigate } from "./eligibility";
 import { assignRoles } from "./roles";
 import {
 	ExecutivePower,
@@ -51,11 +41,7 @@ import {
 	type Player,
 	PLAYER_COLORS,
 } from "./types";
-import {
-	checkExecutionVictory,
-	checkHitlerChancellorVictory,
-	checkPolicyVictory,
-} from "./victory";
+import { checkExecutionVictory, checkHitlerChancellorVictory, checkPolicyVictory } from "./victory";
 
 // ─── Initial State ──────────────────────────────────────────────────
 
@@ -131,9 +117,7 @@ function enactPolicy(state: GameState, policy: PolicyType): GameState {
 		newBoard.fascistPolicies += 1;
 	}
 
-	const vetoUnlocked =
-		state.vetoUnlocked ||
-		newBoard.fascistPolicies >= VETO_UNLOCK_FASCIST_POLICY_COUNT;
+	const vetoUnlocked = state.vetoUnlocked || newBoard.fascistPolicies >= VETO_UNLOCK_FASCIST_POLICY_COUNT;
 
 	return {
 		...state,
@@ -157,9 +141,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 				id: state.players.length,
 				name: action.name,
 				portraitIndex: action.portraitIndex,
-				color: PLAYER_COLORS[
-					state.players.length % PLAYER_COLORS.length
-				],
+				color: PLAYER_COLORS[state.players.length % PLAYER_COLORS.length],
 				role: Role.Liberal, // placeholder, assigned on START_GAME
 				isAlive: true,
 				hasBeenInvestigated: false,
@@ -168,18 +150,13 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 			return {
 				...state,
 				players: [...state.players, newPlayer],
-				log: [
-					...state.log,
-					addLog(state, `${action.name} joined the game.`),
-				],
+				log: [...state.log, addLog(state, `${action.name} joined the game.`)],
 			};
 		}
 
 		case "REMOVE_PLAYER": {
 			if (state.phase !== GamePhase.Setup) return state;
-			const filtered = state.players.filter(
-				(p) => p.id !== action.playerId,
-			);
+			const filtered = state.players.filter((p) => p.id !== action.playerId);
 			// Re-index IDs and colors
 			const reindexed = filtered.map((p, i) => ({
 				...p,
@@ -194,24 +171,13 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
 		case "REORDER_PLAYER": {
 			if (state.phase !== GamePhase.Setup) return state;
-			const idx = state.players.findIndex(
-				(p) => p.id === action.playerId,
-			);
+			const idx = state.players.findIndex((p) => p.id === action.playerId);
 			if (idx === -1) return state;
 			const newPlayers = [...state.players];
 			if (action.direction === "up" && idx > 0) {
-				[newPlayers[idx - 1], newPlayers[idx]] = [
-					newPlayers[idx],
-					newPlayers[idx - 1],
-				];
-			} else if (
-				action.direction === "down" &&
-				idx < newPlayers.length - 1
-			) {
-				[newPlayers[idx], newPlayers[idx + 1]] = [
-					newPlayers[idx + 1],
-					newPlayers[idx],
-				];
+				[newPlayers[idx - 1], newPlayers[idx]] = [newPlayers[idx], newPlayers[idx - 1]];
+			} else if (action.direction === "down" && idx < newPlayers.length - 1) {
+				[newPlayers[idx], newPlayers[idx + 1]] = [newPlayers[idx + 1], newPlayers[idx]];
 			} else {
 				return state;
 			}
@@ -226,12 +192,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
 		case "REORDER_PLAYER_TO": {
 			if (state.phase !== GamePhase.Setup) return state;
-			const fromIndex = state.players.findIndex(
-				(p) => p.id === action.fromPlayerId,
-			);
-			const toIndex = state.players.findIndex(
-				(p) => p.id === action.toPlayerId,
-			);
+			const fromIndex = state.players.findIndex((p) => p.id === action.fromPlayerId);
+			const toIndex = state.players.findIndex((p) => p.id === action.toPlayerId);
 			if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) {
 				return state;
 			}
@@ -262,9 +224,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
 			const deck = createDeck();
 			// Randomly pick first presidential candidate
-			const firstPresidentIndex = Math.floor(
-				Math.random() * state.players.length,
-			);
+			const firstPresidentIndex = Math.floor(Math.random() * state.players.length);
 
 			return {
 				...state,
@@ -274,23 +234,13 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 				presidentIndex: firstPresidentIndex,
 				nightRoundPlayerIndex: 0,
 				round: 1,
-				log: [
-					...state.log,
-					addLog(
-						state,
-						`Game started with ${state.players.length} players.`,
-					),
-				],
+				log: [...state.log, addLog(state, `Game started with ${state.players.length} players.`)],
 			};
 		}
 
 		// ── NIGHT ROUND (role reveal) ─────────────────────────────────
 		case "ACKNOWLEDGE_NIGHT": {
-			if (
-				state.phase !== GamePhase.NightRound &&
-				state.phase !== GamePhase.NightReveal
-			)
-				return state;
+			if (state.phase !== GamePhase.NightRound && state.phase !== GamePhase.NightReveal) return state;
 
 			// If we're on the NightRound phase for a specific player
 			if (state.phase === GamePhase.NightRound) {
@@ -342,23 +292,15 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
 		// ── ELECTION / VOTING ─────────────────────────────────────────
 		case "CAST_VOTE": {
-			if (
-				state.phase !== GamePhase.Election &&
-				state.phase !== GamePhase.VoteCast
-			)
-				return state;
+			if (state.phase !== GamePhase.Election && state.phase !== GamePhase.VoteCast) return state;
 
 			const voter = state.players.find((p) => p.id === action.playerId);
 			if (!voter || !voter.isAlive) return state;
 
 			// Prevent double voting
-			if (state.votes.some((v) => v.playerId === action.playerId))
-				return state;
+			if (state.votes.some((v) => v.playerId === action.playerId)) return state;
 
-			const newVotes = [
-				...state.votes,
-				{ playerId: action.playerId, vote: action.vote },
-			];
+			const newVotes = [...state.votes, { playerId: action.playerId, vote: action.vote }];
 
 			const alivePlayers = state.players.filter((p) => p.isAlive);
 
@@ -374,10 +316,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
 			// More votes needed — find the next alive voter
 			let nextVoterIdx = state.currentVoterIndex + 1;
-			while (
-				nextVoterIdx < state.players.length &&
-				!state.players[nextVoterIdx].isAlive
-			) {
+			while (nextVoterIdx < state.players.length && !state.players[nextVoterIdx].isAlive) {
 				nextVoterIdx++;
 			}
 
@@ -390,11 +329,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 		}
 
 		case "PASS_ELECTION_UNANIMOUSLY": {
-			if (
-				state.phase !== GamePhase.Election &&
-				state.phase !== GamePhase.VoteCast
-			)
-				return state;
+			if (state.phase !== GamePhase.Election && state.phase !== GamePhase.VoteCast) return state;
 
 			const unanimousJaVotes = state.players
 				.filter((player) => player.isAlive)
@@ -417,33 +352,21 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
 			if (electionPasses) {
 				// Successful election
-				const chancellorPlayer = state.players.find(
-					(p) => p.id === state.chancellorNomineeId,
-				);
+				const chancellorPlayer = state.players.find((p) => p.id === state.chancellorNomineeId);
 
 				if (!chancellorPlayer) return state;
 
 				// Check Hitler chancellor victory
-				const hitlerCheck = checkHitlerChancellorVictory(
-					state.board,
-					chancellorPlayer,
-				);
+				const hitlerCheck = checkHitlerChancellorVictory(state.board, chancellorPlayer);
 				if (hitlerCheck.isGameOver) {
 					return {
 						...state,
 						phase: GamePhase.GameOver,
 						winner: hitlerCheck.winner,
 						victoryReason: hitlerCheck.reason,
-						lastElectedPresidentId:
-							state.players[state.presidentIndex].id,
+						lastElectedPresidentId: state.players[state.presidentIndex].id,
 						lastElectedChancellorId: state.chancellorNomineeId,
-						log: [
-							...state.log,
-							addLog(
-								state,
-								"Hitler was elected Chancellor! Fascists win!",
-							),
-						],
+						log: [...state.log, addLog(state, "Hitler was elected Chancellor! Fascists win!")],
 					};
 				}
 
@@ -457,8 +380,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 					phase: GamePhase.PresidentLegislation,
 					deck: deckAfterDraw,
 					presidentHand: drawn,
-					lastElectedPresidentId:
-						state.players[state.presidentIndex].id,
+					lastElectedPresidentId: state.players[state.presidentIndex].id,
 					lastElectedChancellorId: state.chancellorNomineeId,
 					electionTracker: { failedElections: 0 },
 					log: [
@@ -471,8 +393,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 				};
 			}
 			// Election failed
-			const newFailedElections =
-				state.electionTracker.failedElections + 1;
+			const newFailedElections = state.electionTracker.failedElections + 1;
 
 			if (shouldChaosOccur(newFailedElections)) {
 				// CHAOS: top policy enacted, tracker resets, term limits cleared
@@ -504,13 +425,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 						electionTracker: { failedElections: 0 },
 						lastElectedPresidentId: null,
 						lastElectedChancellorId: null,
-						log: [
-							...state.log,
-							addLog(
-								state,
-								`Chaos! Country in turmoil. A ${topPolicy} policy was enacted.`,
-							),
-						],
+						log: [...state.log, addLog(state, `Chaos! Country in turmoil. A ${topPolicy} policy was enacted.`)],
 					};
 				}
 
@@ -521,13 +436,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 					// Term limits reset on chaos
 					lastElectedPresidentId: null,
 					lastElectedChancellorId: null,
-					log: [
-						...state.log,
-						addLog(
-							state,
-							`Chaos! Country in turmoil. A ${topPolicy} policy was enacted.`,
-						),
-					],
+					log: [...state.log, addLog(state, `Chaos! Country in turmoil. A ${topPolicy} policy was enacted.`)],
 				};
 			}
 
@@ -544,16 +453,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 		// ── LEGISLATIVE SESSION ───────────────────────────────────────
 		case "PRESIDENT_DISCARD": {
 			if (state.phase !== GamePhase.PresidentLegislation) return state;
-			if (
-				action.policyIndex < 0 ||
-				action.policyIndex >= state.presidentHand.length
-			)
-				return state;
+			if (action.policyIndex < 0 || action.policyIndex >= state.presidentHand.length) return state;
 
 			const discarded = state.presidentHand[action.policyIndex];
-			const remaining = state.presidentHand.filter(
-				(_, i) => i !== action.policyIndex,
-			);
+			const remaining = state.presidentHand.filter((_, i) => i !== action.policyIndex);
 
 			// Should always result in 2 cards for chancellor
 			if (remaining.length !== CHANCELLOR_HAND_SIZE) return state;
@@ -564,29 +467,19 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 				presidentHand: [],
 				chancellorHand: remaining,
 				deck: discardPolicy(state.deck, discarded),
-				log: [
-					...state.log,
-					addLog(state, "President discarded a policy."),
-				],
+				log: [...state.log, addLog(state, "President discarded a policy.")],
 			};
 		}
 
 		case "CHANCELLOR_ENACT": {
 			if (state.phase !== GamePhase.ChancellorLegislation) return state;
-			if (
-				action.policyIndex < 0 ||
-				action.policyIndex >= state.chancellorHand.length
-			)
-				return state;
+			if (action.policyIndex < 0 || action.policyIndex >= state.chancellorHand.length) return state;
 
 			const enacted = state.chancellorHand[action.policyIndex];
 			const discarded = state.chancellorHand[1 - action.policyIndex];
 
 			const stateWithPolicy = enactPolicy(state, enacted);
-			const deckAfterDiscard = discardPolicy(
-				stateWithPolicy.deck,
-				discarded,
-			);
+			const deckAfterDiscard = discardPolicy(stateWithPolicy.deck, discarded);
 
 			// Check victory
 			const victoryCheck = checkPolicyVictory(stateWithPolicy.board);
@@ -598,10 +491,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 					chancellorHand: [],
 					winner: victoryCheck.winner,
 					victoryReason: victoryCheck.reason,
-					log: [
-						...state.log,
-						addLog(state, `A ${enacted} policy was enacted!`),
-					],
+					log: [...state.log, addLog(state, `A ${enacted} policy was enacted!`)],
 				};
 			}
 
@@ -619,10 +509,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 						policyEnacted: enacted,
 					},
 				],
-				log: [
-					...state.log,
-					addLog(state, `A ${enacted} policy was enacted!`),
-				],
+				log: [...state.log, addLog(state, `A ${enacted} policy was enacted!`)],
 			};
 		}
 
@@ -634,10 +521,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 			return {
 				...state,
 				phase: GamePhase.VetoRequested,
-				log: [
-					...state.log,
-					addLog(state, "Chancellor requested a veto!"),
-				],
+				log: [...state.log, addLog(state, "Chancellor requested a veto!")],
 			};
 
 		case "APPROVE_VETO": {
@@ -649,8 +533,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 				discardedDeck = discardPolicy(discardedDeck, policy);
 			}
 
-			const newFailedElections =
-				state.electionTracker.failedElections + 1;
+			const newFailedElections = state.electionTracker.failedElections + 1;
 
 			// Check chaos after veto
 			if (shouldChaosOccur(newFailedElections)) {
@@ -663,10 +546,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 					discardPile: deck.discardPile,
 				};
 
-				const stateWithPolicy = enactPolicy(
-					{ ...state, deck: deckAfterChaos },
-					topPolicy,
-				);
+				const stateWithPolicy = enactPolicy({ ...state, deck: deckAfterChaos }, topPolicy);
 
 				const victoryCheck = checkPolicyVictory(stateWithPolicy.board);
 				if (victoryCheck.isGameOver) {
@@ -679,13 +559,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 						electionTracker: { failedElections: 0 },
 						lastElectedPresidentId: null,
 						lastElectedChancellorId: null,
-						log: [
-							...state.log,
-							addLog(
-								state,
-								"Veto approved! Chaos ensues — a policy is enacted.",
-							),
-						],
+						log: [...state.log, addLog(state, "Veto approved! Chaos ensues — a policy is enacted.")],
 					};
 				}
 
@@ -696,13 +570,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 					electionTracker: { failedElections: 0 },
 					lastElectedPresidentId: null,
 					lastElectedChancellorId: null,
-					log: [
-						...state.log,
-						addLog(
-							state,
-							"Veto approved! Chaos ensues — a policy is enacted.",
-						),
-					],
+					log: [...state.log, addLog(state, "Veto approved! Chaos ensues — a policy is enacted.")],
 				};
 			}
 
@@ -711,10 +579,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 				deck: discardedDeck,
 				chancellorHand: [],
 				electionTracker: { failedElections: newFailedElections },
-				log: [
-					...state.log,
-					addLog(state, "Veto approved! Both policies discarded."),
-				],
+				log: [...state.log, addLog(state, "Veto approved! Both policies discarded.")],
 			});
 		}
 
@@ -725,22 +590,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 			return {
 				...state,
 				phase: GamePhase.ChancellorLegislation,
-				log: [
-					...state.log,
-					addLog(
-						state,
-						"President rejected the veto. Chancellor must enact a policy.",
-					),
-				],
+				log: [...state.log, addLog(state, "President rejected the veto. Chancellor must enact a policy.")],
 			};
 
 		// ── POLICY ENACTED (acknowledge + check executive power) ──────
 		case "ACKNOWLEDGE_POLICY":
-			if (
-				state.phase !== GamePhase.PolicyEnacted &&
-				state.phase !== GamePhase.ChaosPolicy
-			)
-				return state;
+			if (state.phase !== GamePhase.PolicyEnacted && state.phase !== GamePhase.ChaosPolicy) return state;
 
 			// If this was a chaos policy, skip executive powers per rules
 			if (state.phase === GamePhase.ChaosPolicy) {
@@ -749,10 +604,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
 			// Check for executive power (only on fascist policies)
 			if (state.lastEnactedPolicy === PolicyType.Fascist) {
-				const power = getExecutivePower(
-					state.board.fascistPolicies,
-					state.players.length,
-				);
+				const power = getExecutivePower(state.board.fascistPolicies, state.players.length);
 
 				switch (power) {
 					case ExecutivePower.InvestigateLoyalty:
@@ -802,16 +654,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 				...state,
 				phase: GamePhase.InvestigationResult,
 				investigationTargetId: action.playerId,
-				investigatedPlayerIds: [
-					...state.investigatedPlayerIds,
-					action.playerId,
-				],
+				investigatedPlayerIds: [...state.investigatedPlayerIds, action.playerId],
 				log: [
 					...state.log,
-					addLog(
-						state,
-						`President investigated ${state.players.find((p) => p.id === action.playerId)?.name}.`,
-					),
+					addLog(state, `President investigated ${state.players.find((p) => p.id === action.playerId)?.name}.`),
 				],
 			};
 
@@ -832,19 +678,13 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
 		// ── EXECUTIVE: SPECIAL ELECTION ───────────────────────────────
 		case "SELECT_SPECIAL_ELECTION": {
-			if (state.phase !== GamePhase.ExecutiveSpecialElection)
-				return state;
+			if (state.phase !== GamePhase.ExecutiveSpecialElection) return state;
 
-			const targetPlayer = state.players.find(
-				(p) => p.id === action.playerId,
-			);
+			const targetPlayer = state.players.find((p) => p.id === action.playerId);
 			if (!targetPlayer || !targetPlayer.isAlive) return state;
-			if (action.playerId === state.players[state.presidentIndex].id)
-				return state;
+			if (action.playerId === state.players[state.presidentIndex].id) return state;
 
-			const targetIndex = state.players.findIndex(
-				(p) => p.id === action.playerId,
-			);
+			const targetIndex = state.players.findIndex((p) => p.id === action.playerId);
 
 			return {
 				...state,
@@ -878,17 +718,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 		case "EXECUTE_PLAYER": {
 			if (state.phase !== GamePhase.ExecutiveExecution) return state;
 
-			const targetPlayer = state.players.find(
-				(p) => p.id === action.playerId,
-			);
+			const targetPlayer = state.players.find((p) => p.id === action.playerId);
 			if (!targetPlayer || !targetPlayer.isAlive) return state;
-			if (action.playerId === state.players[state.presidentIndex].id)
-				return state;
+			if (action.playerId === state.players[state.presidentIndex].id) return state;
 
 			// Kill the player
-			const updatedPlayers = state.players.map((p) =>
-				p.id === action.playerId ? { ...p, isAlive: false } : p,
-			);
+			const updatedPlayers = state.players.map((p) => (p.id === action.playerId ? { ...p, isAlive: false } : p));
 
 			// Check if Hitler was executed
 			const hitlerCheck = checkExecutionVictory(targetPlayer);
@@ -900,13 +735,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 					executedPlayerId: action.playerId,
 					winner: hitlerCheck.winner,
 					victoryReason: hitlerCheck.reason,
-					log: [
-						...state.log,
-						addLog(
-							state,
-							`${targetPlayer.name} was executed. They were Hitler! Liberals win!`,
-						),
-					],
+					log: [...state.log, addLog(state, `${targetPlayer.name} was executed. They were Hitler! Liberals win!`)],
 				};
 			}
 
@@ -915,13 +744,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 				...state,
 				players: updatedPlayers,
 				executedPlayerId: action.playerId,
-				log: [
-					...state.log,
-					addLog(
-						state,
-						`${targetPlayer.name} was executed. They were not Hitler.`,
-					),
-				],
+				log: [...state.log, addLog(state, `${targetPlayer.name} was executed. They were not Hitler.`)],
 			});
 		}
 

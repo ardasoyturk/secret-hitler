@@ -1,15 +1,8 @@
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import type { ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 export function ViewportOverlay({ children }: { children: ReactNode }) {
-  const [mounted, setMounted] = useState(false);
+	if (typeof document === "undefined") return null;
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
-  return createPortal(children, document.body);
+	return createPortal(children, document.body);
 }

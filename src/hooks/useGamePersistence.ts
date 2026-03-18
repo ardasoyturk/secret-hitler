@@ -1,11 +1,10 @@
 /**
- * useGamePersistence — localStorage persistence for game state.
+ * Game persistence helpers for localStorage.
  *
- * Saves game state on every change and restores on mount.
- * Uses a versioned schema to handle future migrations.
+ * Kept as plain functions so the game flow can stay event-driven
+ * without relying on useEffect for synchronization.
  */
 
-import { useEffect } from "react";
 import type { GameState } from "@engine/types";
 import { GamePhase } from "@engine/types";
 
@@ -18,9 +17,6 @@ interface PersistedData {
 	savedAt: number;
 }
 
-/**
- * Save game state to localStorage.
- */
 function saveGameState(state: GameState): void {
 	try {
 		const data: PersistedData = {
@@ -30,32 +26,22 @@ function saveGameState(state: GameState): void {
 		};
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 	} catch {
-		// localStorage might be full or unavailable — silently fail
+		// localStorage might be full or unavailable.
 	}
 }
 
-/**
- * Load game state from localStorage.
- * Returns null if no saved state or if the schema version doesn't match.
- */
 export function loadGameState(): GameState | null {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY);
 		if (!raw) return null;
 
 		const data: PersistedData = JSON.parse(raw);
-
-		// Version check — reject old schemas
 		if (data.version !== SCHEMA_VERSION) {
 			clearGameState();
 			return null;
 		}
 
-		// Don't restore if the game is in Setup or GameOver
-		if (
-			data.state.phase === GamePhase.Setup ||
-			data.state.phase === GamePhase.GameOver
-		) {
+		if (data.state.phase === GamePhase.Setup || data.state.phase === GamePhase.GameOver) {
 			return null;
 		}
 
@@ -66,33 +52,19 @@ export function loadGameState(): GameState | null {
 	}
 }
 
-/**
- * Clear saved game state.
- */
 export function clearGameState(): void {
 	try {
 		localStorage.removeItem(STORAGE_KEY);
 	} catch {
-		// silently fail
+		// localStorage might be unavailable.
 	}
 }
 
-/**
- * Hook that auto-saves game state on every change.
- */
-export function useGamePersistence(state: GameState): void {
-	useEffect(() => {
-		// Only persist active games
-		if (state.phase !== GamePhase.Setup) {
-			saveGameState(state);
-		}
+export function syncGameState(state: GameState): void {
+	if (state.phase === GamePhase.Setup || state.phase === GamePhase.GameOver) {
+		clearGameState();
+		return;
+	}
 
-		// Clear on game over or new game
-		if (
-			state.phase === GamePhase.GameOver ||
-			state.phase === GamePhase.Setup
-		) {
-			clearGameState();
-		}
-	}, [state]);
+	saveGameState(state);
 }

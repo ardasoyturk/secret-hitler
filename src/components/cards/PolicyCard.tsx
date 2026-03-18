@@ -6,78 +6,78 @@
  */
 
 import policyFascistImg from "@assets/cards/policy-fascist.png";
-import policyLiberalImg from "@assets/cards/policy-liberal.png";
 import policyBackImg from "@assets/cards/policy-folder-cover-back.png";
+import policyLiberalImg from "@assets/cards/policy-liberal.png";
 import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 
 const SIZE_CLASSES = {
-  sm: "w-[60px]",
-  md: "w-[90px]",
-  lg: "w-[130px]",
+	sm: "w-[60px]",
+	md: "w-[90px]",
+	lg: "w-[130px]",
 } as const;
 
 interface PolicyCardProps {
-  type: "liberal" | "fascist";
-  size?: "sm" | "md" | "lg";
-  revealed?: boolean;
-  onClick?: () => void;
-  selected?: boolean;
-  className?: string;
+	type: "liberal" | "fascist";
+	size?: "sm" | "md" | "lg";
+	revealed?: boolean;
+	onClick?: () => void;
+	selected?: boolean;
+	className?: string;
 }
 
 export function PolicyCard({
-  type,
-  size = "md",
-  revealed = true,
-  onClick,
-  selected = false,
-  className = "",
+	type,
+	size = "md",
+	revealed = true,
+	onClick,
+	selected = false,
+	className = "",
 }: PolicyCardProps) {
-  const isClickable = !!onClick;
+	const isClickable = !!onClick;
 
-  const policyImg = type === "fascist" ? policyFascistImg : policyLiberalImg;
-  const revealedSrc = useOptimizedAsset(
-    type === "fascist" ? "cards/policy-fascist.png" : "cards/policy-liberal.png",
-    policyImg.src,
-  );
-  const backSrc = useOptimizedAsset("cards/policy-folder-cover-back.png", policyBackImg.src);
-  const imgSrc = revealed ? revealedSrc : backSrc;
-  const altText = revealed ? `${type} policy` : "Policy card (face down)";
+	const policyImg = type === "fascist" ? policyFascistImg : policyLiberalImg;
+	const revealedSrc = useOptimizedAsset(
+		type === "fascist" ? "cards/policy-fascist.png" : "cards/policy-liberal.png",
+		policyImg.src,
+	);
+	const backSrc = useOptimizedAsset("cards/policy-folder-cover-back.png", policyBackImg.src);
+	const imgSrc = revealed ? revealedSrc : backSrc;
+	const altText = revealed ? `${type} policy` : "Policy card (face down)";
 
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={!isClickable}
-      className={[
-        "relative flex-shrink-0 rounded-[var(--radius-card)] overflow-hidden",
-        "transition-all duration-[var(--transition-normal)]",
-        SIZE_CLASSES[size],
-        // shadow
-        "shadow-[var(--shadow-card)]",
-        // selected gold glow
-        selected && "ring-2 ring-gold shadow-[0_0_16px_rgba(246,181,63,0.6)]",
-        // clickable hover/active
-        isClickable && "cursor-pointer hover:scale-105 active:scale-95",
-        !isClickable && "cursor-default",
-        // reveal animation
-        revealed && "scale-pop",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
-    >
-      <img
-        src={imgSrc}
-        alt={altText}
-        className="w-full h-auto block select-none pointer-events-none"
-        draggable={false}
-      />
+	return (
+		<button
+			type="button"
+			onClick={onClick}
+			disabled={!isClickable}
+			className={[
+				"relative flex-shrink-0 rounded-[var(--radius-card)] overflow-hidden",
+				"transition-all duration-[var(--transition-normal)]",
+				SIZE_CLASSES[size],
+				// shadow
+				"shadow-[var(--shadow-card)]",
+				// selected gold glow
+				selected && "ring-2 ring-gold shadow-[0_0_16px_rgba(246,181,63,0.6)]",
+				// clickable hover/active
+				isClickable && "cursor-pointer hover:scale-105 active:scale-95",
+				!isClickable && "cursor-default",
+				// reveal animation
+				revealed && "scale-pop",
+				className,
+			]
+				.filter(Boolean)
+				.join(" ")}
+		>
+			<img
+				src={imgSrc}
+				alt={altText}
+				className="pointer-events-none block h-auto w-full select-none"
+				draggable={false}
+			/>
 
-      {/* Subtle shine overlay on hover for clickable cards */}
-      {isClickable && (
-        <span className="absolute inset-0 bg-white/0 hover:bg-white/5 transition-colors duration-[var(--transition-fast)]" />
-      )}
-    </button>
-  );
+			{/* Subtle shine overlay on hover for clickable cards */}
+			{isClickable && (
+				<span className="absolute inset-0 bg-white/0 transition-colors duration-[var(--transition-fast)] hover:bg-white/5" />
+			)}
+		</button>
+	);
 }

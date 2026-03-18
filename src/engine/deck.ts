@@ -12,22 +12,22 @@ import type { PolicyDeck, PolicyType } from "./types";
  * Fisher-Yates shuffle — cryptographically fair in-place shuffle.
  */
 export function shuffle<T>(array: T[]): T[] {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
+	const shuffled = [...array];
+	for (let i = shuffled.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+	}
+	return shuffled;
 }
 
 /**
  * Create a fresh shuffled policy deck.
  */
 export function createDeck(): PolicyDeck {
-  return {
-    drawPile: shuffle(createInitialDeck()),
-    discardPile: [],
-  };
+	return {
+		drawPile: shuffle(createInitialDeck()),
+		discardPile: [],
+	};
 }
 
 /**
@@ -38,14 +38,14 @@ export function createDeck(): PolicyDeck {
  * Policy draw pile, shuffle the discard pile back into the draw pile."
  */
 export function reshuffleIfNeeded(deck: PolicyDeck): PolicyDeck {
-  if (deck.drawPile.length < MIN_DRAW_PILE_SIZE) {
-    const combined = [...deck.drawPile, ...deck.discardPile];
-    return {
-      drawPile: shuffle(combined),
-      discardPile: [],
-    };
-  }
-  return deck;
+	if (deck.drawPile.length < MIN_DRAW_PILE_SIZE) {
+		const combined = [...deck.drawPile, ...deck.discardPile];
+		return {
+			drawPile: shuffle(combined),
+			discardPile: [],
+		};
+	}
+	return deck;
 }
 
 /**
@@ -53,32 +53,32 @@ export function reshuffleIfNeeded(deck: PolicyDeck): PolicyDeck {
  * Caller must ensure reshuffle was done beforehand if needed.
  */
 export function drawCards(
-  deck: PolicyDeck,
-  count: number = PRESIDENT_DRAW_COUNT,
+	deck: PolicyDeck,
+	count: number = PRESIDENT_DRAW_COUNT,
 ): { drawn: PolicyType[]; deck: PolicyDeck } {
-  const drawn = deck.drawPile.slice(0, count);
-  return {
-    drawn,
-    deck: {
-      drawPile: deck.drawPile.slice(count),
-      discardPile: deck.discardPile,
-    },
-  };
+	const drawn = deck.drawPile.slice(0, count);
+	return {
+		drawn,
+		deck: {
+			drawPile: deck.drawPile.slice(count),
+			discardPile: deck.discardPile,
+		},
+	};
 }
 
 /**
  * Discard a policy tile to the discard pile.
  */
 export function discardPolicy(deck: PolicyDeck, policy: PolicyType): PolicyDeck {
-  return {
-    drawPile: deck.drawPile,
-    discardPile: [...deck.discardPile, policy],
-  };
+	return {
+		drawPile: deck.drawPile,
+		discardPile: [...deck.discardPile, policy],
+	};
 }
 
 /**
  * Peek at the top N cards without removing them.
  */
 export function peekCards(deck: PolicyDeck, count: number = PRESIDENT_DRAW_COUNT): PolicyType[] {
-  return deck.drawPile.slice(0, count);
+	return deck.drawPile.slice(0, count);
 }

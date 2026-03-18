@@ -68,12 +68,12 @@ export const MAX_PLAYERS = 10;
  * - 9-10 players: 3 regular fascists + Hitler
  */
 export const FASCIST_COUNT_BY_PLAYERS: Record<number, number> = {
-  5: 1,
-  6: 1,
-  7: 2,
-  8: 2,
-  9: 3,
-  10: 3,
+	5: 1,
+	6: 1,
+	7: 2,
+	8: 2,
+	9: 3,
+	10: 3,
 };
 
 /**
@@ -103,50 +103,50 @@ export const PRESIDENT_TERM_LIMIT_MIN_ALIVE = 6;
  * Note: The 6th fascist policy means fascists win — no power is granted.
  */
 export const EXECUTIVE_POWERS: Record<string, Record<number, ExecutivePower>> = {
-  /** 5-6 players */
-  "5-6": {
-    1: ExecutivePower.None,
-    2: ExecutivePower.None,
-    3: ExecutivePower.PolicyPeek,
-    4: ExecutivePower.Execution,
-    5: ExecutivePower.Execution, // + veto unlocked
-    6: ExecutivePower.None, // game over (fascist win)
-  },
-  /** 7-8 players */
-  "7-8": {
-    1: ExecutivePower.None,
-    2: ExecutivePower.InvestigateLoyalty,
-    3: ExecutivePower.SpecialElection,
-    4: ExecutivePower.Execution,
-    5: ExecutivePower.Execution, // + veto unlocked
-    6: ExecutivePower.None, // game over (fascist win)
-  },
-  /** 9-10 players */
-  "9-10": {
-    1: ExecutivePower.InvestigateLoyalty,
-    2: ExecutivePower.InvestigateLoyalty,
-    3: ExecutivePower.SpecialElection,
-    4: ExecutivePower.Execution,
-    5: ExecutivePower.Execution, // + veto unlocked
-    6: ExecutivePower.None, // game over (fascist win)
-  },
+	/** 5-6 players */
+	"5-6": {
+		1: ExecutivePower.None,
+		2: ExecutivePower.None,
+		3: ExecutivePower.PolicyPeek,
+		4: ExecutivePower.Execution,
+		5: ExecutivePower.Execution, // + veto unlocked
+		6: ExecutivePower.None, // game over (fascist win)
+	},
+	/** 7-8 players */
+	"7-8": {
+		1: ExecutivePower.None,
+		2: ExecutivePower.InvestigateLoyalty,
+		3: ExecutivePower.SpecialElection,
+		4: ExecutivePower.Execution,
+		5: ExecutivePower.Execution, // + veto unlocked
+		6: ExecutivePower.None, // game over (fascist win)
+	},
+	/** 9-10 players */
+	"9-10": {
+		1: ExecutivePower.InvestigateLoyalty,
+		2: ExecutivePower.InvestigateLoyalty,
+		3: ExecutivePower.SpecialElection,
+		4: ExecutivePower.Execution,
+		5: ExecutivePower.Execution, // + veto unlocked
+		6: ExecutivePower.None, // game over (fascist win)
+	},
 };
 
 /**
  * Get the player count bracket key for executive power lookup.
  */
 export function getPlayerCountBracket(playerCount: number): string {
-  if (playerCount <= 6) return "5-6";
-  if (playerCount <= 8) return "7-8";
-  return "9-10";
+	if (playerCount <= 6) return "5-6";
+	if (playerCount <= 8) return "7-8";
+	return "9-10";
 }
 
 /**
  * Get the executive power for a given fascist policy count and player count.
  */
 export function getExecutivePower(fascistPolicyCount: number, playerCount: number): ExecutivePower {
-  const bracket = getPlayerCountBracket(playerCount);
-  return EXECUTIVE_POWERS[bracket][fascistPolicyCount] ?? ExecutivePower.None;
+	const bracket = getPlayerCountBracket(playerCount);
+	return EXECUTIVE_POWERS[bracket][fascistPolicyCount] ?? ExecutivePower.None;
 }
 
 /**
@@ -161,12 +161,12 @@ export const VETO_UNLOCK_FASCIST_POLICY_COUNT = 5;
  * 11 fascist + 6 liberal = 17 tiles.
  */
 export function createInitialDeck(): PolicyType[] {
-  const deck: PolicyType[] = [];
-  for (let i = 0; i < FASCIST_POLICY_COUNT; i++) {
-    deck.push(PolicyType.Fascist);
-  }
-  for (let i = 0; i < LIBERAL_POLICY_COUNT; i++) {
-    deck.push(PolicyType.Liberal);
-  }
-  return deck;
+	const deck: PolicyType[] = [];
+	for (let i = 0; i < FASCIST_POLICY_COUNT; i++) {
+		deck.push(PolicyType.Fascist);
+	}
+	for (let i = 0; i < LIBERAL_POLICY_COUNT; i++) {
+		deck.push(PolicyType.Liberal);
+	}
+	return deck;
 }
