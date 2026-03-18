@@ -51,6 +51,12 @@ export default defineConfig({
     }),
   ],
 
+  image: {
+    service: {
+      entrypoint: "astro/assets/services/sharp",
+    },
+  },
+
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
@@ -59,5 +65,7 @@ export default defineConfig({
   },
 
   output: "static",
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: "compile",
+  }),
 });
