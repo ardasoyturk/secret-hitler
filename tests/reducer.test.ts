@@ -322,6 +322,70 @@ describe("Game Reducer", () => {
       });
       expect(state.votes.length).toBe(votesAfterFirst);
     });
+
+    test("shortcut from Election records unanimous Ja votes and moves to vote result", () => {
+      let state = makeGameReadyState();
+      state = gameReducer(state, {
+        type: "NOMINATE_CHANCELLOR",
+        playerId: 3,
+      });
+
+      state = gameReducer(state, { type: "PASS_ELECTION_UNANIMOUSLY" });
+
+      expect(state.phase).toBe(GamePhase.VoteResult);
+      expect(state.votes).toHaveLength(5);
+      expect(state.votes.every((voteRecord) => voteRecord.vote === Vote.Ja)).toBe(true);
+      expect(state.votes.map((voteRecord) => voteRecord.playerId)).toEqual([0, 1, 2, 3, 4]);
+    });
+
+    test("shortcut from VoteCast overwrites partial votes with unanimous Ja votes", () => {
+      let state = makeGameReadyState();
+      state = gameReducer(state, {
+        type: "NOMINATE_CHANCELLOR",
+        playerId: 3,
+      });
+
+      state = gameReducer(state, {
+        type: "CAST_VOTE",
+        playerId: 0,
+        vote: Vote.Nein,
+      });
+      expect(state.phase).toBe(GamePhase.VoteCast);
+
+      state = gameReducer(state, { type: "PASS_ELECTION_UNANIMOUSLY" });
+
+      expect(state.phase).toBe(GamePhase.VoteResult);
+      expect(state.votes).toHaveLength(5);
+      expect(state.votes.every((voteRecord) => voteRecord.vote === Vote.Ja)).toBe(true);
+    });
+
+    test("shortcut excludes dead players and still follows normal successful election flow", () => {
+      let state = makeGameReadyState(6);
+      state.players[4].isAlive = false;
+
+      state = gameReducer(state, {
+        type: "NOMINATE_CHANCELLOR",
+        playerId: 3,
+      });
+
+      state = gameReducer(state, { type: "PASS_ELECTION_UNANIMOUSLY" });
+
+      expect(state.phase).toBe(GamePhase.VoteResult);
+      expect(state.votes).toHaveLength(5);
+      expect(state.votes.some((voteRecord) => voteRecord.playerId === 4)).toBe(false);
+
+      state = gameReducer(state, { type: "ACKNOWLEDGE_VOTE_RESULT" });
+
+      expect(state.phase).toBe(GamePhase.PresidentLegislation);
+      expect(state.electionTracker.failedElections).toBe(0);
+    });
+
+    test("shortcut is a no-op outside election voting phases", () => {
+      const state = makeGameReadyState();
+      const result = gameReducer(state, { type: "PASS_ELECTION_UNANIMOUSLY" });
+
+      expect(result).toBe(state);
+    });
   });
 
   describe("Chaos (3 failed elections)", () => {

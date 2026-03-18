@@ -44,6 +44,7 @@ import {
 	PartyMembership,
 	PolicyType,
 	Role,
+	Vote,
 	type GameAction,
 	type GameState,
 	type LogEntry,
@@ -385,6 +386,27 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 				phase: GamePhase.VoteCast,
 				votes: newVotes,
 				currentVoterIndex: nextVoterIdx,
+			};
+		}
+
+		case "PASS_ELECTION_UNANIMOUSLY": {
+			if (
+				state.phase !== GamePhase.Election &&
+				state.phase !== GamePhase.VoteCast
+			)
+				return state;
+
+			const unanimousJaVotes = state.players
+				.filter((player) => player.isAlive)
+				.map((player) => ({
+					playerId: player.id,
+					vote: Vote.Ja,
+				}));
+
+			return {
+				...state,
+				phase: GamePhase.VoteResult,
+				votes: unanimousJaVotes,
 			};
 		}
 

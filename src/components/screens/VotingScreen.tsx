@@ -254,6 +254,10 @@ function VoteCastView({
     onVoted();
   }
 
+  function handlePassElection() {
+    dispatch({ type: "PASS_ELECTION_UNANIMOUSLY" });
+  }
+
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-6 px-1 py-3 md:gap-7 md:py-5">
       <div className="text-center slide-up">
@@ -276,6 +280,25 @@ function VoteCastView({
       <div className="flex w-full flex-wrap items-center justify-center gap-6 md:gap-10">
         <VoteCard vote="ja" size="lg" onClick={() => handleVote(Vote.Ja)} />
         <VoteCard vote="nein" size="lg" onClick={() => handleVote(Vote.Nein)} />
+      </div>
+
+      <div className="w-full max-w-2xl rounded-[22px] border border-white/8 bg-bg-card/70 px-4 py-4 text-center shadow-[var(--shadow-card)]">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-text-muted">
+          Table Shortcut
+        </p>
+        <p className="mt-2 text-sm text-text-secondary md:text-base">
+          If everyone agrees on <span className="font-semibold text-liberal">Ja</span>, pass this
+          election in one tap and reveal the normal result.
+        </p>
+        <div className="mt-4">
+          <button
+            type="button"
+            onClick={handlePassElection}
+            className="w-full rounded-[18px] border border-liberal/35 bg-liberal/12 px-6 py-3 font-heading text-xl tracking-wide text-liberal shadow-[0_6px_0_var(--color-liberal-dark),var(--shadow-card)] transition-all duration-200 hover:bg-liberal/18 active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-liberal-dark)] cursor-pointer"
+          >
+            Pass Election as All Ja
+          </button>
+        </div>
       </div>
     </div>
   );

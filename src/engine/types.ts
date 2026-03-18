@@ -286,6 +286,7 @@ export type GameAction =
   | { type: "ACKNOWLEDGE_NIGHT"; playerIndex: number }
   | { type: "NOMINATE_CHANCELLOR"; playerId: number }
   | { type: "CAST_VOTE"; playerId: number; vote: Vote }
+  | { type: "PASS_ELECTION_UNANIMOUSLY" }
   | { type: "ACKNOWLEDGE_VOTE_RESULT" }
   | { type: "PRESIDENT_DISCARD"; policyIndex: number }
   | { type: "CHANCELLOR_ENACT"; policyIndex: number }
