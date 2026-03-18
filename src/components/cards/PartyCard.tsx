@@ -9,16 +9,19 @@ import partyLiberalImg from "@assets/cards/party-membership-liberal.png";
 import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 import { memo } from "react";
 
+import { useI18n } from "@/i18n";
+
 interface PartyCardProps {
 	party: "liberal" | "fascist";
 	className?: string;
 }
 
 export const PartyCard = memo(function PartyCard({ party, className = "" }: PartyCardProps) {
+	const { messages } = useI18n();
 	const liberalSrc = useOptimizedAsset("cards/party-membership-liberal.png", partyLiberalImg.src);
 	const fascistSrc = useOptimizedAsset("cards/party-membership-fascist.png", partyFascistImg.src);
 	const imgSrc = party === "liberal" ? liberalSrc : fascistSrc;
-	const altText = `Party Membership: ${party}`;
+	const altText = messages.cards.partyMembership(messages.enums.partyMemberships[party]);
 
 	const glowClass =
 		party === "liberal" ? "shadow-[0_0_24px_rgba(90,155,166,0.45)]" : "shadow-[0_0_24px_rgba(224,91,43,0.45)]";

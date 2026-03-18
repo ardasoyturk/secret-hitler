@@ -94,10 +94,15 @@ export function useGame(initialState?: GameState): UseGameReturn {
 /**
  * Get the fascist teammates visible to a player during the night phase.
  */
+export interface NightTeammate {
+	name: string;
+	role: Role.Fascist | Role.Hitler;
+}
+
 export function getNightInfo(
 	state: GameState,
 	playerIndex: number,
-): { teammates: string[]; isHitler: boolean; knowsFascists: boolean } {
+): { teammates: NightTeammate[]; isHitler: boolean; knowsFascists: boolean } {
 	const player = state.players[playerIndex];
 	const hitlerKnows = state.players.length <= HITLER_KNOWS_FASCISTS_MAX_PLAYERS;
 
@@ -107,7 +112,9 @@ export function getNightInfo(
 
 	if (player.role === Role.Hitler) {
 		if (hitlerKnows) {
-			const fascists = state.players.filter((p) => p.role === Role.Fascist).map((p) => p.name);
+			const fascists = state.players
+				.filter((p) => p.role === Role.Fascist)
+				.map<NightTeammate>((p) => ({ name: p.name, role: Role.Fascist }));
 			return { teammates: fascists, isHitler: true, knowsFascists: true };
 		}
 		return { teammates: [], isHitler: true, knowsFascists: false };
@@ -116,7 +123,10 @@ export function getNightInfo(
 	// Regular fascist — always knows Hitler and other fascists
 	const teammates = state.players
 		.filter((p) => p.id !== player.id && (p.role === Role.Fascist || p.role === Role.Hitler))
-		.map((p) => `${p.name}${p.role === Role.Hitler ? " (Hitler)" : " (Fascist)"}`);
+		.map<NightTeammate>((p) => ({
+			name: p.name,
+			role: p.role === Role.Hitler ? Role.Hitler : Role.Fascist,
+		}));
 
 	return { teammates, isHitler: false, knowsFascists: true };
 }

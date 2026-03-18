@@ -16,6 +16,8 @@ import type { GameState, GameAction } from "@engine/types";
 import { GamePhase } from "@engine/types";
 import { memo, useCallback, useState } from "react";
 
+import { useI18n } from "@/i18n";
+
 interface ScreenProps {
 	state: GameState;
 	dispatch: (action: GameAction) => void;
@@ -28,22 +30,22 @@ function getPolicyKey(policies: readonly string[], policy: string, index: number
 
 function PrivacyGate({
 	playerName,
-	officeLabel,
 	onReady,
 }: {
 	playerName: string;
-	officeLabel: string;
 	onReady: () => void;
 }) {
+	const { headingText, messages } = useI18n();
+
 	return (
 		<ViewportOverlay>
 			<div className="privacy-screen">
 				<div className="privacy-dialog text-center">
-					<h2 className="privacy-title">Pass the Device</h2>
-					<p className="privacy-subtitle">Hand the device to the {officeLabel}</p>
-					<p className="privacy-name">{playerName}</p>
+					<h2 className="privacy-title">{headingText(messages.common.passDevice)}</h2>
+					<p className="privacy-subtitle">{messages.common.handDeviceTo}</p>
+					<p className="privacy-name">{headingText(playerName)}</p>
 					<button type="button" onClick={onReady} className="primary-action-button">
-						I&apos;m Ready
+						{headingText(messages.common.ready)}
 					</button>
 				</div>
 			</div>
@@ -77,6 +79,7 @@ const PolicyChoice = memo(function PolicyChoice({
 });
 
 export function LegislativeScreen({ state, dispatch }: ScreenProps) {
+	const { headingText, messages } = useI18n();
 	const [showPrivacy, setShowPrivacy] = useState(true);
 	const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 	const toggleSelectedIndex = useCallback((index: number) => {
@@ -94,7 +97,6 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 			return (
 				<PrivacyGate
 					playerName={president.name}
-					officeLabel="President"
 					onReady={() => {
 						setShowPrivacy(false);
 						setSelectedIndex(null);
@@ -107,13 +109,10 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:gap-6 md:py-5">
 				<div className="slide-up flex-shrink-0 text-center">
 					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
-						Legislative Session
+						{messages.legislative.session}
 					</p>
-					<h2 className="font-heading text-gold mb-1 text-3xl">President {president.name}</h2>
-					<p className="text-text-secondary text-sm md:text-base">
-						Examine these 3 policies. <span className="text-fascist font-semibold">Discard one</span> and pass the
-						remaining two to the Chancellor.
-					</p>
+					<h2 className="font-heading text-gold mb-1 text-3xl">{headingText(messages.legislative.presidentTitle(president.name))}</h2>
+					<p className="text-text-secondary text-sm md:text-base">{messages.legislative.presidentInstructions}</p>
 				</div>
 
 				<div className="flex w-full max-w-3xl flex-wrap items-start justify-center gap-3 md:gap-4">
@@ -123,7 +122,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 							policy={policy}
 							index={index}
 							isSelected={selectedIndex === index}
-							selectionLabel="Discard"
+							selectionLabel={messages.legislative.discard}
 							onSelectIndex={toggleSelectedIndex}
 						/>
 					))}
@@ -148,7 +147,9 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 								: "bg-btn-disabled text-gray-900 cursor-not-allowed",
 						].join(" ")}
 					>
-						{selectedIndex !== null ? "Discard Selected Policy" : "Tap a Policy to Discard"}
+						{headingText(
+							selectedIndex !== null ? messages.legislative.discardSelectedPolicy : messages.legislative.tapPolicyToDiscard,
+						)}
 					</button>
 				</div>
 			</div>
@@ -163,7 +164,6 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 			return (
 				<PrivacyGate
 					playerName={chancellor.name}
-					officeLabel="Chancellor"
 					onReady={() => {
 						setShowPrivacy(false);
 						setSelectedIndex(null);
@@ -176,13 +176,12 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:gap-6 md:py-5">
 				<div className="slide-up flex-shrink-0 text-center">
 					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
-						Legislative Session
+						{messages.legislative.session}
 					</p>
-					<h2 className="font-heading text-gold mb-1 text-3xl">Chancellor {chancellor.name}</h2>
-					<p className="text-text-secondary text-sm md:text-base">
-						The President has passed you 2 policies. <span className="text-liberal font-semibold">Enact one</span> into
-						law.
-					</p>
+					<h2 className="font-heading text-gold mb-1 text-3xl">
+						{headingText(messages.legislative.chancellorTitle(chancellor.name))}
+					</h2>
+					<p className="text-text-secondary text-sm md:text-base">{messages.legislative.chancellorInstructions}</p>
 				</div>
 
 				<div className="flex w-full max-w-2xl flex-wrap items-start justify-center gap-4 md:gap-6">
@@ -192,7 +191,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 							policy={policy}
 							index={index}
 							isSelected={selectedIndex === index}
-							selectionLabel="Enact"
+							selectionLabel={messages.legislative.enact}
 							onSelectIndex={toggleSelectedIndex}
 						/>
 					))}
@@ -216,7 +215,9 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 								: "bg-btn-disabled text-gray-900 cursor-not-allowed",
 						].join(" ")}
 					>
-						{selectedIndex !== null ? "Enact Selected Policy" : "Tap a Policy to Enact"}
+						{headingText(
+							selectedIndex !== null ? messages.legislative.enactSelectedPolicy : messages.legislative.tapPolicyToEnact,
+						)}
 					</button>
 
 					{/* Veto button — only when veto power is unlocked */}
@@ -226,7 +227,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 							onClick={() => dispatch({ type: "REQUEST_VETO" })}
 							className="border-fascist/45 text-fascist hover:bg-fascist/10 w-full cursor-pointer rounded-[16px] border-2 bg-transparent py-3 text-base font-semibold transition-all duration-[var(--transition-fast)]"
 						>
-							Request Veto
+							{messages.legislative.requestVeto}
 						</button>
 					)}
 				</div>

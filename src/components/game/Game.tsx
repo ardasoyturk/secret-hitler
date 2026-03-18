@@ -30,6 +30,7 @@ import { useState } from "react";
 
 import { useGame } from "@/hooks/useGame";
 import { clearGameState, loadGameState } from "@/hooks/useGamePersistence";
+import { I18nProvider, useI18n } from "@/i18n";
 
 const EMPTY_OPTIMIZED_ASSETS: OptimizedAssetMap = {};
 
@@ -41,27 +42,25 @@ export function Game({ optimizedAssets = EMPTY_OPTIMIZED_ASSETS }: { optimizedAs
 		return saved ? { status: "prompting", savedState: saved } : { status: "playing", initialState: undefined };
 	});
 
-	if (appState.status === "prompting") {
-		return (
-			<OptimizedAssetsProvider assets={optimizedAssets}>
-				<ResumePrompt
-					savedState={appState.savedState}
-					onResume={() => {
-						setAppState({ status: "playing", initialState: appState.savedState });
-					}}
-					onNewGame={() => {
-						clearGameState();
-						setAppState({ status: "playing", initialState: undefined });
-					}}
-				/>
-			</OptimizedAssetsProvider>
-		);
-	}
-
 	return (
-		<OptimizedAssetsProvider assets={optimizedAssets}>
-			<GameInner initialState={appState.initialState} />
-		</OptimizedAssetsProvider>
+		<I18nProvider>
+			<OptimizedAssetsProvider assets={optimizedAssets}>
+				{appState.status === "prompting" ? (
+					<ResumePrompt
+						savedState={appState.savedState}
+						onResume={() => {
+							setAppState({ status: "playing", initialState: appState.savedState });
+						}}
+						onNewGame={() => {
+							clearGameState();
+							setAppState({ status: "playing", initialState: undefined });
+						}}
+					/>
+				) : (
+					<GameInner initialState={appState.initialState} />
+				)}
+			</OptimizedAssetsProvider>
+		</I18nProvider>
 	);
 }
 
@@ -128,6 +127,7 @@ function GameInner({ initialState }: { initialState: GameState | undefined }) {
 
 function PhaseRouter({ phase, game }: { phase: GamePhase; game: ReturnType<typeof useGame> }) {
 	const { state, dispatch } = game;
+	const { messages } = useI18n();
 
 	switch (phase) {
 		case GamePhase.Setup:
@@ -181,7 +181,7 @@ function PhaseRouter({ phase, game }: { phase: GamePhase; game: ReturnType<typeo
 		default:
 			return (
 				<div className="flex h-full items-center justify-center">
-					<p className="text-text-muted">Unknown phase: {phase}</p>
+					<p className="text-text-muted">{messages.common.unknownPhase(phase)}</p>
 				</div>
 			);
 	}
@@ -196,12 +196,14 @@ function ResumePrompt({
 	onResume: () => void;
 	onNewGame: () => void;
 }) {
+	const { headingText, messages } = useI18n();
+
 	return (
 		<div className="bg-bg-darker flex h-dvh w-full flex-col items-center justify-center p-8">
-			<h1 className="font-heading text-fascist mb-3 text-4xl">Game in Progress</h1>
-			<p className="text-text-secondary mb-1">A saved game was found:</p>
+			<h1 className="font-heading text-fascist mb-3 text-4xl">{headingText(messages.resumePrompt.title)}</h1>
+			<p className="text-text-secondary mb-1">{messages.resumePrompt.savedGameFound}</p>
 			<p className="text-text-primary mb-8 text-xl font-semibold">
-				{savedState.players.length} players &middot; Round {savedState.round}
+				{messages.resumePrompt.summary(savedState.players.length, savedState.round)}
 			</p>
 			<div className="flex w-full max-w-xs flex-col gap-3">
 				<button
@@ -209,14 +211,14 @@ function ResumePrompt({
 					onClick={onResume}
 					className="bg-fascist hover:bg-fascist-hover w-full cursor-pointer rounded-lg px-6 py-4 text-lg font-bold text-white shadow-[0_4px_0_var(--color-fascist-dark)] transition-all duration-150 active:translate-y-0.5 active:shadow-[0_2px_0_var(--color-fascist-dark)]"
 				>
-					Resume Game
+					{headingText(messages.common.resumeGame)}
 				</button>
 				<button
 					type="button"
 					onClick={onNewGame}
 					className="bg-bg-card hover:bg-bg-primary border-text-muted/30 w-full cursor-pointer rounded-lg border px-6 py-4 text-lg font-bold text-white shadow-[0_4px_0_var(--color-bg-darker)] transition-all duration-150 active:translate-y-0.5 active:shadow-[0_2px_0_var(--color-bg-darker)]"
 				>
-					New Game
+					{headingText(messages.common.newGame)}
 				</button>
 			</div>
 		</div>

@@ -36,6 +36,8 @@ import type { GameState, GameAction } from "@engine/types";
 import { GamePhase, Vote } from "@engine/types";
 import { memo, useState } from "react";
 
+import { useI18n } from "@/i18n";
+
 const PORTRAITS = [
 	portrait1,
 	portrait2,
@@ -65,15 +67,17 @@ interface ScreenProps {
 }
 
 const PrivacyGate = memo(function PrivacyGate({ playerName, onReady }: { playerName: string; onReady: () => void }) {
+	const { headingText, messages } = useI18n();
+
 	return (
 		<ViewportOverlay>
 			<div className="privacy-screen">
 				<div className="privacy-dialog text-center">
-					<h2 className="privacy-title">Pass the Device</h2>
-					<p className="privacy-subtitle">Hand the device to</p>
-					<p className="privacy-name">{playerName}</p>
+					<h2 className="privacy-title">{headingText(messages.common.passDevice)}</h2>
+					<p className="privacy-subtitle">{messages.common.handDeviceTo}</p>
+					<p className="privacy-name">{headingText(playerName)}</p>
 					<button type="button" onClick={onReady} className="primary-action-button">
-						I&apos;m Ready
+						{headingText(messages.common.ready)}
 					</button>
 				</div>
 			</div>
@@ -82,6 +86,7 @@ const PrivacyGate = memo(function PrivacyGate({ playerName, onReady }: { playerN
 });
 
 export function VotingScreen({ state, dispatch }: ScreenProps) {
+	const { headingText, messages } = useI18n();
 	const [showPrivacy, setShowPrivacy] = useState(true);
 
 	const president = state.players[state.presidentIndex];
@@ -139,15 +144,15 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-1 py-3 md:gap-5 md:py-5">
 				<div className="slide-up flex-shrink-0 text-center">
-					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">Election Result</p>
+					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
+						{messages.voting.electionResult}
+					</p>
 					<h2
 						className={["mb-1 font-heading text-3xl md:text-4xl", passed ? "text-liberal" : "text-fascist"].join(" ")}
 					>
-						{passed ? "JA! Election Passes" : "NEIN! Election Fails"}
+						{headingText(passed ? messages.voting.electionPasses : messages.voting.electionFails)}
 					</h2>
-					<p className="text-text-secondary text-sm md:text-base">
-						{jaCount} Ja — {neinCount} Nein
-					</p>
+					<p className="text-text-secondary text-sm md:text-base">{messages.voting.voteCount(jaCount, neinCount)}</p>
 				</div>
 
 				<div className="bg-bg-card/70 grid flex-shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-5 rounded-[22px] border border-white/8 px-4 py-3 shadow-[var(--shadow-card)]">
@@ -160,7 +165,7 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 									className="h-full w-full object-cover"
 								/>
 							</div>
-							<p className="text-text-muted text-xs tracking-[0.18em] uppercase">President</p>
+							<p className="text-text-muted text-xs tracking-[0.18em] uppercase">{messages.common.president}</p>
 							<p className="text-text-primary text-sm font-medium">{president.name}</p>
 						</div>
 					)}
@@ -174,7 +179,7 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 									className="h-full w-full object-cover"
 								/>
 							</div>
-							<p className="text-text-muted text-xs tracking-[0.18em] uppercase">Chancellor</p>
+							<p className="text-text-muted text-xs tracking-[0.18em] uppercase">{messages.common.chancellor}</p>
 							<p className="text-text-primary text-sm font-medium">{chancellor.name}</p>
 						</div>
 					)}
@@ -199,7 +204,7 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 								</div>
 								<span className="text-text-primary flex-1 text-sm md:text-base">{player.name}</span>
 								<span className={["font-heading text-lg", isJa ? "text-liberal" : "text-fascist"].join(" ")}>
-									{isJa ? "JA" : "NEIN"}
+									{headingText(isJa ? messages.enums.votes.ja.toUpperCase() : messages.enums.votes.nein.toUpperCase())}
 								</span>
 							</div>
 						);
@@ -213,7 +218,7 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 						onClick={() => dispatch({ type: "ACKNOWLEDGE_VOTE_RESULT" })}
 						className="bg-fascist font-heading text-text-primary hover:bg-fascist-hover w-full flex-shrink-0 cursor-pointer rounded-[18px] py-3 text-xl shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)]"
 					>
-						Continue
+						{headingText(messages.common.continue)}
 					</button>
 				</div>
 			</div>
@@ -238,6 +243,8 @@ const VoteCastView = memo(function VoteCastView({
 	chancellorName: string;
 	onVoted: () => void;
 }) {
+	const { headingText, messages } = useI18n();
+
 	function handleVote(vote: Vote) {
 		dispatch({ type: "CAST_VOTE", playerId: voter.id, vote });
 		onVoted();
@@ -251,13 +258,11 @@ const VoteCastView = memo(function VoteCastView({
 		<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-6 px-1 py-3 md:gap-7 md:py-5">
 			<div className="slide-up text-center">
 				<p className="text-text-muted mb-2 text-[11px] font-semibold tracking-[0.28em] uppercase">
-					{voter.name}&apos;s Vote
+					{messages.voting.voterTitle(voter.name)}
 				</p>
-				<h2 className="font-heading text-text-primary mb-1 text-3xl md:text-4xl">Vote on the Government</h2>
+				<h2 className="font-heading text-text-primary mb-1 text-3xl md:text-4xl">{headingText(messages.voting.voteOnGovernment)}</h2>
 				<p className="text-text-secondary text-sm md:text-base">
-					President <span className="text-gold font-semibold">{presidentName}</span>
-					{" · "}
-					Chancellor <span className="text-gold font-semibold">{chancellorName}</span>
+					{messages.voting.governmentSummary(presidentName, chancellorName)}
 				</p>
 			</div>
 
@@ -267,18 +272,15 @@ const VoteCastView = memo(function VoteCastView({
 			</div>
 
 			<div className="bg-bg-card/70 w-full max-w-2xl rounded-[22px] border border-white/8 px-4 py-4 text-center shadow-[var(--shadow-card)]">
-				<p className="text-text-muted text-[11px] font-semibold tracking-[0.24em] uppercase">Table Shortcut</p>
-				<p className="text-text-secondary mt-2 text-sm md:text-base">
-					If everyone agrees on <span className="text-liberal font-semibold">Ja</span>, pass this election in one tap
-					and reveal the normal result.
-				</p>
+				<p className="text-text-muted text-[11px] font-semibold tracking-[0.24em] uppercase">{messages.voting.tableShortcut}</p>
+				<p className="text-text-secondary mt-2 text-sm md:text-base">{messages.voting.tableShortcutDescription}</p>
 				<div className="mt-4">
 					<button
 						type="button"
 						onClick={handlePassElection}
 						className="border-liberal/35 bg-liberal/12 font-heading text-liberal hover:bg-liberal/18 w-full cursor-pointer rounded-[18px] border px-6 py-3 text-xl tracking-wide shadow-[0_6px_0_var(--color-liberal-dark),var(--shadow-card)] transition-all duration-200 active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-liberal-dark)]"
 					>
-						Pass Election as All Ja
+						{headingText(messages.voting.passElectionAsAllJa)}
 					</button>
 				</div>
 			</div>

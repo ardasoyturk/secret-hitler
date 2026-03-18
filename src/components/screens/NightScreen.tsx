@@ -23,6 +23,7 @@ import { GamePhase, Role } from "@engine/types";
 import { Crown, Shield } from "lucide-react";
 
 import { getNightInfo } from "@/hooks/useGame";
+import { useI18n } from "@/i18n";
 
 const LIBERAL_ROLE_IMAGES = [
 	{ image: roleLiberal1, key: "roles/role-liberal-1.png" },
@@ -57,17 +58,8 @@ interface ScreenProps {
 	dispatch: (action: GameAction) => void;
 }
 
-function parseTeammateLabel(label: string) {
-	if (label.endsWith(" (Hitler)")) {
-		return { name: label.replace(" (Hitler)", ""), role: "Hitler" as const };
-	}
-	if (label.endsWith(" (Fascist)")) {
-		return { name: label.replace(" (Fascist)", ""), role: "Fascist" as const };
-	}
-	return { name: label, role: "Fascist" as const };
-}
-
 export function NightScreen({ state, dispatch }: ScreenProps) {
+	const { headingText, language, messages } = useI18n();
 	const playerIndex = state.nightRoundPlayerIndex;
 	const player = state.players[playerIndex];
 	const optimizedRoleAssets = {
@@ -91,11 +83,11 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 			<ViewportOverlay>
 				<div className="privacy-screen">
 					<div className="privacy-dialog text-center">
-						<h2 className="privacy-title mb-6 text-3xl">Pass the Device</h2>
-						<p className="privacy-subtitle mb-2 text-lg">Hand the device to</p>
-						<p className="privacy-name mb-4 text-4xl">{player.name}</p>
+						<h2 className="privacy-title mb-6 text-3xl">{headingText(messages.common.passDevice)}</h2>
+						<p className="privacy-subtitle mb-2 text-lg">{messages.common.handDeviceTo}</p>
+						<p className="privacy-name mb-4 text-4xl">{headingText(player.name)}</p>
 						<p className="text-text-muted mb-12 text-sm">
-							Player {playerIndex + 1} of {state.players.length}
+							{messages.night.playerProgress(playerIndex + 1, state.players.length)}
 						</p>
 						<button
 							type="button"
@@ -107,7 +99,7 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 							}
 							className="primary-action-button"
 						>
-							I&apos;m Ready
+							{headingText(messages.common.ready)}
 						</button>
 					</div>
 				</div>
@@ -120,7 +112,7 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 		const info = getNightInfo(state, playerIndex);
 		const roleImage = getRoleImage(player.role, playerIndex, optimizedRoleAssets);
 
-		const roleLabel = player.role === Role.Hitler ? "HITLER" : player.role === Role.Fascist ? "FASCIST" : "LIBERAL";
+		const roleLabel = headingText(messages.enums.roles[player.role].toLocaleUpperCase(language));
 
 		const teamColor = player.role === Role.Liberal ? "text-liberal" : "text-fascist";
 
@@ -133,40 +125,40 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 					<div
 						className={["w-48 sm:w-56 rounded-[var(--radius-card)] overflow-hidden mb-6 scale-pop", teamGlow].join(" ")}
 					>
-						<img src={roleImage} alt={`${roleLabel} role card`} className="block h-auto w-full" draggable={false} />
+						<img src={roleImage} alt={messages.night.roleCardAlt(roleLabel)} className="block h-auto w-full" draggable={false} />
 					</div>
 
 					{/* Role declaration */}
-					<p className="font-body text-text-secondary mx-auto mb-1 text-sm tracking-widest uppercase">You are a</p>
+					<p className="font-body text-text-secondary mx-auto mb-1 text-sm tracking-widest uppercase">
+						{messages.night.youAreA}
+					</p>
 					<h2 className={["font-heading text-4xl sm:text-5xl mb-6 tracking-wide", teamColor].join(" ")}>{roleLabel}</h2>
 
 					{/* Team description */}
 					{player.role === Role.Liberal && (
 						<p className="night-role-description mb-8 max-w-xs">
-							You must work to enact 5 Liberal policies or find and execute Hitler. Trust no one.
+							{messages.night.liberalDescription}
 						</p>
 					)}
 
 					{player.role === Role.Fascist && (
 						<div className="mb-8">
 							<p className="night-role-description mb-4 max-w-xs">
-								You must sabotage the government and help enact 6 Fascist policies — or get Hitler elected Chancellor
-								after 3 Fascist policies.
+								{messages.night.fascistDescription}
 							</p>
 							{info.teammates.length > 0 && (
 								<div className="night-team-card night-team-card-fascist">
 									<p className="night-team-card-title text-fascist">
 										<Shield className="h-4 w-4" strokeWidth={2.1} />
-										Your Teammates
+										{messages.night.yourTeammates}
 									</p>
 									<div className="night-team-list">
-										{info.teammates.map((teammateLabel) => {
-											const teammate = parseTeammateLabel(teammateLabel);
-											const isHitler = teammate.role === "Hitler";
+										{info.teammates.map((teammate) => {
+											const isHitler = teammate.role === Role.Hitler;
 
 											return (
-												<div key={teammateLabel} className="night-team-member">
-													<span className="night-team-member-name">{teammate.name}</span>
+												<div key={`${teammate.name}-${teammate.role}`} className="night-team-member">
+													<span className="night-team-member-name">{headingText(teammate.name)}</span>
 													<span
 														className={[
 															"night-team-member-badge",
@@ -178,7 +170,7 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 														) : (
 															<Shield className="h-3.5 w-3.5" strokeWidth={2.1} />
 														)}
-														{teammate.role}
+														{messages.enums.roles[teammate.role]}
 													</span>
 												</div>
 											);
@@ -192,28 +184,28 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 					{player.role === Role.Hitler && (
 						<div className="mb-8">
 							<p className="night-role-description mb-4 max-w-xs">
-								You are on the Fascist team, but you must stay hidden. If you are executed, the Liberals win.
+								{messages.night.hitlerDescription}
 							</p>
 							{info.knowsFascists && info.teammates.length > 0 ? (
 								<div className="night-team-card night-team-card-hitler">
 									<p className="night-team-card-title text-gold">
 										<Shield className="h-4 w-4" strokeWidth={2.1} />
-										Your Fascist Ally
+										{messages.night.yourFascistAlly}
 									</p>
 									<div className="night-team-list">
-										{info.teammates.map((teammateName) => (
-											<div key={teammateName} className="night-team-member">
-												<span className="night-team-member-name">{teammateName}</span>
+										{info.teammates.map((teammate) => (
+											<div key={`${teammate.name}-${teammate.role}`} className="night-team-member">
+												<span className="night-team-member-name">{headingText(teammate.name)}</span>
 												<span className="night-team-member-badge night-team-member-badge-fascist">
 													<Shield className="h-3.5 w-3.5" strokeWidth={2.1} />
-													Fascist
+													{messages.enums.roles[Role.Fascist]}
 												</span>
 											</div>
 										))}
 									</div>
 								</div>
 							) : (
-								<p className="night-role-note max-w-sm">You do not know who the other Fascists are.</p>
+								<p className="night-role-note max-w-sm">{messages.night.unknownFascists}</p>
 							)}
 						</div>
 					)}
@@ -229,7 +221,7 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 						}
 						className="primary-action-button"
 					>
-						Got It
+						{headingText(messages.common.gotIt)}
 					</button>
 				</div>
 			</div>

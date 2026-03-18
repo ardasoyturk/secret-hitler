@@ -38,6 +38,8 @@ import type { GameState, GameAction } from "@engine/types";
 import { GamePhase, PartyMembership } from "@engine/types";
 import { memo, useCallback, useState } from "react";
 
+import { useI18n } from "@/i18n";
+
 const PORTRAITS = [
 	portrait1,
 	portrait2,
@@ -151,6 +153,7 @@ function PlayerSelectionGrid({
 	confirmLabel: string;
 	dangerConfirm?: boolean;
 }) {
+	const { headingText, messages } = useI18n();
 	const eligibleSet = new Set(eligibleIds);
 	const alivePlayers = state.players.filter((p) => p.isAlive);
 	// Scale columns: ≤4 alive → 2 cols, 5-6 → 3 cols, 7+ → 4 cols
@@ -190,7 +193,7 @@ function PlayerSelectionGrid({
 							: "bg-btn-disabled text-text-muted cursor-not-allowed",
 					].join(" ")}
 				>
-					{selectedId !== null ? confirmLabel : "Select a Player"}
+					{selectedId !== null ? confirmLabel : headingText(messages.common.selectPlayer)}
 				</button>
 			</div>
 		</>
@@ -204,6 +207,7 @@ export function ExecutiveScreen({
 	specialElectionEligibleIds = EMPTY_IDS,
 	executionEligibleIds = EMPTY_IDS,
 }: ExecutiveScreenProps) {
+	const { headingText, messages } = useI18n();
 	const [selectedId, setSelectedId] = useState<number | null>(null);
 	const president = state.players[state.presidentIndex];
 	const resetSelectedId = useCallback(() => {
@@ -235,11 +239,12 @@ export function ExecutiveScreen({
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
 				<div className="slide-up flex-shrink-0 text-center">
-					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">Executive Power</p>
-					<h2 className="font-heading text-gold mb-1 text-3xl">Investigate Loyalty</h2>
+					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
+						{messages.executive.executivePower}
+					</p>
+					<h2 className="font-heading text-gold mb-1 text-3xl">{headingText(messages.executive.investigateTitle)}</h2>
 					<p className="text-text-secondary text-sm md:text-base">
-						President <span className="text-text-primary font-semibold">{president.name}</span>, choose a player to
-						investigate their party membership.
+						{messages.executive.investigateInstructions(president.name)}
 					</p>
 				</div>
 
@@ -249,7 +254,9 @@ export function ExecutiveScreen({
 					selectedId={selectedId}
 					onSelect={setSelectedId}
 					onConfirm={investigateSelectedPlayer}
-					confirmLabel={`Investigate ${state.players.find((p) => p.id === selectedId)?.name ?? ""}`}
+					confirmLabel={headingText(
+						messages.executive.investigateConfirm(state.players.find((p) => p.id === selectedId)?.name ?? ""),
+					)}
 				/>
 			</div>
 		);
@@ -266,21 +273,21 @@ export function ExecutiveScreen({
 			<div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-5 px-1 py-3 md:py-5">
 				<div className="slide-up flex-shrink-0 text-center">
 					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
-						Investigation Result
+						{messages.executive.investigationResult}
 					</p>
-					<h2 className="font-heading text-text-primary mb-0.5 text-3xl">{target.name}</h2>
-					<p className="text-text-secondary text-sm md:text-base">is a member of the...</p>
+					<h2 className="font-heading text-text-primary mb-0.5 text-3xl">{headingText(target.name)}</h2>
+					<p className="text-text-secondary text-sm md:text-base">{messages.executive.isPartyMember}</p>
 				</div>
 
 				{/* Party membership card */}
 				<PartyCard party={membership} className={isLiberal ? "glow-liberal" : "glow-fascist"} />
 
 				<h3 className={["font-heading text-3xl flex-shrink-0", isLiberal ? "text-liberal" : "text-fascist"].join(" ")}>
-					{isLiberal ? "Liberal" : "Fascist"} Party
+					{headingText(messages.executive.partyLabel(messages.enums.partyMemberships[membership]))}
 				</h3>
 
 				<p className="text-text-muted font-flavor max-w-xs flex-shrink-0 text-center text-xs italic">
-					Only the President knows this information. Use it wisely — or lie about it.
+					{messages.executive.investigationNote}
 				</p>
 
 				<button
@@ -288,7 +295,7 @@ export function ExecutiveScreen({
 					onClick={() => dispatch({ type: "ACKNOWLEDGE_INVESTIGATION" })}
 					className="bg-fascist font-heading text-text-primary hover:bg-fascist-hover w-full max-w-2xl flex-shrink-0 cursor-pointer rounded-[18px] py-3 text-xl shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)]"
 				>
-					Understood
+					{headingText(messages.common.understood)}
 				</button>
 			</div>
 		);
@@ -299,12 +306,11 @@ export function ExecutiveScreen({
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:py-4">
 				<div className="slide-up flex-shrink-0 text-center">
-					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">Executive Power</p>
-					<h2 className="font-heading text-gold mb-1 text-3xl">Policy Peek</h2>
-					<p className="text-text-secondary text-sm md:text-base">
-						President <span className="text-text-primary font-semibold">{president.name}</span>, here are the top 3
-						policies in the deck.
+					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
+						{messages.executive.executivePower}
 					</p>
+					<h2 className="font-heading text-gold mb-1 text-3xl">{headingText(messages.executive.peekTitle)}</h2>
+					<p className="text-text-secondary text-sm md:text-base">{messages.executive.peekInstructions(president.name)}</p>
 				</div>
 
 				{/* Peeked policy cards */}
@@ -312,15 +318,13 @@ export function ExecutiveScreen({
 					{state.peekedPolicies.map((policy, index) => (
 						<div key={getPolicyKey(state.peekedPolicies, policy, index)} className="flex flex-col items-center gap-1.5">
 							<PolicyCard type={policy} size="lg" revealed />
-							<span className="text-text-muted font-body text-xs">
-								{index === 0 ? "Next" : index === 1 ? "2nd" : "3rd"}
-							</span>
+							<span className="text-text-muted font-body text-xs">{messages.executive.peekPositions[index]}</span>
 						</div>
 					))}
 				</div>
 
 				<p className="text-text-muted font-flavor max-w-xs flex-shrink-0 text-center text-xs italic">
-					Only the President knows this. You may share this information — or deceive.
+					{messages.executive.peekNote}
 				</p>
 
 				<button
@@ -328,7 +332,7 @@ export function ExecutiveScreen({
 					onClick={() => dispatch({ type: "ACKNOWLEDGE_PEEK" })}
 					className="bg-fascist font-heading text-text-primary hover:bg-fascist-hover w-full max-w-2xl flex-shrink-0 cursor-pointer rounded-[18px] py-3 text-xl shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)]"
 				>
-					Understood
+					{headingText(messages.common.understood)}
 				</button>
 			</div>
 		);
@@ -339,11 +343,12 @@ export function ExecutiveScreen({
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
 				<div className="slide-up flex-shrink-0 text-center">
-					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">Executive Power</p>
-					<h2 className="font-heading text-gold mb-1 text-3xl">Special Election</h2>
+					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
+						{messages.executive.executivePower}
+					</p>
+					<h2 className="font-heading text-gold mb-1 text-3xl">{headingText(messages.executive.specialElectionTitle)}</h2>
 					<p className="text-text-secondary text-sm md:text-base">
-						President <span className="text-text-primary font-semibold">{president.name}</span>, choose the next
-						Presidential Candidate.
+						{messages.executive.specialElectionInstructions(president.name)}
 					</p>
 				</div>
 
@@ -353,7 +358,9 @@ export function ExecutiveScreen({
 					selectedId={selectedId}
 					onSelect={setSelectedId}
 					onConfirm={chooseSpecialElectionPresident}
-					confirmLabel={`Appoint ${state.players.find((p) => p.id === selectedId)?.name ?? ""}`}
+					confirmLabel={headingText(
+						messages.executive.specialElectionConfirm(state.players.find((p) => p.id === selectedId)?.name ?? ""),
+					)}
 				/>
 			</div>
 		);
@@ -364,13 +371,14 @@ export function ExecutiveScreen({
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
 				<div className="slide-up flex-shrink-0 text-center">
-					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">Executive Power</p>
-					<h2 className="font-heading text-fascist mb-1 text-3xl">Execution</h2>
-					<p className="text-text-secondary text-sm md:text-base">
-						President <span className="text-text-primary font-semibold">{president.name}</span>, choose a player to
-						execute.
+					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
+						{messages.executive.executivePower}
 					</p>
-					<p className="text-text-muted font-flavor mt-1 text-xs italic">This action is irreversible.</p>
+					<h2 className="font-heading text-fascist mb-1 text-3xl">{headingText(messages.executive.executionTitle)}</h2>
+					<p className="text-text-secondary text-sm md:text-base">
+						{messages.executive.executionInstructions(president.name)}
+					</p>
+					<p className="text-text-muted font-flavor mt-1 text-xs italic">{messages.executive.executionWarning}</p>
 				</div>
 
 				<PlayerSelectionGrid
@@ -379,7 +387,9 @@ export function ExecutiveScreen({
 					selectedId={selectedId}
 					onSelect={setSelectedId}
 					onConfirm={executeSelectedPlayer}
-					confirmLabel={`Execute ${state.players.find((p) => p.id === selectedId)?.name ?? ""}`}
+					confirmLabel={headingText(
+						messages.executive.executionConfirm(state.players.find((p) => p.id === selectedId)?.name ?? ""),
+					)}
 					dangerConfirm
 				/>
 			</div>

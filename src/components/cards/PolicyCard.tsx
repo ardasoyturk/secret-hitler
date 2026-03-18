@@ -11,6 +11,8 @@ import policyLiberalImg from "@assets/cards/policy-liberal.png";
 import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 import { memo } from "react";
 
+import { useI18n } from "@/i18n";
+
 const SIZE_CLASSES = {
 	sm: "w-[60px]",
 	md: "w-[90px]",
@@ -34,6 +36,7 @@ export const PolicyCard = memo(function PolicyCard({
 	selected = false,
 	className = "",
 }: PolicyCardProps) {
+	const { messages } = useI18n();
 	const isClickable = !!onClick;
 
 	const policyImg = type === "fascist" ? policyFascistImg : policyLiberalImg;
@@ -43,7 +46,7 @@ export const PolicyCard = memo(function PolicyCard({
 	);
 	const backSrc = useOptimizedAsset("cards/policy-folder-cover-back.png", policyBackImg.src);
 	const imgSrc = revealed ? revealedSrc : backSrc;
-	const altText = revealed ? `${type} policy` : "Policy card (face down)";
+	const altText = revealed ? messages.cards.policy(messages.enums.policyTypes[type]) : messages.cards.faceDownPolicy;
 
 	return (
 		<button

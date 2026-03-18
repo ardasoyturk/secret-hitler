@@ -12,6 +12,8 @@ import { ExecutivePower } from "@engine/types";
 import { memo } from "react";
 import type { ReactNode } from "react";
 
+import { useI18n } from "@/i18n";
+
 type AssetRef = string | { src: string };
 
 interface SlotRect {
@@ -92,18 +94,18 @@ function PolicySlots({
 	count,
 	slots,
 	imageSrc,
-	altPrefix,
+	getAltText,
 }: {
 	count: number;
 	slots: SlotRect[];
 	imageSrc: AssetRef;
-	altPrefix: string;
+	getAltText: (position: number) => string;
 }) {
 	return (
 		<>
 			{slots.map((slot, index) => (
 				<div
-					key={getSlotKey(altPrefix, slot)}
+					key={getSlotKey(getAltText(index + 1), slot)}
 					className="absolute"
 					style={{
 						left: `${slot.x * 100}%`,
@@ -115,7 +117,7 @@ function PolicySlots({
 					{index < count && (
 						<img
 							src={assetSrc(imageSrc)}
-							alt={`${altPrefix} ${index + 1}`}
+							alt={getAltText(index + 1)}
 							className="scale-pop h-full w-full object-contain drop-shadow-[0_10px_12px_rgba(0,0,0,0.24)]"
 							draggable={false}
 						/>
@@ -127,6 +129,7 @@ function PolicySlots({
 }
 
 function TrackerSlot({ position, slots, imageSrc }: { position: number; slots: SlotRect[]; imageSrc: AssetRef }) {
+	const { messages } = useI18n();
 	const slot = slots[position - 1];
 	if (!slot) return null;
 
@@ -143,7 +146,7 @@ function TrackerSlot({ position, slots, imageSrc }: { position: number; slots: S
 		>
 			<img
 				src={assetSrc(imageSrc)}
-				alt={`Election tracker position ${position}`}
+				alt={messages.board.electionTrackerPosition(position)}
 				className="scale-pop h-full w-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.32)]"
 				draggable={false}
 			/>
@@ -166,11 +169,13 @@ function BoardPanel({
 	children: ReactNode;
 	aspectClass?: string;
 }) {
+	const { headingText } = useI18n();
+
 	return (
 		<section className="min-w-0 flex-1">
 			<div className="mb-2 flex items-center justify-center gap-3">
 				<span className={["h-px w-8 bg-gradient-to-r from-transparent to-current opacity-55", accentClass].join(" ")} />
-				<p className={["font-heading text-xl tracking-[0.12em]", accentClass].join(" ")}>{title}</p>
+				<p className={["font-heading text-xl tracking-[0.12em]", accentClass].join(" ")}>{headingText(title)}</p>
 				<span className={["h-px w-8 bg-gradient-to-l from-transparent to-current opacity-55", accentClass].join(" ")} />
 			</div>
 			<div className="relative overflow-hidden rounded-[20px] border border-white/8 bg-[#1a120d] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_34px_rgba(0,0,0,0.28)]">
@@ -194,6 +199,7 @@ export const BoardTrack = memo(function BoardTrack({
 	vetoUnlocked,
 	className = "",
 }: BoardTrackProps) {
+	const { messages } = useI18n();
 	const bracket = getPlayerCountBracket(playerCount);
 	const fascistBoard = FASCIST_BOARD_MAP[bracket] ?? FASCIST_BOARD_MAP["5-6"];
 	const executivePowers = EXECUTIVE_POWERS[bracket];
@@ -207,31 +213,31 @@ export const BoardTrack = memo(function BoardTrack({
 		<div className={["mx-auto w-full max-w-6xl", className].filter(Boolean).join(" ")}>
 			<div className="grid items-center gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
 				<BoardPanel
-					title="Liberal Board"
+					title={messages.board.liberalBoard}
 					imageSrc={liberalBoardSrc}
-					imageAlt="Liberal policy board"
+					imageAlt={messages.board.liberalBoardAlt}
 					accentClass="text-liberal"
 				>
 					<PolicySlots
 						count={board.liberalPolicies}
 						slots={LIBERAL_LAYOUT.policySlots}
 						imageSrc={liberalPolicySrc}
-						altPrefix="Liberal policy"
+						getAltText={messages.board.liberalPolicyAlt}
 					/>
 					<TrackerSlot position={trackerPosition} slots={LIBERAL_LAYOUT.trackerSlots} imageSrc={trackerSrc} />
 				</BoardPanel>
 
 				<BoardPanel
-					title="Fascist Board"
+					title={messages.board.fascistBoard}
 					imageSrc={fascistBoardSrc}
-					imageAlt="Fascist policy board"
+					imageAlt={messages.board.fascistBoardAlt}
 					accentClass="text-fascist"
 				>
 					<PolicySlots
 						count={board.fascistPolicies}
 						slots={fascistBoard.layout.policySlots}
 						imageSrc={fascistPolicySrc}
-						altPrefix="Fascist policy"
+						getAltText={messages.board.fascistPolicyAlt}
 					/>
 					{fascistBoard.layout.policySlots.map((slot, index) => {
 						const power = executivePowers[index + 1];
@@ -249,7 +255,7 @@ export const BoardTrack = memo(function BoardTrack({
 									transform: "translate(-50%, -50%)",
 								}}
 							>
-								{EXECUTIVE_POWER_ICONS[power]}
+								{messages.enums.executivePowerBadges[power] ?? EXECUTIVE_POWER_ICONS[power]}
 							</span>
 						);
 					})}
@@ -262,7 +268,7 @@ export const BoardTrack = memo(function BoardTrack({
 								transform: "translate(-50%, -50%)",
 							}}
 						>
-							Veto
+							{messages.board.veto}
 						</span>
 					)}
 				</BoardPanel>

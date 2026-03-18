@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { Game } from "../components/game/Game";
+import { APP_LANGUAGE_STORAGE_KEY, DOCUMENT_COPY } from "../i18n";
 import { buildOptimizedAssetMap } from "../lib/optimized-assets";
 import { pwaInfo } from "virtual:pwa-info";
 
@@ -9,6 +10,30 @@ const reactScanScript =
 	import.meta.env.REACT_SCAN === "true"
 		? '<script crossorigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js"></script>'
 		: "";
+const languageBootstrapScript = `
+(() => {
+	const storageKey = ${JSON.stringify(APP_LANGUAGE_STORAGE_KEY)};
+	const documentCopy = ${JSON.stringify(DOCUMENT_COPY)};
+	let savedLanguage = null;
+	try {
+		savedLanguage = window.localStorage.getItem(storageKey);
+	} catch {}
+	const browserLanguage = window.navigator.languages?.[0] ?? window.navigator.language;
+	const language =
+		savedLanguage === "tr" || savedLanguage === "en"
+			? savedLanguage
+			: browserLanguage?.toLowerCase().startsWith("tr")
+				? "tr"
+				: "en";
+	const nextCopy = documentCopy[language] ?? documentCopy.en;
+	document.documentElement.lang = language;
+	document.title = nextCopy.title;
+	const description = document.querySelector('meta[name="description"]');
+	if (description instanceof HTMLMetaElement) {
+		description.content = nextCopy.description;
+	}
+})();
+`;
 ---
 
 <html lang="en">
@@ -28,15 +53,16 @@ const reactScanScript =
 		/>
 		<meta
 			name="description"
-			content="Secret Hitler — Pass & Play Edition. A single-device board game for 5-10 players."
+			content={DOCUMENT_COPY.en.description}
 		/>
 		{
 			pwaInfo?.webManifest?.linkTag && (
 				<Fragment set:html={pwaInfo.webManifest.linkTag} />
 			)
 		}
-		<title>Secret Hitler — Pass & Play</title>
+		<title>{DOCUMENT_COPY.en.title}</title>
 		<Fragment set:html={reactScanScript} />
+		<script is:inline set:html={languageBootstrapScript} />
 	</head>
 	<body class="noise-overlay">
 		<div id="app">
@@ -46,7 +72,7 @@ const reactScanScript =
 			<div
 				style="display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:2rem;text-align:center;color:#bbb;"
 			>
-				<p>JavaScript is required to play Secret Hitler.</p>
+				<p>JavaScript is required to play Secret Hitler. Secret Hitler oynamak için JavaScript gereklidir.</p>
 			</div>
 		</noscript>
 		<script>

@@ -24,6 +24,9 @@ import { GripVertical, Trash2, UserPlus } from "lucide-react";
 import { memo, useCallback, useReducer, useRef } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from "react";
 
+import { useI18n } from "@/i18n";
+import type { AppLanguage } from "@/i18n";
+
 const PORTRAITS = [
 	portrait1,
 	portrait2,
@@ -59,6 +62,8 @@ const PLAYER_COLOR_STYLES: Record<string, string> = {
 	brown: "border-player-brown",
 	gray: "border-player-gray",
 };
+
+const LANGUAGE_OPTIONS: AppLanguage[] = ["en", "tr"];
 
 interface ScreenProps {
 	state: GameState;
@@ -137,6 +142,43 @@ function getNextPortraitIndex(players: Player[], selectedPortrait: number): numb
 	return nextPortrait >= 0 ? nextPortrait : 0;
 }
 
+const LanguageSelector = memo(function LanguageSelector() {
+	const { language, setLanguage, messages } = useI18n();
+
+	return (
+		<section className="mb-4 rounded-[18px] border border-white/8 bg-black/18 px-4 py-3">
+			<div className="flex flex-wrap items-center justify-between gap-3">
+				<p className="text-text-muted text-[11px] font-semibold tracking-[0.24em] uppercase">
+					{messages.language.label}
+				</p>
+				<div className="inline-flex rounded-full border border-white/10 bg-black/25 p-1">
+					{LANGUAGE_OPTIONS.map((option) => {
+						const isActive = option === language;
+						const label = messages.language.options[option];
+						return (
+							<button
+								key={option}
+								type="button"
+								onClick={() => setLanguage(option)}
+								aria-label={messages.language.buttonLabel(label)}
+								aria-pressed={isActive}
+								className={[
+									"min-w-28 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-150",
+									isActive
+										? "bg-gold text-bg-overlay shadow-[0_4px_0_var(--color-gold-dark)]"
+										: "text-text-secondary hover:text-text-primary cursor-pointer",
+								].join(" ")}
+							>
+								{label}
+							</button>
+						);
+					})}
+				</div>
+			</div>
+		</section>
+	);
+});
+
 const PlayerSetupPanel = memo(function PlayerSetupPanel({
 	players,
 	playerCount,
@@ -170,11 +212,13 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 	onAddPlayer: () => void;
 	onStartGame: () => void;
 }) {
+	const { headingText, messages } = useI18n();
+
 	return (
 		<section className="flex min-h-0 flex-col justify-between rounded-[20px] border border-white/8 bg-black/18 px-5 py-5 md:px-6 md:py-6">
 			<div className="space-y-4">
 				<p className="text-text-muted text-center text-[11px] font-semibold tracking-[0.24em] uppercase">
-					Player Initialization
+					{messages.setup.playerInitialization}
 				</p>
 
 				<div className="mx-auto flex w-full max-w-[560px] items-center justify-center gap-3 px-1 md:px-2">
@@ -182,11 +226,15 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 						type="button"
 						onClick={onTogglePortraitPicker}
 						className="border-gold relative h-20 w-20 flex-shrink-0 cursor-pointer overflow-hidden rounded-full border-2 shadow-[0_10px_24px_rgba(0,0,0,0.35)] transition-transform duration-200 hover:scale-[1.03]"
-						aria-label="Choose portrait"
+						aria-label={messages.setup.choosePortrait}
 					>
-						<img src={PORTRAITS[selectedPortrait].src} alt="Selected portrait" className="h-full w-full object-cover" />
+						<img
+							src={PORTRAITS[selectedPortrait].src}
+							alt={messages.setup.choosePortrait}
+							className="h-full w-full object-cover"
+						/>
 						<span className="text-gold absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent py-1 text-[10px] font-semibold tracking-[0.18em] uppercase">
-							Pick
+							{messages.setup.pickPortrait}
 						</span>
 					</button>
 
@@ -196,7 +244,7 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 							value={name}
 							onChange={(event) => onNameChange(event.target.value)}
 							onKeyDown={onNameKeyDown}
-							placeholder="Player name"
+							placeholder={messages.setup.playerNamePlaceholder}
 							maxLength={20}
 							className="border-gold/25 bg-bg-card/80 text-text-primary placeholder:text-text-muted focus:border-gold focus:ring-gold/30 h-12 flex-1 rounded-xl border px-4 text-base focus:ring-2 focus:outline-none"
 						/>
@@ -212,19 +260,19 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 							].join(" ")}
 						>
 							<UserPlus className="h-4 w-4" strokeWidth={2.2} />
-							Add
+							{messages.setup.addPlayer}
 						</button>
 					</div>
 				</div>
 
 				{trimmedName.length > 0 && isDuplicate && (
-					<p className="text-fascist text-center text-sm">Name already taken.</p>
+					<p className="text-fascist text-center text-sm">{messages.setup.nameTaken}</p>
 				)}
 
 				{showPortraitPicker && (
 					<div className="rounded-xl border border-white/10 bg-black/20 p-3">
 						<p className="text-text-muted mb-2 text-center text-[10px] font-semibold tracking-[0.2em] uppercase">
-							Choose portrait
+							{messages.setup.choosePortrait}
 						</p>
 						<div className="grid grid-cols-10 gap-1.5">
 							{PORTRAITS.map((portrait, index) => {
@@ -242,7 +290,11 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 											isUsed ? "opacity-30 grayscale cursor-not-allowed" : "hover:scale-105 cursor-pointer",
 										].join(" ")}
 									>
-										<img src={portrait.src} alt={`Portrait ${index + 1}`} className="h-full w-full object-cover" />
+										<img
+											src={portrait.src}
+											alt={`${messages.setup.choosePortrait} ${index + 1}`}
+											className="h-full w-full object-cover"
+										/>
 									</button>
 								);
 							})}
@@ -253,8 +305,10 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 
 			<div className="pt-4">
 				<div className="text-text-muted mb-3 text-center text-sm">
-					{playerCount} / {MAX_PLAYERS} players
-					{!canStart && playerCount > 0 && playerCount < MIN_PLAYERS ? ` • Need ${MIN_PLAYERS - playerCount} more` : ""}
+					{messages.setup.playerCount(playerCount, MAX_PLAYERS)}
+					{!canStart && playerCount > 0 && playerCount < MIN_PLAYERS
+						? ` • ${messages.setup.morePlayersNeeded(MIN_PLAYERS - playerCount)}`
+						: ""}
 				</div>
 				<div className="flex flex-col items-center gap-3">
 					<button
@@ -268,7 +322,7 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 								: "bg-btn-disabled text-bg-dark/55 cursor-not-allowed",
 						].join(" ")}
 					>
-						Start Game
+						{headingText(messages.setup.startGame)}
 					</button>
 
 					<a
@@ -280,7 +334,7 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 							"bg-liberal text-white text-center shadow-[0_6px_0_var(--color-liberal-dark),0_14px_24px_rgba(0,0,0,0.28)] hover:bg-liberal-hover active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-liberal-dark)] cursor-pointer"
 						].join(" ")}
 					>
-						Read Rules
+						{headingText(messages.common.readRules)}
 					</a>
 
 				</div>
@@ -308,6 +362,8 @@ const SeatingRow = memo(function SeatingRow({
 	onDragEnd: (event: ReactPointerEvent<HTMLButtonElement>) => void;
 	onRemovePlayer: (playerId: number) => void;
 }) {
+	const { messages } = useI18n();
+
 	return (
 		<div
 			data-player-id={player.id}
@@ -324,7 +380,7 @@ const SeatingRow = memo(function SeatingRow({
 
 			<div className="min-w-0 flex-1">
 				<p className="text-text-primary truncate text-lg font-semibold">{player.name}</p>
-				<p className="text-text-muted text-xs tracking-[0.16em] uppercase">Player</p>
+				<p className="text-text-muted text-xs tracking-[0.16em] uppercase">{messages.common.player}</p>
 			</div>
 
 			<button
@@ -334,8 +390,8 @@ const SeatingRow = memo(function SeatingRow({
 				onPointerUp={onDragEnd}
 				onPointerCancel={onDragEnd}
 				className="border-gold/35 text-gold inline-flex h-10 w-10 cursor-grab touch-none items-center justify-center rounded-lg border bg-black/25 active:cursor-grabbing"
-				aria-label={`Drag to move ${player.name}`}
-				title="Drag to reorder"
+				aria-label={messages.setup.dragToMove(player.name)}
+				title={messages.setup.dragToReorder}
 			>
 				<GripVertical className="h-5 w-5" strokeWidth={2.2} />
 			</button>
@@ -344,7 +400,7 @@ const SeatingRow = memo(function SeatingRow({
 				type="button"
 				onClick={() => onRemovePlayer(player.id)}
 				className="text-text-muted hover:text-fascist cursor-pointer rounded-md p-2 transition-colors"
-				aria-label={`Remove ${player.name}`}
+				aria-label={messages.setup.removePlayer(player.name)}
 			>
 				<Trash2 className="h-4 w-4" strokeWidth={2.1} />
 			</button>
@@ -369,16 +425,20 @@ const SeatingOrderPanel = memo(function SeatingOrderPanel({
 	onDragEnd: (event: ReactPointerEvent<HTMLButtonElement>) => void;
 	onRemovePlayer: (playerId: number) => void;
 }) {
+	const { messages } = useI18n();
+
 	return (
 		<section className="flex min-h-0 flex-col rounded-[20px] border border-white/8 bg-black/18 p-4 md:p-5">
 			<div className="mb-2 flex items-center justify-between">
-				<p className="text-text-muted text-[11px] font-semibold tracking-[0.22em] uppercase">Seating Order</p>
-				<p className="text-text-muted text-xs">Drag handle to reorder</p>
+				<p className="text-text-muted text-[11px] font-semibold tracking-[0.22em] uppercase">
+					{messages.setup.seatingOrder}
+				</p>
+				<p className="text-text-muted text-xs">{messages.setup.reorderHint}</p>
 			</div>
 
 			{players.length === 0 ? (
 				<div className="text-text-muted flex flex-1 items-center justify-center rounded-xl border border-dashed border-white/15">
-					Add players to begin
+					{messages.setup.addPlayersToBegin}
 				</div>
 			) : (
 				<div className="min-h-0 flex-1 overflow-y-auto pr-1">
@@ -406,10 +466,12 @@ const SeatingOrderPanel = memo(function SeatingOrderPanel({
 });
 
 const ProjectFooter = memo(function ProjectFooter() {
+	const { messages } = useI18n();
+
 	return (
 		<footer className="home-credit-card">
 			<p>
-				The project is open-source, and is licensed under{" "}
+				{messages.setup.projectOpenSource.beforeLicense}
 				<a
 					href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
 					target="_blank"
@@ -418,20 +480,21 @@ const ProjectFooter = memo(function ProjectFooter() {
 				>
 					CC BY-NC-SA 4.0
 				</a>
-				. You can read more about the project on GitHub.
+				{messages.setup.projectOpenSource.afterLicense}
 			</p>
 			<p>
-				Adapted from the original{" "}
+				{messages.setup.adaptedFromOriginal.beforeTitle}
 				<a href="https://secrethitler.com" target="_blank" rel="noreferrer" className="home-credit-link">
 					Secret Hitler
-				</a>{" "}
-				board game by Goat, Wolf, &amp; Cabbage (c) 2016-2020.
+				</a>
+				{messages.setup.adaptedFromOriginal.afterTitle}
 			</p>
 		</footer>
 	);
 });
 
 export function SetupScreen({ state, dispatch }: ScreenProps) {
+	const { headingText, messages } = useI18n();
 	const [uiState, updateUi] = useReducer(setupUiReducer, INITIAL_UI_STATE);
 	const activePointerIdRef = useRef<number | null>(null);
 
@@ -535,12 +598,16 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 		<div className="bg-bg-darker h-dvh w-full overflow-hidden">
 			<div className="mx-auto flex h-full w-full max-w-7xl flex-col px-4 pt-3 pb-4 md:px-6 md:pb-6">
 				<div className="flex-shrink-0 text-center">
-					<h1 className="font-heading text-fascist text-4xl leading-none tracking-wide md:text-5xl">SECRET HITLER</h1>
-					<p className="font-flavor text-text-muted mt-1 text-xs">Pass &amp; Play Edition</p>
+					<h1 className="font-heading text-fascist text-4xl leading-none tracking-wide md:text-5xl">
+						{headingText(messages.brand.title)}
+					</h1>
+					<p className="font-flavor text-text-muted mt-1 text-xs">{messages.brand.subtitle}</p>
 				</div>
 
 				<div className="border-gold/15 mt-3 min-h-0 flex-1 overflow-hidden rounded-[24px] border bg-[linear-gradient(180deg,rgba(43,31,22,0.88),rgba(25,17,12,0.9))] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.34)] md:p-6">
-					<div className="grid h-full min-h-0 gap-4 lg:grid-cols-[minmax(380px,520px)_minmax(260px,1fr)]">
+					<div className="flex h-full min-h-0 flex-col gap-4">
+						<LanguageSelector />
+						<div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(380px,520px)_minmax(260px,1fr)]">
 						<PlayerSetupPanel
 							players={state.players}
 							playerCount={playerCount}
@@ -568,6 +635,7 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 							onDragEnd={handleDragEnd}
 							onRemovePlayer={handleRemovePlayer}
 						/>
+					</div>
 					</div>
 				</div>
 

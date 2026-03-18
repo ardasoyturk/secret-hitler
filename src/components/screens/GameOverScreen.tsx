@@ -29,7 +29,9 @@ import victoryLiberalFooter from "@assets/victory/victory-liberal-footer.png";
 import victoryLiberalHeader from "@assets/victory/victory-liberal-header.png";
 import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 import type { GameState, GameAction } from "@engine/types";
-import { Team, Role, VictoryReason } from "@engine/types";
+import { Team, Role } from "@engine/types";
+
+import { useI18n } from "@/i18n";
 
 const PORTRAITS = [
 	portrait1,
@@ -53,30 +55,21 @@ const PORTRAITS = [
 	portrait19,
 	portrait20,
 ];
-
-const VICTORY_REASONS: Record<VictoryReason, string> = {
-	[VictoryReason.LiberalPolicies]: "5 Liberal policies have been enacted. Democracy prevails!",
-	[VictoryReason.FascistPolicies]: "6 Fascist policies have been enacted. The government has fallen.",
-	[VictoryReason.HitlerExecuted]: "Hitler has been found and executed. Freedom is restored!",
-	[VictoryReason.HitlerElectedChancellor]:
-		"Hitler was elected Chancellor with 3+ Fascist policies in play. The conspiracy succeeds.",
-};
-
-function getRoleBadge(role: Role) {
+function getRoleBadge(role: Role, roleLabels: Record<Role, string>) {
 	switch (role) {
 		case Role.Hitler:
 			return {
-				label: "Hitler",
+				label: roleLabels[Role.Hitler],
 				className: "bg-fascist-deep text-text-primary",
 			};
 		case Role.Fascist:
 			return {
-				label: "Fascist",
+				label: roleLabels[Role.Fascist],
 				className: "bg-fascist/80 text-text-primary",
 			};
 		case Role.Liberal:
 			return {
-				label: "Liberal",
+				label: roleLabels[Role.Liberal],
 				className: "bg-liberal/80 text-text-primary",
 			};
 	}
@@ -88,6 +81,7 @@ interface ScreenProps {
 }
 
 export function GameOverScreen({ state, dispatch }: ScreenProps) {
+	const { headingText, messages } = useI18n();
 	const winner = state.winner;
 	const reason = state.victoryReason;
 	const liberalHeaderSrc = useOptimizedAsset("victory/victory-liberal-header.png", victoryLiberalHeader.src);
@@ -121,7 +115,7 @@ export function GameOverScreen({ state, dispatch }: ScreenProps) {
 			<div className={["w-full max-w-md mx-auto flex-shrink-0 stamp mb-3", glowClass].join(" ")}>
 				<img
 					src={headerImg}
-					alt={`${winner} victory`}
+					alt={messages.gameOver.victoryBannerAlt(messages.enums.teams[winner])}
 					className="block h-auto w-full rounded-t-[var(--radius-card)]"
 					draggable={false}
 				/>
@@ -130,32 +124,34 @@ export function GameOverScreen({ state, dispatch }: ScreenProps) {
 			{/* Victory title */}
 			<div className="mb-3 flex-shrink-0 text-center">
 				<h1 className={["font-heading text-3xl sm:text-4xl tracking-wide mb-1", teamColor].join(" ")}>
-					{isLiberalWin ? "Liberals Win!" : "Fascists Win!"}
+					{headingText(isLiberalWin ? messages.gameOver.liberalsWin : messages.gameOver.fascistsWin)}
 				</h1>
-				<p className="text-text-secondary font-body mx-auto max-w-sm text-xs">{VICTORY_REASONS[reason]}</p>
+				<p className="text-text-secondary font-body mx-auto max-w-sm text-xs">
+					{messages.enums.victoryReasons[reason]}
+				</p>
 			</div>
 
 			{/* Board final state */}
 			<div className="mb-3 flex flex-shrink-0 items-center justify-center gap-8">
 				<div className="text-center">
 					<p className="text-liberal font-heading text-2xl">{state.board.liberalPolicies}</p>
-					<p className="text-text-muted font-body text-xs tracking-wider uppercase">Liberal</p>
+					<p className="text-text-muted font-body text-xs tracking-wider uppercase">{messages.enums.teams.liberal}</p>
 				</div>
 				<div className="bg-text-muted/30 h-6 w-px" />
 				<div className="text-center">
 					<p className="text-fascist font-heading text-2xl">{state.board.fascistPolicies}</p>
-					<p className="text-text-muted font-body text-xs tracking-wider uppercase">Fascist</p>
+					<p className="text-text-muted font-body text-xs tracking-wider uppercase">{messages.enums.teams.fascist}</p>
 				</div>
 			</div>
 
 			{/* All roles revealed — scrollable */}
 			<div className="mx-auto mb-3 min-h-0 w-full max-w-md flex-1 overflow-y-auto">
 				<p className="text-text-muted font-body bg-bg-dark sticky top-0 mb-2 py-1 text-center text-xs tracking-widest uppercase">
-					All Roles Revealed
+					{messages.gameOver.allRolesRevealed}
 				</p>
 				<div className="space-y-1.5">
 					{sortedPlayers.map((player) => {
-						const badge = getRoleBadge(player.role);
+						const badge = getRoleBadge(player.role, messages.enums.roles);
 						const isDead = !player.isAlive;
 
 						return (
@@ -193,7 +189,7 @@ export function GameOverScreen({ state, dispatch }: ScreenProps) {
 									].join(" ")}
 								>
 									{player.name}
-									{isDead && <span className="text-fascist ml-2 text-xs no-underline">(dead)</span>}
+									{isDead && <span className="text-fascist ml-2 text-xs no-underline">{messages.gameOver.dead}</span>}
 								</span>
 
 								{/* Role badge */}
@@ -227,7 +223,7 @@ export function GameOverScreen({ state, dispatch }: ScreenProps) {
 				onClick={() => dispatch({ type: "NEW_GAME" })}
 				className="font-heading bg-fascist text-text-primary hover:bg-fascist-hover mx-auto w-full max-w-md flex-shrink-0 cursor-pointer rounded-[var(--radius-button)] py-3 text-xl tracking-wide shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)]"
 			>
-				New Game
+				{headingText(messages.common.newGame)}
 			</button>
 		</div>
 	);

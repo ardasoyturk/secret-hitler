@@ -27,6 +27,8 @@ import portrait19 from "@assets/portraits/player-portrait-19.svg";
 import portrait20 from "@assets/portraits/player-portrait-20.svg";
 import type { GameState, GameAction } from "@engine/types";
 
+import { useI18n } from "@/i18n";
+
 const PORTRAITS = [
 	portrait1,
 	portrait2,
@@ -56,17 +58,18 @@ interface ScreenProps {
 }
 type NominationScreenProps = ScreenProps & { eligibleIds: number[] };
 
-function getIneligibleReason(state: GameState, playerId: number): string | null {
+function getIneligibleReason(state: GameState, playerId: number): "dead" | "president" | "termLimit" | null {
 	const player = state.players.find((p) => p.id === playerId);
 	if (!player) return null;
-	if (!player.isAlive) return "Dead";
-	if (playerId === state.players[state.presidentIndex]?.id) return "President";
-	if (playerId === state.lastElectedChancellorId) return "Term limit";
-	if (playerId === state.lastElectedPresidentId) return "Term limit";
+	if (!player.isAlive) return "dead";
+	if (playerId === state.players[state.presidentIndex]?.id) return "president";
+	if (playerId === state.lastElectedChancellorId) return "termLimit";
+	if (playerId === state.lastElectedPresidentId) return "termLimit";
 	return null;
 }
 
 export function NominationScreen({ state, dispatch, eligibleIds }: NominationScreenProps) {
+	const { headingText, messages } = useI18n();
 	const president = state.players[state.presidentIndex];
 
 	if (!president) return null;
@@ -89,11 +92,11 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 		<form className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-1 py-3 md:gap-5 md:py-5" onSubmit={handleSubmit}>
 			<div className="flex-shrink-0 text-center">
 				<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
-					Government Formation
+					{messages.nomination.governmentFormation}
 				</p>
-				<h2 className="font-heading text-gold text-3xl leading-tight md:text-4xl">Chancellor Nomination</h2>
+				<h2 className="font-heading text-gold text-3xl leading-tight md:text-4xl">{headingText(messages.nomination.title)}</h2>
 				<p className="text-text-secondary mt-1 text-sm md:text-base">
-					President <span className="text-text-primary font-semibold">{president.name}</span>, nominate a Chancellor
+					{messages.nomination.instructions(president.name)}
 				</p>
 			</div>
 
@@ -150,13 +153,17 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 										{player.name}
 									</span>
 									<span className="text-text-muted mt-1 block text-left text-[11px] tracking-[0.18em] uppercase">
-										{isEligible ? "Eligible" : (reason ?? "Unavailable")}
+										{isEligible
+											? messages.nomination.eligible
+											: reason
+												? messages.nomination.ineligibleReasons[reason]
+												: messages.nomination.unavailable}
 									</span>
 								</div>
 							</div>
 							{reason && (
 								<span className="border-text-muted/20 bg-bg-darker/90 text-text-muted absolute top-2 right-2 rounded-full border px-2 py-0.5 text-[10px] font-medium whitespace-nowrap">
-									{reason}
+									{messages.nomination.ineligibleReasons[reason]}
 								</span>
 							)}
 						</label>
@@ -169,7 +176,7 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 					type="submit"
 					className="bg-fascist font-heading hover:bg-fascist-hover w-full max-w-2xl cursor-pointer rounded-[18px] px-6 py-3 text-xl tracking-wide text-white shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-200 active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-fascist-dark)]"
 				>
-					Confirm Nomination
+					{headingText(messages.nomination.confirm)}
 				</button>
 			</div>
 		</form>

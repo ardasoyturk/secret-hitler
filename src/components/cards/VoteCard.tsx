@@ -9,6 +9,8 @@ import voteYesImg from "@assets/votes/vote-yes.png";
 import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 import { memo } from "react";
 
+import { useI18n } from "@/i18n";
+
 const SIZE_CLASSES = {
 	sm: "w-[80px]",
 	md: "w-[120px]",
@@ -30,10 +32,11 @@ export const VoteCard = memo(function VoteCard({
 	disabled = false,
 	className = "",
 }: VoteCardProps) {
+	const { messages } = useI18n();
 	const yesSrc = useOptimizedAsset("votes/vote-yes.png", voteYesImg.src);
 	const noSrc = useOptimizedAsset("votes/vote-no.png", voteNoImg.src);
 	const imgSrc = vote === "ja" ? yesSrc : noSrc;
-	const altText = vote === "ja" ? "Ja! (Yes)" : "Nein! (No)";
+	const altText = vote === "ja" ? messages.cards.voteJa : messages.cards.voteNein;
 
 	return (
 		<button
