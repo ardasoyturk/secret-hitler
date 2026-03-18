@@ -107,6 +107,7 @@ function GameInner({ initialState }: { initialState: GameState | undefined }) {
 								board={state.board}
 								electionTracker={state.electionTracker}
 								playerCount={state.players.length}
+								phase={state.phase}
 								vetoUnlocked={state.vetoUnlocked}
 							/>
 						</div>

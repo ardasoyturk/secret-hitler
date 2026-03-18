@@ -100,7 +100,6 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 
 		return (
 			<VoteCastView
-				state={state}
 				dispatch={dispatch}
 				voter={firstVoter}
 				presidentName={president?.name ?? ""}
@@ -122,7 +121,6 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 
 		return (
 			<VoteCastView
-				state={state}
 				dispatch={dispatch}
 				voter={voter}
 				presidentName={president?.name ?? ""}
@@ -208,14 +206,6 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 					})}
 				</div>
 
-				{/* Election tracker (on fail) */}
-				{!passed && (
-					<p className="text-text-muted flex-shrink-0 text-center text-xs">
-						Failed elections:{" "}
-						<span className="text-fascist font-semibold">{state.electionTracker.failedElections}</span> / 3
-					</p>
-				)}
-
 				{/* Continue button */}
 				<div className="phase-action-bar">
 					<button
@@ -236,14 +226,12 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 // ── Sub-component: Vote casting UI ──────────────────────────────────
 
 function VoteCastView({
-	state,
 	dispatch,
 	voter,
 	presidentName,
 	chancellorName,
 	onVoted,
 }: {
-	state: GameState;
 	dispatch: (action: GameAction) => void;
 	voter: { id: number; name: string; portraitIndex: number };
 	presidentName: string;
@@ -271,7 +259,6 @@ function VoteCastView({
 					{" · "}
 					Chancellor <span className="text-gold font-semibold">{chancellorName}</span>
 				</p>
-				<p className="text-text-muted mt-2 text-xs">Failed elections: {state.electionTracker.failedElections} / 3</p>
 			</div>
 
 			<div className="flex w-full flex-wrap items-center justify-center gap-6 md:gap-10">

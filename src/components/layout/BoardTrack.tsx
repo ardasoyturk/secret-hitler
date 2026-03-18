@@ -8,7 +8,7 @@ import trackerMarkerImg from "@assets/boards/board-tracker.png";
 import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 import { getPlayerCountBracket, EXECUTIVE_POWERS } from "@engine/constants";
 import type { Board, ElectionTracker } from "@engine/types";
-import { ExecutivePower } from "@engine/types";
+import { ExecutivePower, GamePhase } from "@engine/types";
 import type { ReactNode } from "react";
 
 type AssetRef = string | { src: string };
@@ -49,7 +49,7 @@ const LIBERAL_LAYOUT: SvgLayout = {
 		rect(975, 182, 194, 268),
 		rect(1205, 182, 194, 268),
 	],
-	trackerSlots: [rect(581, 495, 42, 46), rect(736, 495, 42, 46), rect(890, 495, 42, 46)],
+	trackerSlots: [rect(582, 495, 42, 46), rect(736, 495, 42, 46), rect(890, 495, 42, 46), rect(1044, 495, 42, 46)],
 };
 
 const FASCIST_LAYOUT: SvgLayout = {
@@ -82,6 +82,7 @@ interface BoardTrackProps {
 	board: Board;
 	electionTracker: ElectionTracker;
 	playerCount: number;
+	phase: GamePhase;
 	vetoUnlocked: boolean;
 	className?: string;
 }
@@ -124,41 +125,28 @@ function PolicySlots({
 	);
 }
 
-function TrackerSlots({
-	count,
-	slots,
-	imageSrc,
-	altPrefix,
-}: {
-	count: number;
-	slots: SlotRect[];
-	imageSrc: AssetRef;
-	altPrefix: string;
-}) {
+function TrackerSlot({ position, slots, imageSrc }: { position: number; slots: SlotRect[]; imageSrc: AssetRef }) {
+	const slot = slots[position - 1];
+	if (!slot) return null;
+
 	return (
-		<>
-			{slots.slice(0, 3).map((slot, index) => (
-				<div
-					key={getSlotKey(altPrefix, slot)}
-					className="absolute"
-					style={{
-						left: `${slot.x * 100}%`,
-						top: `${slot.y * 100}%`,
-						width: `${slot.width * 100}%`,
-						height: `${slot.height * 100}%`,
-					}}
-				>
-					{index < count && (
-						<img
-							src={assetSrc(imageSrc)}
-							alt={`${altPrefix} ${index + 1}`}
-							className="scale-pop h-full w-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.32)]"
-							draggable={false}
-						/>
-					)}
-				</div>
-			))}
-		</>
+		<div
+			key={getSlotKey("tracker-position", slot)}
+			className="absolute"
+			style={{
+				left: `${slot.x * 100}%`,
+				top: `${slot.y * 100}%`,
+				width: `${slot.width * 100}%`,
+				height: `${slot.height * 100}%`,
+			}}
+		>
+			<img
+				src={assetSrc(imageSrc)}
+				alt={`Election tracker position ${position}`}
+				className="scale-pop h-full w-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.32)]"
+				draggable={false}
+			/>
+		</div>
 	);
 }
 
@@ -198,11 +186,19 @@ function assetSrc(asset: AssetRef): string {
 	return typeof asset === "string" ? asset : asset.src;
 }
 
-export function BoardTrack({ board, electionTracker, playerCount, vetoUnlocked, className = "" }: BoardTrackProps) {
+export function BoardTrack({
+	board,
+	electionTracker,
+	playerCount,
+	phase,
+	vetoUnlocked,
+	className = "",
+}: BoardTrackProps) {
 	const bracket = getPlayerCountBracket(playerCount);
 	const fascistBoard = FASCIST_BOARD_MAP[bracket] ?? FASCIST_BOARD_MAP["5-6"];
 	const executivePowers = EXECUTIVE_POWERS[bracket];
 	const failedElections = Math.max(0, Math.min(3, electionTracker.failedElections));
+	const trackerPosition = phase === GamePhase.ChaosPolicy ? 4 : failedElections + 1;
 	const liberalBoardSrc = useOptimizedAsset("boards/board-liberal.png", assetSrc(boardLiberalImg));
 	const fascistBoardSrc = useOptimizedAsset(fascistBoard.assetKey, assetSrc(fascistBoard.fallbackSrc));
 	const liberalPolicySrc = useOptimizedAsset("boards/board-policy-liberal.png", assetSrc(policyLiberalImg));
@@ -224,12 +220,7 @@ export function BoardTrack({ board, electionTracker, playerCount, vetoUnlocked, 
 						imageSrc={liberalPolicySrc}
 						altPrefix="Liberal policy"
 					/>
-					<TrackerSlots
-						count={failedElections}
-						slots={LIBERAL_LAYOUT.trackerSlots}
-						imageSrc={trackerSrc}
-						altPrefix="Failed election marker"
-					/>
+					<TrackerSlot position={trackerPosition} slots={LIBERAL_LAYOUT.trackerSlots} imageSrc={trackerSrc} />
 				</BoardPanel>
 
 				<BoardPanel
