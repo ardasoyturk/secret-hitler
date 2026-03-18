@@ -2,7 +2,7 @@
  * Secret Hitler — Core Type Definitions
  *
  * All types follow the official Secret Hitler rules exactly.
- * Reference: Secret_Hitler_Rules.pdf
+ * Reference: rules.pdf
  */
 
 // ─── Enums ──────────────────────────────────────────────────────────

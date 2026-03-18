@@ -256,7 +256,7 @@ function PlayerSetupPanel({
 					{playerCount} / {MAX_PLAYERS} players
 					{!canStart && playerCount > 0 && playerCount < MIN_PLAYERS ? ` • Need ${MIN_PLAYERS - playerCount} more` : ""}
 				</div>
-				<div className="flex justify-center">
+				<div className="flex flex-col items-center gap-3">
 					<button
 						type="button"
 						onClick={onStartGame}
@@ -270,6 +270,19 @@ function PlayerSetupPanel({
 					>
 						Start Game
 					</button>
+
+					<a
+						href="/rules.pdf"
+						target="_blank"
+						rel="noreferrer"
+						className={[
+							"w-full max-w-sm rounded-[16px] py-3 font-heading text-3xl tracking-[0.04em] transition-all duration-200",
+							"bg-liberal text-white text-center shadow-[0_6px_0_var(--color-liberal-dark),0_14px_24px_rgba(0,0,0,0.28)] hover:bg-liberal-hover active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-liberal-dark)] cursor-pointer"
+						].join(" ")}
+					>
+						Read Rules
+					</a>
+
 				</div>
 			</div>
 		</section>
