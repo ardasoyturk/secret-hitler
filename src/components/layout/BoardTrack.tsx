@@ -189,7 +189,6 @@ function assetSrc(asset: AssetRef): string {
 
 export const BoardTrack = memo(function BoardTrack({
 	board,
-	electionTracker,
 	playerCount,
 	trackerPosition,
 	vetoUnlocked,
