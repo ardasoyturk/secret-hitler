@@ -8,7 +8,7 @@
 
 @import "tailwindcss";
 
-/* ── Font imports ─────────────────────────────────────────────────── */
+/* ── Font imports ──────────── */
 @import "@fontsource/germania-one/400.css";
 @import "@fontsource/montserrat/400.css";
 @import "@fontsource/montserrat/500.css";
@@ -17,7 +17,7 @@
 @import "@fontsource/courier-prime/400.css";
 @import "@fontsource/courier-prime/700.css";
 
-/* ── Tailwind v4 Theme ────────────────────────────────────────────── */
+/* ── Tailwind v4 Theme ─────── */
 @theme {
 	/* Fonts */
 	--font-heading: "Germania One", cursive;
@@ -105,7 +105,7 @@
 	--z-privacy: 200;
 }
 
-/* ── Base styles ──────────────────────────────────────────────────── */
+/* ── Base styles ───────────── */
 
 html {
 	font-family: var(--font-body);
@@ -146,7 +146,7 @@ h3 {
 	font-style: italic;
 }
 
-/* ── Utility classes ──────────────────────────────────────────────── */
+/* ── Utility classes ───────── */
 
 /* Noise texture overlay for atmospheric backgrounds */
 .noise-overlay {

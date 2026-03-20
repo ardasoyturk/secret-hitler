@@ -7,14 +7,10 @@
 
 import { ExecutivePower, PolicyType } from "./types";
 
-// ─── Deck Composition ───────────────────────────────────────────────
-
 /** The initial deck contains 11 fascist and 6 liberal policy tiles */
 export const FASCIST_POLICY_COUNT = 11;
 export const LIBERAL_POLICY_COUNT = 6;
 export const TOTAL_POLICY_COUNT = FASCIST_POLICY_COUNT + LIBERAL_POLICY_COUNT; // 17
-
-// ─── Victory Thresholds ─────────────────────────────────────────────
 
 /** Liberals win by enacting 5 liberal policies */
 export const LIBERAL_POLICIES_TO_WIN = 5;
@@ -28,16 +24,12 @@ export const FASCIST_POLICIES_TO_WIN = 6;
  */
 export const MIN_FASCIST_POLICIES_FOR_HITLER_CHANCELLOR_WIN = 3;
 
-// ─── Elections ──────────────────────────────────────────────────────
-
 /**
  * After 3 consecutive failed elections, the top policy is
  * enacted automatically ("chaos"). The election tracker resets,
  * all term limits are cleared, and any executive power is skipped.
  */
 export const MAX_FAILED_ELECTIONS = 3;
-
-// ─── Deck Management ────────────────────────────────────────────────
 
 /**
  * If fewer than 3 cards remain in the draw pile before a president
@@ -51,12 +43,8 @@ export const PRESIDENT_DRAW_COUNT = 3;
 /** The president passes 2 policies to the chancellor */
 export const CHANCELLOR_HAND_SIZE = 2;
 
-// ─── Player Count Limits ────────────────────────────────────────────
-
 export const MIN_PLAYERS = 5;
 export const MAX_PLAYERS = 10;
-
-// ─── Role Distribution ─────────────────────────────────────────────
 
 /**
  * Number of fascist roles (NOT including Hitler) by player count.
@@ -82,16 +70,12 @@ export const FASCIST_COUNT_BY_PLAYERS: Record<number, number> = {
  */
 export const HITLER_KNOWS_FASCISTS_MAX_PLAYERS = 6;
 
-// ─── Term Limits ────────────────────────────────────────────────────
-
 /**
  * The last elected chancellor is ALWAYS ineligible for the next
  * chancellor nomination. The last elected president is ONLY
  * ineligible if there are MORE than 5 players alive.
  */
 export const PRESIDENT_TERM_LIMIT_MIN_ALIVE = 6;
-
-// ─── Executive Power Tables ────────────────────────────────────────
 
 /**
  * Executive powers granted when a fascist policy is enacted.
@@ -102,10 +86,7 @@ export const PRESIDENT_TERM_LIMIT_MIN_ALIVE = 6;
  *
  * Note: The 6th fascist policy means fascists win — no power is granted.
  */
-export const EXECUTIVE_POWERS: Record<
-	string,
-	Record<number, ExecutivePower>
-> = {
+export const EXECUTIVE_POWERS: Record<string, Record<number, ExecutivePower>> = {
 	/** 5-6 players */
 	"5-6": {
 		1: ExecutivePower.None,
@@ -147,10 +128,7 @@ export function getPlayerCountBracket(playerCount: number): string {
 /**
  * Get the executive power for a given fascist policy count and player count.
  */
-export function getExecutivePower(
-	fascistPolicyCount: number,
-	playerCount: number,
-): ExecutivePower {
+export function getExecutivePower(fascistPolicyCount: number, playerCount: number): ExecutivePower {
 	const bracket = getPlayerCountBracket(playerCount);
 	return EXECUTIVE_POWERS[bracket][fascistPolicyCount] ?? ExecutivePower.None;
 }
@@ -159,8 +137,6 @@ export function getExecutivePower(
  * Veto power unlocks after the 5th fascist policy is enacted.
  */
 export const VETO_UNLOCK_FASCIST_POLICY_COUNT = 5;
-
-// ─── Initial Deck ───────────────────────────────────────────────────
 
 /**
  * Create the initial unshuffled policy deck:

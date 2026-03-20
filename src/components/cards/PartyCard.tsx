@@ -4,11 +4,11 @@
  * Reveals with a dramatic stamp-in animation.
  */
 
+import { memo } from "preact/compat";
+
 import partyFascistImg from "@/assets/cards/party-membership-fascist.png";
 import partyLiberalImg from "@/assets/cards/party-membership-liberal.png";
 import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
-import { memo } from "preact/compat";
-
 import { useI18n } from "@/i18n";
 
 interface PartyCardProps {

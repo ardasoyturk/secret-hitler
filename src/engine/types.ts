@@ -5,8 +5,6 @@
  * Reference: rules.pdf
  */
 
-// ─── Enums ──────────────────────────────────────────────────────────
-
 /** The two teams in Secret Hitler */
 export enum Team {
 	Liberal = "liberal",
@@ -119,8 +117,6 @@ export enum VictoryReason {
 	HitlerElectedChancellor = "hitler_elected_chancellor",
 }
 
-// ─── Data Structures ────────────────────────────────────────────────
-
 export interface Player {
 	readonly id: number;
 	readonly name: string;
@@ -182,8 +178,6 @@ export interface GovernmentRecord {
 	chancellorId: number;
 	policyEnacted: PolicyType;
 }
-
-// ─── Game State ─────────────────────────────────────────────────────
 
 export interface GameState {
 	/** Current phase of the game */
@@ -274,8 +268,6 @@ export interface LogEntry {
 	message: string;
 	timestamp: number;
 }
-
-// ─── Actions ────────────────────────────────────────────────────────
 
 export type GameAction =
 	| { type: "ADD_PLAYER"; name: string; portraitIndex: number }

@@ -41,10 +41,7 @@ export function loadGameState(): GameState | null {
 			return null;
 		}
 
-		if (
-			data.state.phase === GamePhase.Setup ||
-			data.state.phase === GamePhase.GameOver
-		) {
+		if (data.state.phase === GamePhase.Setup || data.state.phase === GamePhase.GameOver) {
 			return null;
 		}
 

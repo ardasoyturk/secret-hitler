@@ -6,7 +6,6 @@
  */
 
 import type { GameState, GameAction } from "@/engine/types";
-
 import { useI18n } from "@/i18n";
 
 interface ScreenProps {

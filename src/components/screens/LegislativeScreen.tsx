@@ -10,13 +10,13 @@
  * Privacy gates use .privacy-screen (fixed overlay).
  */
 
+import { memo, useCallback, useState } from "preact/compat";
+
 import { PolicyCard } from "@/components/cards/PolicyCard";
 import { PrivacyGate } from "@/components/cards/PrivacyGate";
 import type { GameState, GameAction } from "@/engine/types";
 import { GamePhase } from "@/engine/types";
 import { getPolicyKey } from "@/engine/utils";
-import { memo, useCallback, useState } from "preact/compat";
-
 import { useI18n } from "@/i18n";
 
 interface ScreenProps {
@@ -58,7 +58,6 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 	const president = state.players[state.presidentIndex];
 	const chancellor = state.players.find((p) => p.id === state.chancellorNomineeId);
 
-	// ── President Legislation ─────────────────────────────────────────
 	if (state.phase === GamePhase.PresidentLegislation) {
 		if (!president) return null;
 
@@ -129,7 +128,6 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 		);
 	}
 
-	// ── Chancellor Legislation ────────────────────────────────────────
 	if (state.phase === GamePhase.ChancellorLegislation) {
 		if (!chancellor) return null;
 

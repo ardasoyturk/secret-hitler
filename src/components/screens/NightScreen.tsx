@@ -6,6 +6,8 @@
  * - NightReveal: Show the player's role card, team info, and teammates.
  */
 
+import { Crown, Shield } from "lucide-preact";
+
 import roleFascist1 from "@/assets/roles/role-fascist-1.png";
 import roleFascist2 from "@/assets/roles/role-fascist-2.png";
 import roleFascist3 from "@/assets/roles/role-fascist-3.png";
@@ -20,8 +22,6 @@ import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
 import { ViewportOverlay } from "@/components/layout/ViewportOverlay";
 import type { GameState, GameAction } from "@/engine/types";
 import { GamePhase, Role } from "@/engine/types";
-import { Crown, Shield } from "lucide-preact";
-
 import { getNightInfo } from "@/hooks/useGame";
 import { useI18n } from "@/i18n";
 

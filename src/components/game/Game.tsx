@@ -9,8 +9,9 @@
  * - Privacy screens (night, voting gates, legislative gates) are fixed overlays.
  */
 
-import { OptimizedAssetsProvider } from "@/components/game/OptimizedAssets";
-import type { OptimizedAssetMap } from "@/components/game/OptimizedAssets";
+import { useState } from "preact/compat";
+
+import { OptimizedAssetsProvider, type OptimizedAssetMap } from "@/components/game/OptimizedAssets";
 import { BoardTrack } from "@/components/layout/BoardTrack";
 // Layout
 import { Header } from "@/components/layout/Header";
@@ -26,15 +27,11 @@ import { VetoScreen } from "@/components/screens/VetoScreen";
 import { VotingScreen } from "@/components/screens/VotingScreen";
 import { GamePhase } from "@/engine/types";
 import type { GameState } from "@/engine/types";
-import { useState } from "preact/compat";
-
 import { useGame } from "@/hooks/useGame";
 import { clearGameState, loadGameState } from "@/hooks/useGamePersistence";
 import { I18nProvider, useI18n } from "@/i18n";
 
-const EMPTY_OPTIMIZED_ASSETS: OptimizedAssetMap = {};
-
-export function Game({ optimizedAssets = EMPTY_OPTIMIZED_ASSETS }: { optimizedAssets?: OptimizedAssetMap }) {
+export function Game({ optimizedAssets = {} }: { optimizedAssets?: OptimizedAssetMap }) {
 	const [appState, setAppState] = useState<
 		{ status: "prompting"; savedState: GameState } | { status: "playing"; initialState: GameState | undefined }
 	>(() => {

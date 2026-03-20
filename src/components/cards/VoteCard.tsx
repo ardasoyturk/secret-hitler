@@ -4,11 +4,11 @@
  * Uses the actual vote card assets for authentic Secret Hitler styling.
  */
 
+import { memo } from "preact/compat";
+
 import voteNoImg from "@/assets/votes/vote-no.png";
 import voteYesImg from "@/assets/votes/vote-yes.png";
 import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
-import { memo } from "preact/compat";
-
 import { useI18n } from "@/i18n";
 
 const SIZE_CLASSES = {

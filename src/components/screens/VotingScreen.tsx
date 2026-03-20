@@ -10,13 +10,13 @@
  * Privacy gates use .privacy-screen (fixed overlay).
  */
 
-import { PrivacyGate } from "@/components/cards/PrivacyGate";
-import { VoteCard } from "@/components/cards/VoteCard";
-import type { GameState, GameAction } from "@/engine/types";
-import { GamePhase, Vote } from "@/engine/types";
 import { memo, useState } from "preact/compat";
 
+import { PrivacyGate } from "@/components/cards/PrivacyGate";
+import { VoteCard } from "@/components/cards/VoteCard";
 import { PORTRAITS } from "@/engine/constants";
+import type { GameState, GameAction } from "@/engine/types";
+import { GamePhase, Vote } from "@/engine/types";
 import { useI18n } from "@/i18n";
 
 interface ScreenProps {
@@ -31,7 +31,6 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 	const president = state.players[state.presidentIndex];
 	const chancellor = state.players.find((p) => p.id === state.chancellorNomineeId);
 
-	// ── Election phase: privacy gate for first voter ─────────────────
 	if (state.phase === GamePhase.Election) {
 		const firstAliveIndex = state.players.findIndex((p) => p.isAlive);
 		const firstVoter = state.players[firstAliveIndex];
@@ -53,7 +52,6 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 		);
 	}
 
-	// ── VoteCast phase: each subsequent voter ────────────────────────
 	if (state.phase === GamePhase.VoteCast) {
 		const voter = state.players[state.currentVoterIndex];
 
@@ -74,7 +72,6 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 		);
 	}
 
-	// ── VoteResult phase: reveal all votes ───────────────────────────
 	if (state.phase === GamePhase.VoteResult) {
 		const jaCount = state.votes.filter((v) => v.vote === Vote.Ja).length;
 		const neinCount = state.votes.filter((v) => v.vote === Vote.Nein).length;
@@ -166,8 +163,6 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 
 	return null;
 }
-
-// ── Sub-component: Vote casting UI ──────────────────────────────────
 
 const VoteCastView = memo(function VoteCastView({
 	dispatch,

@@ -7,7 +7,6 @@
 import { PolicyCard } from "@/components/cards/PolicyCard";
 import type { GameState, GameAction } from "@/engine/types";
 import { GamePhase, PolicyType } from "@/engine/types";
-
 import { useI18n } from "@/i18n";
 
 interface ScreenProps {

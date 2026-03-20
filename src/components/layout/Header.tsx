@@ -4,9 +4,9 @@
  * Compact dark bar that stays at the top of the game screen.
  */
 
-import { GamePhase } from "@/engine/types";
 import { memo } from "preact/compat";
 
+import { GamePhase } from "@/engine/types";
 import { useI18n } from "@/i18n";
 
 interface HeaderProps {

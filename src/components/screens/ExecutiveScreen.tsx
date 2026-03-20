@@ -11,15 +11,15 @@
  * Layout: flex flex-col h-full — fits inside Game layout (no min-h-dvh).
  */
 
+import { memo, useCallback, useState } from "preact/compat";
+
 import { PartyCard } from "@/components/cards/PartyCard";
 import { PolicyCard } from "@/components/cards/PolicyCard";
+import { PORTRAITS } from "@/engine/constants";
 import { getPartyMembership } from "@/engine/reducer";
 import type { GameState, GameAction } from "@/engine/types";
 import { GamePhase, PartyMembership } from "@/engine/types";
 import { getPolicyKey } from "@/engine/utils";
-import { memo, useCallback, useState } from "preact/compat";
-
-import { PORTRAITS } from "@/engine/constants";
 import { useI18n } from "@/i18n";
 
 const EMPTY_IDS: number[] = [];
@@ -34,8 +34,6 @@ type ExecutiveScreenProps = ScreenProps & {
 	specialElectionEligibleIds?: number[];
 	executionEligibleIds?: number[];
 };
-
-// ── Shared player selection grid ────────────────────────────────────
 
 const PlayerSelectionCard = memo(function PlayerSelectionCard({
 	playerId,
@@ -193,7 +191,6 @@ export function ExecutiveScreen({
 
 	if (!president) return null;
 
-	// ── INVESTIGATE ───────────────────────────────────────────────────
 	if (state.phase === GamePhase.ExecutiveInvestigate) {
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
@@ -221,7 +218,6 @@ export function ExecutiveScreen({
 		);
 	}
 
-	// ── INVESTIGATION RESULT ──────────────────────────────────────────
 	if (state.phase === GamePhase.InvestigationResult) {
 		const target = state.players.find((p) => p.id === state.investigationTargetId);
 		if (!target) return null;
@@ -260,7 +256,6 @@ export function ExecutiveScreen({
 		);
 	}
 
-	// ── POLICY PEEK ───────────────────────────────────────────────────
 	if (state.phase === GamePhase.ExecutivePeek) {
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:py-4">
@@ -299,7 +294,6 @@ export function ExecutiveScreen({
 		);
 	}
 
-	// ── SPECIAL ELECTION ──────────────────────────────────────────────
 	if (state.phase === GamePhase.ExecutiveSpecialElection) {
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
@@ -329,7 +323,6 @@ export function ExecutiveScreen({
 		);
 	}
 
-	// ── EXECUTION ─────────────────────────────────────────────────────
 	if (state.phase === GamePhase.ExecutiveExecution) {
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">

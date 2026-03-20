@@ -20,8 +20,6 @@ import {
 	type Player,
 } from "../src/engine/types";
 
-// ─── Helpers ────────────────────────────────────────────────────────
-
 function makePlayers(count: number): Player[] {
 	return Array.from({ length: count }, (_, i) => ({
 		id: i,
@@ -86,8 +84,6 @@ function castAllVotes(state: GameState, voteValue: Vote): GameState {
 	}
 	return current;
 }
-
-// ─── Tests ──────────────────────────────────────────────────────────
 
 describe("Game Reducer", () => {
 	describe("Setup Phase", () => {
@@ -188,14 +184,24 @@ describe("Game Reducer", () => {
 	describe("Night Round", () => {
 		test("ACKNOWLEDGE_NIGHT cycles through all players", () => {
 			let state = makeGameReadyState();
-			state = { ...state, phase: GamePhase.NightRound, nightRoundPlayerIndex: 0 };
+			state = {
+				...state,
+				phase: GamePhase.NightRound,
+				nightRoundPlayerIndex: 0,
+			};
 
 			// First acknowledge: NightRound → NightReveal (show player 0's role)
-			state = gameReducer(state, { type: "ACKNOWLEDGE_NIGHT", playerIndex: 0 });
+			state = gameReducer(state, {
+				type: "ACKNOWLEDGE_NIGHT",
+				playerIndex: 0,
+			});
 			expect(state.phase).toBe(GamePhase.NightReveal);
 
 			// Second acknowledge: NightReveal → NightRound (move to player 1)
-			state = gameReducer(state, { type: "ACKNOWLEDGE_NIGHT", playerIndex: 0 });
+			state = gameReducer(state, {
+				type: "ACKNOWLEDGE_NIGHT",
+				playerIndex: 0,
+			});
 			expect(state.phase).toBe(GamePhase.NightRound);
 			expect(state.nightRoundPlayerIndex).toBe(1);
 		});
@@ -207,7 +213,10 @@ describe("Game Reducer", () => {
 				phase: GamePhase.NightReveal,
 				nightRoundPlayerIndex: 4, // last player (index 4 for 5 players)
 			};
-			state = gameReducer(state, { type: "ACKNOWLEDGE_NIGHT", playerIndex: 4 });
+			state = gameReducer(state, {
+				type: "ACKNOWLEDGE_NIGHT",
+				playerIndex: 4,
+			});
 			expect(state.phase).toBe(GamePhase.ChancellorNomination);
 		});
 	});
@@ -380,7 +389,9 @@ describe("Game Reducer", () => {
 
 		test("shortcut is a no-op outside election voting phases", () => {
 			const state = makeGameReadyState();
-			const result = gameReducer(state, { type: "PASS_ELECTION_UNANIMOUSLY" });
+			const result = gameReducer(state, {
+				type: "PASS_ELECTION_UNANIMOUSLY",
+			});
 
 			expect(result).toBe(state);
 		});

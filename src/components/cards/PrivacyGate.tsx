@@ -1,6 +1,6 @@
-import { ViewportOverlay } from "@/components/layout/ViewportOverlay";
 import { memo } from "preact/compat";
 
+import { ViewportOverlay } from "@/components/layout/ViewportOverlay";
 import { useI18n } from "@/i18n";
 
 export const PrivacyGate = memo(function PrivacyGate({

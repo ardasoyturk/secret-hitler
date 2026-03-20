@@ -5,10 +5,10 @@
  * Player grid with ineligibility reasons, confirm button pinned to bottom.
  */
 
-import type { GameState, GameAction } from "@/engine/types";
 import type { TargetedEvent } from "preact";
 
 import { PORTRAITS } from "@/engine/constants";
+import type { GameState, GameAction } from "@/engine/types";
 import { useI18n } from "@/i18n";
 
 interface ScreenProps {
