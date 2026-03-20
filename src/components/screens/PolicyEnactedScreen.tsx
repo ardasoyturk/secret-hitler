@@ -64,16 +64,12 @@ export function PolicyEnactedScreen({ state, dispatch }: ScreenProps) {
 			<div className="bg-bg-card/70 flex flex-shrink-0 items-center gap-8 rounded-full border border-white/8 px-8 py-3">
 				<div className="text-center">
 					<p className="text-liberal font-heading text-2xl">{state.board.liberalPolicies}</p>
-					<p className="text-text-muted font-body text-xs tracking-wider uppercase">
-						{messages.enums.teams.liberal}
-					</p>
+					<p className="text-text-muted font-body text-xs tracking-wider uppercase">{messages.enums.teams.liberal}</p>
 				</div>
 				<div className="bg-text-muted/30 h-6 w-px" />
 				<div className="text-center">
 					<p className="text-fascist font-heading text-2xl">{state.board.fascistPolicies}</p>
-					<p className="text-text-muted font-body text-xs tracking-wider uppercase">
-						{messages.enums.teams.fascist}
-					</p>
+					<p className="text-text-muted font-body text-xs tracking-wider uppercase">{messages.enums.teams.fascist}</p>
 				</div>
 			</div>
 

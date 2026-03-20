@@ -1,5 +1,5 @@
 import cloudflare from "@astrojs/cloudflare";
-import react from "@astrojs/react";
+import preact from "@astrojs/preact";
 import tailwindcss from "@tailwindcss/vite";
 import AstroPWA from "@vite-pwa/astro";
 // @ts-check
@@ -8,10 +8,8 @@ import { defineConfig } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
 	integrations: [
-		react({
-			babel: {
-				plugins: ["babel-plugin-react-compiler"],
-			},
+		preact({
+			compat: true,
 		}),
 		AstroPWA({
 			injectRegister: null,
@@ -62,13 +60,13 @@ export default defineConfig({
 
 	vite: {
 		plugins: [tailwindcss()],
-		optimizeDeps: {
-			include: ["react", "react-dom", "react-dom/client"],
-		},
 	},
 
 	output: "static",
 	adapter: cloudflare({
 		imageService: "compile",
 	}),
+	experimental: {
+		svgo: true,
+	},
 });

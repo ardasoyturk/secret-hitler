@@ -9,8 +9,8 @@ import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 import { getPlayerCountBracket, EXECUTIVE_POWERS } from "@engine/constants";
 import type { Board, ElectionTracker } from "@engine/types";
 import { ExecutivePower } from "@engine/types";
-import { memo } from "react";
-import type { ReactNode } from "react";
+import type { ComponentChildren } from "preact";
+import { memo } from "preact/compat";
 
 import { useI18n } from "@/i18n";
 
@@ -166,7 +166,7 @@ function BoardPanel({
 	imageSrc: AssetRef;
 	imageAlt: string;
 	accentClass: string;
-	children: ReactNode;
+	children: ComponentChildren;
 	aspectClass?: string;
 }) {
 	const { headingText } = useI18n();

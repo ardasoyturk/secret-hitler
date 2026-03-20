@@ -72,4 +72,3 @@ describe("i18n helpers", () => {
 		expect(loadStoredLanguage(storage)).toBeNull();
 	});
 });
-

@@ -1,14 +1,9 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import type { ReactNode } from "react";
+import type { ComponentChildren } from "preact";
+import { createContext, useContext, useEffect, useMemo, useState } from "preact/compat";
 
 import { MESSAGE_CATALOGS } from "./messages";
 import type { MessageCatalog } from "./messages";
-import {
-	getInitialAppLanguage,
-	saveStoredLanguage,
-	syncDocumentLanguage,
-	toFontSafeText,
-} from "./shared";
+import { getInitialAppLanguage, saveStoredLanguage, syncDocumentLanguage, toFontSafeText } from "./shared";
 import type { AppLanguage } from "./shared";
 
 interface I18nContextValue {
@@ -20,7 +15,7 @@ interface I18nContextValue {
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
-export function I18nProvider({ children }: { children: ReactNode }) {
+export function I18nProvider({ children }: { children: ComponentChildren }) {
 	const [language, setLanguage] = useState<AppLanguage>(() => getInitialAppLanguage());
 
 	useEffect(() => {

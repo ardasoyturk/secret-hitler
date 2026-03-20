@@ -20,7 +20,7 @@ import { useOptimizedAsset } from "@components/game/OptimizedAssets";
 import { ViewportOverlay } from "@components/layout/ViewportOverlay";
 import type { GameState, GameAction } from "@engine/types";
 import { GamePhase, Role } from "@engine/types";
-import { Crown, Shield } from "lucide-react";
+import { Crown, Shield } from "lucide-preact";
 
 import { getNightInfo } from "@/hooks/useGame";
 import { useI18n } from "@/i18n";
@@ -125,7 +125,12 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 					<div
 						className={["w-48 sm:w-56 rounded-[var(--radius-card)] overflow-hidden mb-6 scale-pop", teamGlow].join(" ")}
 					>
-						<img src={roleImage} alt={messages.night.roleCardAlt(roleLabel)} className="block h-auto w-full" draggable={false} />
+						<img
+							src={roleImage}
+							alt={messages.night.roleCardAlt(roleLabel)}
+							className="block h-auto w-full"
+							draggable={false}
+						/>
 					</div>
 
 					{/* Role declaration */}
@@ -136,16 +141,12 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 
 					{/* Team description */}
 					{player.role === Role.Liberal && (
-						<p className="night-role-description mb-8 max-w-xs">
-							{messages.night.liberalDescription}
-						</p>
+						<p className="night-role-description mb-8 max-w-xs">{messages.night.liberalDescription}</p>
 					)}
 
 					{player.role === Role.Fascist && (
 						<div className="mb-8">
-							<p className="night-role-description mb-4 max-w-xs">
-								{messages.night.fascistDescription}
-							</p>
+							<p className="night-role-description mb-4 max-w-xs">{messages.night.fascistDescription}</p>
 							{info.teammates.length > 0 && (
 								<div className="night-team-card night-team-card-fascist">
 									<p className="night-team-card-title text-fascist">
@@ -183,9 +184,7 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 
 					{player.role === Role.Hitler && (
 						<div className="mb-8">
-							<p className="night-role-description mb-4 max-w-xs">
-								{messages.night.hitlerDescription}
-							</p>
+							<p className="night-role-description mb-4 max-w-xs">{messages.night.hitlerDescription}</p>
 							{info.knowsFascists && info.teammates.length > 0 ? (
 								<div className="night-team-card night-team-card-hitler">
 									<p className="night-team-card-title text-gold">

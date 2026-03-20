@@ -1,54 +1,11 @@
-import portrait1 from "@assets/portraits/player-portrait-1.svg";
-import portrait2 from "@assets/portraits/player-portrait-2.svg";
-import portrait3 from "@assets/portraits/player-portrait-3.svg";
-import portrait4 from "@assets/portraits/player-portrait-4.svg";
-import portrait5 from "@assets/portraits/player-portrait-5.svg";
-import portrait6 from "@assets/portraits/player-portrait-6.svg";
-import portrait7 from "@assets/portraits/player-portrait-7.svg";
-import portrait8 from "@assets/portraits/player-portrait-8.svg";
-import portrait9 from "@assets/portraits/player-portrait-9.svg";
-import portrait10 from "@assets/portraits/player-portrait-10.svg";
-import portrait11 from "@assets/portraits/player-portrait-11.svg";
-import portrait12 from "@assets/portraits/player-portrait-12.svg";
-import portrait13 from "@assets/portraits/player-portrait-13.svg";
-import portrait14 from "@assets/portraits/player-portrait-14.svg";
-import portrait15 from "@assets/portraits/player-portrait-15.svg";
-import portrait16 from "@assets/portraits/player-portrait-16.svg";
-import portrait17 from "@assets/portraits/player-portrait-17.svg";
-import portrait18 from "@assets/portraits/player-portrait-18.svg";
-import portrait19 from "@assets/portraits/player-portrait-19.svg";
-import portrait20 from "@assets/portraits/player-portrait-20.svg";
-import { MIN_PLAYERS, MAX_PLAYERS } from "@engine/constants";
+import { MIN_PLAYERS, MAX_PLAYERS, PORTRAITS } from "@engine/constants";
 import type { GameState, GameAction, Player } from "@engine/types";
-import { GripVertical, Trash2, UserPlus } from "lucide-react";
-import { memo, useCallback, useReducer, useRef } from "react";
-import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from "react";
+import { GripVertical, Trash2, UserPlus } from "lucide-preact";
+import type { TargetedKeyboardEvent, TargetedPointerEvent } from "preact";
+import { memo, useCallback, useReducer, useRef } from "preact/compat";
 
 import { useI18n } from "@/i18n";
 import type { AppLanguage } from "@/i18n";
-
-const PORTRAITS = [
-	portrait1,
-	portrait2,
-	portrait3,
-	portrait4,
-	portrait5,
-	portrait6,
-	portrait7,
-	portrait8,
-	portrait9,
-	portrait10,
-	portrait11,
-	portrait12,
-	portrait13,
-	portrait14,
-	portrait15,
-	portrait16,
-	portrait17,
-	portrait18,
-	portrait19,
-	portrait20,
-];
 
 const PLAYER_COLOR_STYLES: Record<string, string> = {
 	red: "border-player-red",
@@ -206,7 +163,7 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 	canAdd: boolean;
 	canStart: boolean;
 	onNameChange: (value: string) => void;
-	onNameKeyDown: (event: ReactKeyboardEvent<HTMLInputElement>) => void;
+	onNameKeyDown: (event: TargetedKeyboardEvent<HTMLInputElement>) => void;
 	onTogglePortraitPicker: () => void;
 	onSelectPortrait: (index: number) => void;
 	onAddPlayer: () => void;
@@ -242,7 +199,7 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 						<input
 							type="text"
 							value={name}
-							onChange={(event) => onNameChange(event.target.value)}
+							onChange={(event) => onNameChange(event.currentTarget.value)}
 							onKeyDown={onNameKeyDown}
 							placeholder={messages.setup.playerNamePlaceholder}
 							maxLength={20}
@@ -331,12 +288,11 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 						rel="noreferrer"
 						className={[
 							"w-full max-w-sm rounded-[16px] py-3 font-heading text-3xl tracking-[0.04em] transition-all duration-200",
-							"bg-liberal text-white text-center shadow-[0_6px_0_var(--color-liberal-dark),0_14px_24px_rgba(0,0,0,0.28)] hover:bg-liberal-hover active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-liberal-dark)] cursor-pointer"
+							"bg-liberal text-white text-center shadow-[0_6px_0_var(--color-liberal-dark),0_14px_24px_rgba(0,0,0,0.28)] hover:bg-liberal-hover active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-liberal-dark)] cursor-pointer",
 						].join(" ")}
 					>
 						{headingText(messages.common.readRules)}
 					</a>
-
 				</div>
 			</div>
 		</section>
@@ -357,9 +313,9 @@ const SeatingRow = memo(function SeatingRow({
 	index: number;
 	isDragging: boolean;
 	isDropTarget: boolean;
-	onBeginDrag: (playerId: number, event: ReactPointerEvent<HTMLButtonElement>) => void;
-	onDragMove: (event: ReactPointerEvent<HTMLButtonElement>) => void;
-	onDragEnd: (event: ReactPointerEvent<HTMLButtonElement>) => void;
+	onBeginDrag: (playerId: number, event: TargetedPointerEvent<HTMLButtonElement>) => void;
+	onDragMove: (event: TargetedPointerEvent<HTMLButtonElement>) => void;
+	onDragEnd: (event: TargetedPointerEvent<HTMLButtonElement>) => void;
 	onRemovePlayer: (playerId: number) => void;
 }) {
 	const { messages } = useI18n();
@@ -376,7 +332,11 @@ const SeatingRow = memo(function SeatingRow({
 		>
 			<span className="text-text-muted w-6 text-right text-sm font-semibold">{index + 1}</span>
 
-			<img src={PORTRAITS[player.portraitIndex]?.src} alt={player.name} className="h-14 w-14 rounded-full object-cover ring-2 ring-white/20" />
+			<img
+				src={PORTRAITS[player.portraitIndex]?.src}
+				alt={player.name}
+				className="h-14 w-14 rounded-full object-cover ring-2 ring-white/20"
+			/>
 
 			<div className="min-w-0 flex-1">
 				<p className="text-text-primary truncate text-lg font-semibold">{player.name}</p>
@@ -420,9 +380,9 @@ const SeatingOrderPanel = memo(function SeatingOrderPanel({
 	players: Player[];
 	draggingPlayerId: number | null;
 	dropTargetPlayerId: number | null;
-	onBeginDrag: (playerId: number, event: ReactPointerEvent<HTMLButtonElement>) => void;
-	onDragMove: (event: ReactPointerEvent<HTMLButtonElement>) => void;
-	onDragEnd: (event: ReactPointerEvent<HTMLButtonElement>) => void;
+	onBeginDrag: (playerId: number, event: TargetedPointerEvent<HTMLButtonElement>) => void;
+	onDragMove: (event: TargetedPointerEvent<HTMLButtonElement>) => void;
+	onDragEnd: (event: TargetedPointerEvent<HTMLButtonElement>) => void;
 	onRemovePlayer: (playerId: number) => void;
 }) {
 	const { messages } = useI18n();
@@ -519,60 +479,72 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 		});
 	}, [canAdd, dispatch, state.players, trimmedName, uiState.selectedPortrait]);
 
-	const handleNameKeyDown = useCallback((event: ReactKeyboardEvent<HTMLInputElement>) => {
-		if (event.key === "Enter") {
-			handleAddPlayer();
-		}
-	}, [handleAddPlayer]);
+	const handleNameKeyDown = useCallback(
+		(event: TargetedKeyboardEvent<HTMLInputElement>) => {
+			if (event.key === "Enter") {
+				handleAddPlayer();
+			}
+		},
+		[handleAddPlayer],
+	);
 
-	const beginDrag = useCallback((playerId: number, event: ReactPointerEvent<HTMLButtonElement>) => {
-		if (playerCount < 2) return;
+	const beginDrag = useCallback(
+		(playerId: number, event: TargetedPointerEvent<HTMLButtonElement>) => {
+			if (playerCount < 2) return;
 
-		event.preventDefault();
-		event.currentTarget.setPointerCapture(event.pointerId);
-		activePointerIdRef.current = event.pointerId;
-		updateUi({ type: "drag/start", playerId });
-	}, [playerCount]);
+			event.preventDefault();
+			event.currentTarget.setPointerCapture(event.pointerId);
+			activePointerIdRef.current = event.pointerId;
+			updateUi({ type: "drag/start", playerId });
+		},
+		[playerCount],
+	);
 
-	const handleDragMove = useCallback((event: ReactPointerEvent<HTMLButtonElement>) => {
-		if (activePointerIdRef.current !== event.pointerId || uiState.draggingPlayerId === null) {
-			return;
-		}
+	const handleDragMove = useCallback(
+		(event: TargetedPointerEvent<HTMLButtonElement>) => {
+			if (activePointerIdRef.current !== event.pointerId || uiState.draggingPlayerId === null) {
+				return;
+			}
 
-		const element = document.elementFromPoint(event.clientX, event.clientY);
-		const row = element?.closest("[data-player-id]") as HTMLElement | null;
-		if (!row?.dataset.playerId) return;
+			const element = document.elementFromPoint(event.clientX, event.clientY);
+			const row = element?.closest("[data-player-id]") as HTMLElement | null;
+			if (!row?.dataset.playerId) return;
 
-		const targetId = Number(row.dataset.playerId);
-		if (Number.isNaN(targetId) || targetId === uiState.dropTargetPlayerId) return;
+			const targetId = Number(row.dataset.playerId);
+			if (Number.isNaN(targetId) || targetId === uiState.dropTargetPlayerId) return;
 
-		updateUi({ type: "drag/hover", playerId: targetId });
-	}, [uiState.draggingPlayerId, uiState.dropTargetPlayerId]);
+			updateUi({ type: "drag/hover", playerId: targetId });
+		},
+		[uiState.draggingPlayerId, uiState.dropTargetPlayerId],
+	);
 
-	const handleDragEnd = useCallback((event: ReactPointerEvent<HTMLButtonElement>) => {
-		if (activePointerIdRef.current !== event.pointerId) {
-			return;
-		}
+	const handleDragEnd = useCallback(
+		(event: TargetedPointerEvent<HTMLButtonElement>) => {
+			if (activePointerIdRef.current !== event.pointerId) {
+				return;
+			}
 
-		if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-			event.currentTarget.releasePointerCapture(event.pointerId);
-		}
+			if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+				event.currentTarget.releasePointerCapture(event.pointerId);
+			}
 
-		if (
-			uiState.draggingPlayerId !== null &&
-			uiState.dropTargetPlayerId !== null &&
-			uiState.draggingPlayerId !== uiState.dropTargetPlayerId
-		) {
-			dispatch({
-				type: "REORDER_PLAYER_TO",
-				fromPlayerId: uiState.draggingPlayerId,
-				toPlayerId: uiState.dropTargetPlayerId,
-			});
-		}
+			if (
+				uiState.draggingPlayerId !== null &&
+				uiState.dropTargetPlayerId !== null &&
+				uiState.draggingPlayerId !== uiState.dropTargetPlayerId
+			) {
+				dispatch({
+					type: "REORDER_PLAYER_TO",
+					fromPlayerId: uiState.draggingPlayerId,
+					toPlayerId: uiState.dropTargetPlayerId,
+				});
+			}
 
-		activePointerIdRef.current = null;
-		updateUi({ type: "drag/end" });
-	}, [dispatch, uiState.draggingPlayerId, uiState.dropTargetPlayerId]);
+			activePointerIdRef.current = null;
+			updateUi({ type: "drag/end" });
+		},
+		[dispatch, uiState.draggingPlayerId, uiState.dropTargetPlayerId],
+	);
 
 	const handleNameChange = useCallback((value: string) => {
 		updateUi({ type: "name/set", value });
@@ -590,9 +562,12 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 		dispatch({ type: "START_GAME" });
 	}, [dispatch]);
 
-	const handleRemovePlayer = useCallback((playerId: number) => {
-		dispatch({ type: "REMOVE_PLAYER", playerId });
-	}, [dispatch]);
+	const handleRemovePlayer = useCallback(
+		(playerId: number) => {
+			dispatch({ type: "REMOVE_PLAYER", playerId });
+		},
+		[dispatch],
+	);
 
 	return (
 		<div className="bg-bg-darker h-dvh w-full overflow-hidden">
@@ -608,34 +583,34 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 					<div className="flex h-full min-h-0 flex-col gap-4">
 						<LanguageSelector />
 						<div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(380px,520px)_minmax(260px,1fr)]">
-						<PlayerSetupPanel
-							players={state.players}
-							playerCount={playerCount}
-							name={uiState.name}
-							selectedPortrait={uiState.selectedPortrait}
-							showPortraitPicker={uiState.showPortraitPicker}
-							trimmedName={trimmedName}
-							isDuplicate={isDuplicate}
-							canAdd={canAdd}
-							canStart={canStart}
-							onNameChange={handleNameChange}
-							onNameKeyDown={handleNameKeyDown}
-							onTogglePortraitPicker={handleTogglePortraitPicker}
-							onSelectPortrait={handleSelectPortrait}
-							onAddPlayer={handleAddPlayer}
-							onStartGame={handleStartGame}
-						/>
+							<PlayerSetupPanel
+								players={state.players}
+								playerCount={playerCount}
+								name={uiState.name}
+								selectedPortrait={uiState.selectedPortrait}
+								showPortraitPicker={uiState.showPortraitPicker}
+								trimmedName={trimmedName}
+								isDuplicate={isDuplicate}
+								canAdd={canAdd}
+								canStart={canStart}
+								onNameChange={handleNameChange}
+								onNameKeyDown={handleNameKeyDown}
+								onTogglePortraitPicker={handleTogglePortraitPicker}
+								onSelectPortrait={handleSelectPortrait}
+								onAddPlayer={handleAddPlayer}
+								onStartGame={handleStartGame}
+							/>
 
-						<SeatingOrderPanel
-							players={state.players}
-							draggingPlayerId={uiState.draggingPlayerId}
-							dropTargetPlayerId={uiState.dropTargetPlayerId}
-							onBeginDrag={beginDrag}
-							onDragMove={handleDragMove}
-							onDragEnd={handleDragEnd}
-							onRemovePlayer={handleRemovePlayer}
-						/>
-					</div>
+							<SeatingOrderPanel
+								players={state.players}
+								draggingPlayerId={uiState.draggingPlayerId}
+								dropTargetPlayerId={uiState.dropTargetPlayerId}
+								onBeginDrag={beginDrag}
+								onDragMove={handleDragMove}
+								onDragEnd={handleDragEnd}
+								onRemovePlayer={handleRemovePlayer}
+							/>
+						</div>
 					</div>
 				</div>
 

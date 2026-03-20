@@ -86,6 +86,8 @@ export function canInvestigate(state: GameState, playerId: number): boolean {
 	if (!player) return false;
 	if (!player.isAlive) return false;
 	if (state.investigatedPlayerIds.includes(playerId)) return false;
+	const currentPresidentId = state.players[state.presidentIndex]?.id;
+	if (playerId === currentPresidentId) return false;
 	return true;
 }
 
@@ -107,10 +109,11 @@ export function getSpecialElectionEligibleIds(state: GameState): number[] {
 
 /**
  * Get list of players eligible for execution.
- * Any alive player at the table.
+ * Any alive player except the current president.
  */
 export function getExecutionEligibleIds(state: GameState): number[] {
-	return state.players.filter((p) => p.isAlive).map((p) => p.id);
+	const currentPresidentId = state.players[state.presidentIndex]?.id;
+	return state.players.filter((p) => p.isAlive && p.id !== currentPresidentId).map((p) => p.id);
 }
 
 /**

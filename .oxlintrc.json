@@ -2,7 +2,7 @@
 	"$schema": "./node_modules/oxlint/configuration_schema.json",
 	"plugins": ["typescript", "unicorn", "react", "react-perf", "oxc", "jsx-a11y"],
 	"env": {
-		"browser": true
+		"browser": true,
 	},
 	"rules": {
 		"no-await-in-loop": "off",
@@ -44,6 +44,6 @@
 		"import/consistent-type-specifier-style": ["error", "prefer-top-level"],
 		"import/no-commonjs": "error",
 		"import/no-cycle": "error",
-		"import/no-duplicates": "error"
-	}
+		"import/no-duplicates": "error",
+	},
 }

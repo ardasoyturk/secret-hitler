@@ -9,23 +9,13 @@ export interface StorageLike {
 
 export const APP_LANGUAGE_STORAGE_KEY = "secret-hitler-language";
 export const DEFAULT_APP_LANGUAGE: AppLanguage = "en";
-export const SUPPORTED_APP_LANGUAGES = Object.keys(
-	MESSAGE_CATALOGS,
-) as AppLanguage[];
+export const SUPPORTED_APP_LANGUAGES = Object.keys(MESSAGE_CATALOGS) as AppLanguage[];
 
-export function isAppLanguage(
-	value: string | null | undefined,
-): value is AppLanguage {
-	return (
-		value !== null &&
-		value !== undefined &&
-		SUPPORTED_APP_LANGUAGES.includes(value as AppLanguage)
-	);
+export function isAppLanguage(value: string | null | undefined): value is AppLanguage {
+	return value !== null && value !== undefined && SUPPORTED_APP_LANGUAGES.includes(value as AppLanguage);
 }
 
-export function getLanguageFromBrowserLocale(
-	browserLanguage: string | null | undefined,
-): AppLanguage {
+export function getLanguageFromBrowserLocale(browserLanguage: string | null | undefined): AppLanguage {
 	if (!browserLanguage) return DEFAULT_APP_LANGUAGE;
 	return browserLanguage.toLowerCase().startsWith("tr") ? "tr" : "en";
 }
@@ -44,9 +34,7 @@ export function resolveAppLanguage({
 	return getLanguageFromBrowserLocale(browserLanguage);
 }
 
-export function loadStoredLanguage(
-	storage: StorageLike = localStorage,
-): AppLanguage | null {
+export function loadStoredLanguage(storage: StorageLike = localStorage): AppLanguage | null {
 	try {
 		const language = storage.getItem(APP_LANGUAGE_STORAGE_KEY);
 		return isAppLanguage(language) ? language : null;
@@ -55,10 +43,7 @@ export function loadStoredLanguage(
 	}
 }
 
-export function saveStoredLanguage(
-	language: AppLanguage,
-	storage: StorageLike = localStorage,
-): void {
+export function saveStoredLanguage(language: AppLanguage, storage: StorageLike = localStorage): void {
 	try {
 		storage.setItem(APP_LANGUAGE_STORAGE_KEY, language);
 	} catch {
@@ -73,8 +58,7 @@ export function getInitialAppLanguage(): AppLanguage {
 
 	return resolveAppLanguage({
 		storedLanguage: loadStoredLanguage(window.localStorage),
-		browserLanguage:
-			window.navigator.languages?.[0] ?? window.navigator.language,
+		browserLanguage: window.navigator.languages?.[0] ?? window.navigator.language,
 	});
 }
 
@@ -103,10 +87,7 @@ export function toFontSafeText(text: string, language: AppLanguage): string {
 		return text;
 	}
 
-	return text.replaceAll(
-		/[ğĞİşŞ]/g,
-		(character) => TURKISH_ASCII_REPLACEMENTS[character] ?? character,
-	);
+	return text.replaceAll(/[ğĞİşŞ]/g, (character) => TURKISH_ASCII_REPLACEMENTS[character] ?? character);
 }
 
 export function syncDocumentLanguage(language: AppLanguage): void {

@@ -5,7 +5,7 @@
  */
 
 import { GamePhase } from "@engine/types";
-import { memo } from "react";
+import { memo } from "preact/compat";
 
 import { useI18n } from "@/i18n";
 
@@ -42,7 +42,9 @@ export const Header = memo(function Header({
 		>
 			<div className="mx-auto flex w-full max-w-7xl items-center gap-3">
 				<div className="status-chip shrink-0 rounded-full px-4 py-2">
-					<span className="font-heading text-gold text-xl tracking-wide">{headingText(messages.common.round(round))}</span>
+					<span className="font-heading text-gold text-xl tracking-wide">
+						{headingText(messages.common.round(round))}
+					</span>
 				</div>
 
 				<div className="min-w-0 flex-1 text-center">
@@ -67,7 +69,9 @@ export const Header = memo(function Header({
 								<p className="text-gold/90 text-[11px] font-semibold tracking-[0.24em] uppercase">
 									{messages.header.president}
 								</p>
-								<p className="font-heading text-text-primary truncate text-[34px] leading-[0.95]">{headingText(presidentName)}</p>
+								<p className="font-heading text-text-primary truncate text-[34px] leading-[0.95]">
+									{headingText(presidentName)}
+								</p>
 							</div>
 						)}
 						{chancellorName && (
@@ -75,7 +79,9 @@ export const Header = memo(function Header({
 								<p className="text-gold/90 text-[11px] font-semibold tracking-[0.24em] uppercase">
 									{messages.header.chancellor}
 								</p>
-								<p className="font-heading text-text-primary truncate text-[34px] leading-[0.95]">{headingText(chancellorName)}</p>
+								<p className="font-heading text-text-primary truncate text-[34px] leading-[0.95]">
+									{headingText(chancellorName)}
+								</p>
 							</div>
 						)}
 					</div>

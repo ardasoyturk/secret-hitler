@@ -11,57 +11,15 @@
  * Layout: flex flex-col h-full — fits inside Game layout (no min-h-dvh).
  */
 
-import portrait1 from "@assets/portraits/player-portrait-1.svg";
-import portrait2 from "@assets/portraits/player-portrait-2.svg";
-import portrait3 from "@assets/portraits/player-portrait-3.svg";
-import portrait4 from "@assets/portraits/player-portrait-4.svg";
-import portrait5 from "@assets/portraits/player-portrait-5.svg";
-import portrait6 from "@assets/portraits/player-portrait-6.svg";
-import portrait7 from "@assets/portraits/player-portrait-7.svg";
-import portrait8 from "@assets/portraits/player-portrait-8.svg";
-import portrait9 from "@assets/portraits/player-portrait-9.svg";
-import portrait10 from "@assets/portraits/player-portrait-10.svg";
-import portrait11 from "@assets/portraits/player-portrait-11.svg";
-import portrait12 from "@assets/portraits/player-portrait-12.svg";
-import portrait13 from "@assets/portraits/player-portrait-13.svg";
-import portrait14 from "@assets/portraits/player-portrait-14.svg";
-import portrait15 from "@assets/portraits/player-portrait-15.svg";
-import portrait16 from "@assets/portraits/player-portrait-16.svg";
-import portrait17 from "@assets/portraits/player-portrait-17.svg";
-import portrait18 from "@assets/portraits/player-portrait-18.svg";
-import portrait19 from "@assets/portraits/player-portrait-19.svg";
-import portrait20 from "@assets/portraits/player-portrait-20.svg";
 import { PartyCard } from "@components/cards/PartyCard";
 import { PolicyCard } from "@components/cards/PolicyCard";
 import { getPartyMembership } from "@engine/reducer";
 import type { GameState, GameAction } from "@engine/types";
 import { GamePhase, PartyMembership } from "@engine/types";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useState } from "preact/compat";
 
 import { useI18n } from "@/i18n";
-
-const PORTRAITS = [
-	portrait1,
-	portrait2,
-	portrait3,
-	portrait4,
-	portrait5,
-	portrait6,
-	portrait7,
-	portrait8,
-	portrait9,
-	portrait10,
-	portrait11,
-	portrait12,
-	portrait13,
-	portrait14,
-	portrait15,
-	portrait16,
-	portrait17,
-	portrait18,
-	portrait19,
-	portrait20,
-];
+import { PORTRAITS } from "@/engine/constants";
 
 const EMPTY_IDS: number[] = [];
 
@@ -122,7 +80,12 @@ const PlayerSelectionCard = memo(function PlayerSelectionCard({
 					isSelected ? (dangerConfirm ? "border-fascist" : "border-gold") : "border-text-muted/30",
 				].join(" ")}
 			>
-				<img src={PORTRAITS[portraitIndex]?.src} alt={playerName} className="h-full w-full object-cover" draggable={false} />
+				<img
+					src={PORTRAITS[portraitIndex]?.src}
+					alt={playerName}
+					className="h-full w-full object-cover"
+					draggable={false}
+				/>
 			</div>
 			<span
 				className={[
@@ -310,7 +273,9 @@ export function ExecutiveScreen({
 						{messages.executive.executivePower}
 					</p>
 					<h2 className="font-heading text-gold mb-1 text-3xl">{headingText(messages.executive.peekTitle)}</h2>
-					<p className="text-text-secondary text-sm md:text-base">{messages.executive.peekInstructions(president.name)}</p>
+					<p className="text-text-secondary text-sm md:text-base">
+						{messages.executive.peekInstructions(president.name)}
+					</p>
 				</div>
 
 				{/* Peeked policy cards */}
@@ -346,7 +311,9 @@ export function ExecutiveScreen({
 					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
 						{messages.executive.executivePower}
 					</p>
-					<h2 className="font-heading text-gold mb-1 text-3xl">{headingText(messages.executive.specialElectionTitle)}</h2>
+					<h2 className="font-heading text-gold mb-1 text-3xl">
+						{headingText(messages.executive.specialElectionTitle)}
+					</h2>
 					<p className="text-text-secondary text-sm md:text-base">
 						{messages.executive.specialElectionInstructions(president.name)}
 					</p>

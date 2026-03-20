@@ -6,10 +6,6 @@ import { buildOptimizedAssetMap } from "../lib/optimized-assets";
 import { pwaInfo } from "virtual:pwa-info";
 
 const optimizedAssets = await buildOptimizedAssetMap();
-const reactScanScript =
-	import.meta.env.REACT_SCAN === "true"
-		? '<script crossorigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js"></script>'
-		: "";
 const languageBootstrapScript = `
 (() => {
 	const storageKey = ${JSON.stringify(APP_LANGUAGE_STORAGE_KEY)};
@@ -61,12 +57,11 @@ const languageBootstrapScript = `
 			)
 		}
 		<title>{DOCUMENT_COPY.en.title}</title>
-		<Fragment set:html={reactScanScript} />
 		<script is:inline set:html={languageBootstrapScript} />
 	</head>
 	<body class="noise-overlay">
 		<div id="app">
-			<Game client:only="react" optimizedAssets={optimizedAssets} />
+			<Game client:only="preact" optimizedAssets={optimizedAssets} />
 		</div>
 		<noscript>
 			<div

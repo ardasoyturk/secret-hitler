@@ -14,7 +14,7 @@ import { PolicyCard } from "@components/cards/PolicyCard";
 import { ViewportOverlay } from "@components/layout/ViewportOverlay";
 import type { GameState, GameAction } from "@engine/types";
 import { GamePhase } from "@engine/types";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useState } from "preact/compat";
 
 import { useI18n } from "@/i18n";
 
@@ -28,13 +28,7 @@ function getPolicyKey(policies: readonly string[], policy: string, index: number
 	return `${policy}-${duplicateIndex}`;
 }
 
-function PrivacyGate({
-	playerName,
-	onReady,
-}: {
-	playerName: string;
-	onReady: () => void;
-}) {
+function PrivacyGate({ playerName, onReady }: { playerName: string; onReady: () => void }) {
 	const { headingText, messages } = useI18n();
 
 	return (
@@ -70,9 +64,7 @@ const PolicyChoice = memo(function PolicyChoice({
 		<div className="flex flex-col items-center gap-2">
 			<PolicyCard type={policy} size="lg" onClick={() => onSelectIndex(index)} selected={isSelected} />
 			{isSelected && (
-				<span className="font-body fade-in text-xs font-semibold tracking-wider uppercase">
-					{selectionLabel}
-				</span>
+				<span className="font-body fade-in text-xs font-semibold tracking-wider uppercase">{selectionLabel}</span>
 			)}
 		</div>
 	);
@@ -111,7 +103,9 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
 						{messages.legislative.session}
 					</p>
-					<h2 className="font-heading text-gold mb-1 text-3xl">{headingText(messages.legislative.presidentTitle(president.name))}</h2>
+					<h2 className="font-heading text-gold mb-1 text-3xl">
+						{headingText(messages.legislative.presidentTitle(president.name))}
+					</h2>
 					<p className="text-text-secondary text-sm md:text-base">{messages.legislative.presidentInstructions}</p>
 				</div>
 
@@ -148,7 +142,9 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 						].join(" ")}
 					>
 						{headingText(
-							selectedIndex !== null ? messages.legislative.discardSelectedPolicy : messages.legislative.tapPolicyToDiscard,
+							selectedIndex !== null
+								? messages.legislative.discardSelectedPolicy
+								: messages.legislative.tapPolicyToDiscard,
 						)}
 					</button>
 				</div>

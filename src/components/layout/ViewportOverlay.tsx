@@ -1,9 +1,8 @@
-import type { ReactNode } from "react";
-import { memo } from "react";
-import { createPortal } from "react-dom";
+import type { ComponentChildren } from "preact";
+import { createPortal } from "preact/compat";
 
-export const ViewportOverlay = memo(function ViewportOverlay({ children }: { children: ReactNode }) {
+export const ViewportOverlay = function ViewportOverlay({ children }: { children: ComponentChildren }) {
 	if (typeof document === "undefined") return null;
 
 	return createPortal(children, document.body);
-});
+};

@@ -1,11 +1,17 @@
-import { createContext, useContext } from "react";
-import type { ReactNode } from "react";
+import type { ComponentChildren } from "preact";
+import { createContext, useContext } from "preact/compat";
 
 export type OptimizedAssetMap = Record<string, string>;
 
 const OptimizedAssetsContext = createContext<OptimizedAssetMap>({});
 
-export function OptimizedAssetsProvider({ assets, children }: { assets: OptimizedAssetMap; children: ReactNode }) {
+export function OptimizedAssetsProvider({
+	assets,
+	children,
+}: {
+	assets: OptimizedAssetMap;
+	children: ComponentChildren;
+}) {
 	return <OptimizedAssetsContext.Provider value={assets}>{children}</OptimizedAssetsContext.Provider>;
 }
 

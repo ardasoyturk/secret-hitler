@@ -24,7 +24,7 @@ import {
 } from "@engine/reducer";
 import type { GameState, GameAction } from "@engine/types";
 import { Role } from "@engine/types";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "preact/compat";
 
 import { syncGameState } from "./useGamePersistence";
 
@@ -48,7 +48,9 @@ interface UseGameReturn {
 }
 
 export function useGame(initialState?: GameState): UseGameReturn {
-	const [state, setState] = useState(() => initialState ?? createInitialState());
+	const [state, setState] = useState(
+		() => initialState ?? createInitialState(),
+	);
 	const stateRef = useRef(state);
 	stateRef.current = state;
 
@@ -66,10 +68,22 @@ export function useGame(initialState?: GameState): UseGameReturn {
 	const chancellor = useMemo(() => getChancellor(state), [state]);
 	const alivePlayers = useMemo(() => getAlivePlayers(state), [state]);
 	const aliveCount = useMemo(() => getAlivePlayerCount(state), [state]);
-	const eligibleChancellorIds = useMemo(() => getEligibleChancellorIds(state), [state]);
-	const investigablePlayerIds = useMemo(() => getInvestigablePlayerIds(state), [state]);
-	const specialElectionEligibleIds = useMemo(() => getSpecialElectionEligibleIds(state), [state]);
-	const executionEligibleIds = useMemo(() => getExecutionEligibleIds(state), [state]);
+	const eligibleChancellorIds = useMemo(
+		() => getEligibleChancellorIds(state),
+		[state],
+	);
+	const investigablePlayerIds = useMemo(
+		() => getInvestigablePlayerIds(state),
+		[state],
+	);
+	const specialElectionEligibleIds = useMemo(
+		() => getSpecialElectionEligibleIds(state),
+		[state],
+	);
+	const executionEligibleIds = useMemo(
+		() => getExecutionEligibleIds(state),
+		[state],
+	);
 	const hitlerKnowsFascists = useMemo(
 		() => state.players.length <= HITLER_KNOWS_FASCISTS_MAX_PLAYERS,
 		[state.players.length],
@@ -104,7 +118,8 @@ export function getNightInfo(
 	playerIndex: number,
 ): { teammates: NightTeammate[]; isHitler: boolean; knowsFascists: boolean } {
 	const player = state.players[playerIndex];
-	const hitlerKnows = state.players.length <= HITLER_KNOWS_FASCISTS_MAX_PLAYERS;
+	const hitlerKnows =
+		state.players.length <= HITLER_KNOWS_FASCISTS_MAX_PLAYERS;
 
 	if (player.role === Role.Liberal) {
 		return { teammates: [], isHitler: false, knowsFascists: false };
@@ -114,7 +129,10 @@ export function getNightInfo(
 		if (hitlerKnows) {
 			const fascists = state.players
 				.filter((p) => p.role === Role.Fascist)
-				.map<NightTeammate>((p) => ({ name: p.name, role: Role.Fascist }));
+				.map<NightTeammate>((p) => ({
+					name: p.name,
+					role: Role.Fascist,
+				}));
 			return { teammates: fascists, isHitler: true, knowsFascists: true };
 		}
 		return { teammates: [], isHitler: true, knowsFascists: false };
@@ -122,7 +140,11 @@ export function getNightInfo(
 
 	// Regular fascist — always knows Hitler and other fascists
 	const teammates = state.players
-		.filter((p) => p.id !== player.id && (p.role === Role.Fascist || p.role === Role.Hitler))
+		.filter(
+			(p) =>
+				p.id !== player.id &&
+				(p.role === Role.Fascist || p.role === Role.Hitler),
+		)
 		.map<NightTeammate>((p) => ({
 			name: p.name,
 			role: p.role === Role.Hitler ? Role.Hitler : Role.Fascist,

@@ -26,7 +26,7 @@ import { VetoScreen } from "@components/screens/VetoScreen";
 import { VotingScreen } from "@components/screens/VotingScreen";
 import { GamePhase } from "@engine/types";
 import type { GameState } from "@engine/types";
-import { useState } from "react";
+import { useState } from "preact/compat";
 
 import { useGame } from "@/hooks/useGame";
 import { clearGameState, loadGameState } from "@/hooks/useGamePersistence";
