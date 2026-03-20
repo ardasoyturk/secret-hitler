@@ -47,10 +47,7 @@ const languageBootstrapScript = `
 			name="apple-mobile-web-app-status-bar-style"
 			content="black-translucent"
 		/>
-		<meta
-			name="description"
-			content={DOCUMENT_COPY.en.description}
-		/>
+		<meta name="description" content={DOCUMENT_COPY.en.description} />
 		{
 			pwaInfo?.webManifest?.linkTag && (
 				<Fragment set:html={pwaInfo.webManifest.linkTag} />
@@ -67,7 +64,10 @@ const languageBootstrapScript = `
 			<div
 				style="display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:2rem;text-align:center;color:#bbb;"
 			>
-				<p>JavaScript is required to play Secret Hitler. Secret Hitler oynamak için JavaScript gereklidir.</p>
+				<p>
+					JavaScript is required to play Secret Hitler. Secret Hitler
+					oynamak için JavaScript gereklidir.
+				</p>
 			</div>
 		</noscript>
 		<script>

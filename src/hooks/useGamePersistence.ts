@@ -1,8 +1,8 @@
 /**
  * Game persistence helpers for localStorage.
  *
- * Kept as plain functions so the game flow can stay event-driven
- * without relying on useEffect for synchronization.
+ * Kept as plain functions so the game flow can stay event-driven.
+ *
  */
 
 import type { GameState } from "@/engine/types";
@@ -41,7 +41,10 @@ export function loadGameState(): GameState | null {
 			return null;
 		}
 
-		if (data.state.phase === GamePhase.Setup || data.state.phase === GamePhase.GameOver) {
+		if (
+			data.state.phase === GamePhase.Setup ||
+			data.state.phase === GamePhase.GameOver
+		) {
 			return null;
 		}
 
