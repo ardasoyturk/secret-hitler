@@ -5,8 +5,8 @@
  * without relying on useEffect for synchronization.
  */
 
-import type { GameState } from "@engine/types";
-import { GamePhase } from "@engine/types";
+import type { GameState } from "@/engine/types";
+import { GamePhase } from "@/engine/types";
 
 const STORAGE_KEY = "secret-hitler-game";
 const SCHEMA_VERSION = 1;
@@ -41,7 +41,10 @@ export function loadGameState(): GameState | null {
 			return null;
 		}
 
-		if (data.state.phase === GamePhase.Setup || data.state.phase === GamePhase.GameOver) {
+		if (
+			data.state.phase === GamePhase.Setup ||
+			data.state.phase === GamePhase.GameOver
+		) {
 			return null;
 		}
 

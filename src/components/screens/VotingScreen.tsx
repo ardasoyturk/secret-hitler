@@ -10,38 +10,19 @@
  * Privacy gates use .privacy-screen (fixed overlay).
  */
 
-import { VoteCard } from "@components/cards/VoteCard";
-import { ViewportOverlay } from "@components/layout/ViewportOverlay";
-import type { GameState, GameAction } from "@engine/types";
-import { GamePhase, Vote } from "@engine/types";
+import { PrivacyGate } from "@/components/cards/PrivacyGate";
+import { VoteCard } from "@/components/cards/VoteCard";
+import type { GameState, GameAction } from "@/engine/types";
+import { GamePhase, Vote } from "@/engine/types";
 import { memo, useState } from "preact/compat";
 
-import { useI18n } from "@/i18n";
 import { PORTRAITS } from "@/engine/constants";
+import { useI18n } from "@/i18n";
 
 interface ScreenProps {
 	state: GameState;
 	dispatch: (action: GameAction) => void;
 }
-
-const PrivacyGate = memo(function PrivacyGate({ playerName, onReady }: { playerName: string; onReady: () => void }) {
-	const { headingText, messages } = useI18n();
-
-	return (
-		<ViewportOverlay>
-			<div className="privacy-screen">
-				<div className="privacy-dialog text-center">
-					<h2 className="privacy-title">{headingText(messages.common.passDevice)}</h2>
-					<p className="privacy-subtitle">{messages.common.handDeviceTo}</p>
-					<p className="privacy-name">{headingText(playerName)}</p>
-					<button type="button" onClick={onReady} className="primary-action-button">
-						{headingText(messages.common.ready)}
-					</button>
-				</div>
-			</div>
-		</ViewportOverlay>
-	);
-});
 
 export function VotingScreen({ state, dispatch }: ScreenProps) {
 	const { headingText, messages } = useI18n();

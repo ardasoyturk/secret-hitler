@@ -3,16 +3,16 @@
  * victory reason, and all player roles revealed.
  */
 
-import victoryFascistFooter from "@assets/victory/victory-fascist-footer.png";
-import victoryFascistHeader from "@assets/victory/victory-fascist-header.png";
-import victoryLiberalFooter from "@assets/victory/victory-liberal-footer.png";
-import victoryLiberalHeader from "@assets/victory/victory-liberal-header.png";
-import { useOptimizedAsset } from "@components/game/OptimizedAssets";
-import type { GameState, GameAction } from "@engine/types";
-import { Team, Role } from "@engine/types";
+import victoryFascistFooter from "@/assets/victory/victory-fascist-footer.png";
+import victoryFascistHeader from "@/assets/victory/victory-fascist-header.png";
+import victoryLiberalFooter from "@/assets/victory/victory-liberal-footer.png";
+import victoryLiberalHeader from "@/assets/victory/victory-liberal-header.png";
+import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
+import type { GameState, GameAction } from "@/engine/types";
+import { Team, Role } from "@/engine/types";
 
-import { useI18n } from "@/i18n";
 import { PORTRAITS } from "@/engine/constants";
+import { useI18n } from "@/i18n";
 
 function getRoleBadge(role: Role, roleLabels: Record<Role, string>) {
 	switch (role) {

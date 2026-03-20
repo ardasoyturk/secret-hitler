@@ -1,14 +1,14 @@
-import boardFascist56Img from "@assets/boards/board-fascist-5-6.png";
-import boardFascist78Img from "@assets/boards/board-fascist-7-8.png";
-import boardFascist910Img from "@assets/boards/board-fascist-9-10.png";
-import boardLiberalImg from "@assets/boards/board-liberal.png";
-import policyFascistImg from "@assets/boards/board-policy-fascist.png";
-import policyLiberalImg from "@assets/boards/board-policy-liberal.png";
-import trackerMarkerImg from "@assets/boards/board-tracker.png";
-import { useOptimizedAsset } from "@components/game/OptimizedAssets";
-import { getPlayerCountBracket, EXECUTIVE_POWERS } from "@engine/constants";
-import type { Board, ElectionTracker } from "@engine/types";
-import { ExecutivePower } from "@engine/types";
+import boardFascist56Img from "@/assets/boards/board-fascist-5-6.png";
+import boardFascist78Img from "@/assets/boards/board-fascist-7-8.png";
+import boardFascist910Img from "@/assets/boards/board-fascist-9-10.png";
+import boardLiberalImg from "@/assets/boards/board-liberal.png";
+import policyFascistImg from "@/assets/boards/board-policy-fascist.png";
+import policyLiberalImg from "@/assets/boards/board-policy-liberal.png";
+import trackerMarkerImg from "@/assets/boards/board-tracker.png";
+import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
+import { getPlayerCountBracket, EXECUTIVE_POWERS } from "@/engine/constants";
+import type { Board, ElectionTracker } from "@/engine/types";
+import { ExecutivePower } from "@/engine/types";
 import type { ComponentChildren } from "preact";
 import { memo } from "preact/compat";
 

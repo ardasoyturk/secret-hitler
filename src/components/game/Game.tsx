@@ -9,23 +9,23 @@
  * - Privacy screens (night, voting gates, legislative gates) are fixed overlays.
  */
 
-import { OptimizedAssetsProvider } from "@components/game/OptimizedAssets";
-import type { OptimizedAssetMap } from "@components/game/OptimizedAssets";
-import { BoardTrack } from "@components/layout/BoardTrack";
+import { OptimizedAssetsProvider } from "@/components/game/OptimizedAssets";
+import type { OptimizedAssetMap } from "@/components/game/OptimizedAssets";
+import { BoardTrack } from "@/components/layout/BoardTrack";
 // Layout
-import { Header } from "@components/layout/Header";
-import { ExecutiveScreen } from "@components/screens/ExecutiveScreen";
-import { GameOverScreen } from "@components/screens/GameOverScreen";
-import { LegislativeScreen } from "@components/screens/LegislativeScreen";
-import { NightScreen } from "@components/screens/NightScreen";
-import { NominationScreen } from "@components/screens/NominationScreen";
-import { PolicyEnactedScreen } from "@components/screens/PolicyEnactedScreen";
+import { Header } from "@/components/layout/Header";
+import { ExecutiveScreen } from "@/components/screens/ExecutiveScreen";
+import { GameOverScreen } from "@/components/screens/GameOverScreen";
+import { LegislativeScreen } from "@/components/screens/LegislativeScreen";
+import { NightScreen } from "@/components/screens/NightScreen";
+import { NominationScreen } from "@/components/screens/NominationScreen";
+import { PolicyEnactedScreen } from "@/components/screens/PolicyEnactedScreen";
 // Screens
-import { SetupScreen } from "@components/screens/SetupScreen";
-import { VetoScreen } from "@components/screens/VetoScreen";
-import { VotingScreen } from "@components/screens/VotingScreen";
-import { GamePhase } from "@engine/types";
-import type { GameState } from "@engine/types";
+import { SetupScreen } from "@/components/screens/SetupScreen";
+import { VetoScreen } from "@/components/screens/VetoScreen";
+import { VotingScreen } from "@/components/screens/VotingScreen";
+import { GamePhase } from "@/engine/types";
+import type { GameState } from "@/engine/types";
 import { useState } from "preact/compat";
 
 import { useGame } from "@/hooks/useGame";

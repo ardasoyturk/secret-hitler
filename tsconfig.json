@@ -9,15 +9,12 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["src/*"],
-			"@engine/*": ["src/engine/*"],
-			"@components/*": ["src/components/*"],
-			"@assets/*": ["src/assets/*"]
 		},
 		"strict": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
 		"forceConsistentCasingInFileNames": true,
-		"types": ["bun"]
-	}
+		"types": ["bun"],
+	},
 }

@@ -5,7 +5,7 @@
  * ChancellorLegislation phase (after 5 fascist policies enacted).
  */
 
-import type { GameState, GameAction } from "@engine/types";
+import type { GameState, GameAction } from "@/engine/types";
 
 import { useI18n } from "@/i18n";
 

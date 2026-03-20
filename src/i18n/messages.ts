@@ -7,7 +7,7 @@ import type {
 	Team,
 	VictoryReason,
 	Vote,
-} from "@engine/types";
+} from "@/engine/types";
 
 import type { AppLanguage } from "./shared";
 
@@ -117,7 +117,10 @@ export interface MessageCatalog {
 		voteCount: (jaCount: number, neinCount: number) => string;
 		voterTitle: (playerName: string) => string;
 		voteOnGovernment: string;
-		governmentSummary: (presidentName: string, chancellorName: string) => string;
+		governmentSummary: (
+			presidentName: string,
+			chancellorName: string,
+		) => string;
 		tableShortcut: string;
 		tableShortcutDescription: string;
 		passElectionAsAllJa: string;
@@ -207,7 +210,8 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 	en: {
 		document: {
 			title: "Secret Hitler — Pass & Play",
-			description: "Secret Hitler — Pass & Play Edition. A single-device board game for 5-10 players.",
+			description:
+				"Secret Hitler — Pass & Play Edition. A single-device board game for 5-10 players.",
 		},
 		brand: {
 			title: "SECRET HITLER",
@@ -219,7 +223,8 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 				en: "English",
 				tr: "Türkçe",
 			},
-			buttonLabel: (languageLabel) => `Switch language to ${languageLabel}`,
+			buttonLabel: (languageLabel) =>
+				`Switch language to ${languageLabel}`,
 		},
 		enums: {
 			phases: {
@@ -278,9 +283,12 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 				execution: "Execution",
 			},
 			victoryReasons: {
-				liberal_policies: "5 Liberal policies have been enacted. Democracy prevails!",
-				fascist_policies: "6 Fascist policies have been enacted. The government has fallen.",
-				hitler_executed: "Hitler has been found and executed. Freedom is restored!",
+				liberal_policies:
+					"5 Liberal policies have been enacted. Democracy prevails!",
+				fascist_policies:
+					"6 Fascist policies have been enacted. The government has fallen.",
+				hitler_executed:
+					"Hitler has been found and executed. Freedom is restored!",
 				hitler_elected_chancellor:
 					"Hitler was elected Chancellor with 3+ Fascist policies in play. The conspiracy succeeds.",
 			},
@@ -305,7 +313,8 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 		resumePrompt: {
 			title: "Game in Progress",
 			savedGameFound: "A saved game was found:",
-			summary: (playerCount, round) => `${playerCount} players · Round ${round}`,
+			summary: (playerCount, round) =>
+				`${playerCount} players · Round ${round}`,
 		},
 		setup: {
 			playerInitialization: "Player Initialization",
@@ -314,8 +323,10 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 			playerNamePlaceholder: "Player name",
 			addPlayer: "Add",
 			nameTaken: "Name already taken.",
-			playerCount: (playerCount, maxPlayers) => `${playerCount} / ${maxPlayers} players`,
-			morePlayersNeeded: (remainingPlayers) => `Need ${remainingPlayers} more`,
+			playerCount: (playerCount, maxPlayers) =>
+				`${playerCount} / ${maxPlayers} players`,
+			morePlayersNeeded: (remainingPlayers) =>
+				`Need ${remainingPlayers} more`,
 			startGame: "Start Game",
 			seatingOrder: "Seating Order",
 			reorderHint: "Drag handle to reorder",
@@ -324,12 +335,15 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 			dragToReorder: "Drag to reorder",
 			removePlayer: (playerName) => `Remove ${playerName}`,
 			projectOpenSource: {
-				beforeLicense: "The project is open-source, and is licensed under ",
-				afterLicense: ". You can read more about the project on GitHub.",
+				beforeLicense:
+					"The project is open-source, and is licensed under ",
+				afterLicense:
+					". You can read more about the project on GitHub.",
 			},
 			adaptedFromOriginal: {
 				beforeTitle: "Adapted from the original ",
-				afterTitle: " board game by Goat, Wolf, & Cabbage (c) 2016-2020.",
+				afterTitle:
+					" board game by Goat, Wolf, & Cabbage (c) 2016-2020.",
 			},
 		},
 		header: {
@@ -343,13 +357,15 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 			fascistBoardAlt: "Fascist policy board",
 			liberalPolicyAlt: (position) => `Liberal policy ${position}`,
 			fascistPolicyAlt: (position) => `Fascist policy ${position}`,
-			electionTrackerPosition: (position) => `Election tracker position ${position}`,
+			electionTrackerPosition: (position) =>
+				`Election tracker position ${position}`,
 			veto: "Veto",
 		},
 		nomination: {
 			governmentFormation: "Government Formation",
 			title: "Chancellor Nomination",
-			instructions: (presidentName) => `President ${presidentName}, nominate a Chancellor`,
+			instructions: (presidentName) =>
+				`President ${presidentName}, nominate a Chancellor`,
 			eligible: "Eligible",
 			unavailable: "Unavailable",
 			ineligibleReasons: {
@@ -363,19 +379,24 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 			electionResult: "Election Result",
 			electionPasses: "JA! Election Passes",
 			electionFails: "NEIN! Election Fails",
-			voteCount: (jaCount, neinCount) => `${jaCount} Ja — ${neinCount} Nein`,
+			voteCount: (jaCount, neinCount) =>
+				`${jaCount} Ja — ${neinCount} Nein`,
 			voterTitle: (playerName) => `${playerName}'s Vote`,
 			voteOnGovernment: "Vote on the Government",
-			governmentSummary: (presidentName, chancellorName) => `President ${presidentName} · Chancellor ${chancellorName}`,
+			governmentSummary: (presidentName, chancellorName) =>
+				`President ${presidentName} · Chancellor ${chancellorName}`,
 			tableShortcut: "Table Shortcut",
-			tableShortcutDescription: "If everyone agrees on Ja, pass this election in one tap and reveal the normal result.",
+			tableShortcutDescription:
+				"If everyone agrees on Ja, pass this election in one tap and reveal the normal result.",
 			passElectionAsAllJa: "Pass Election as All Ja",
 		},
 		night: {
-			playerProgress: (playerNumber, totalPlayers) => `Player ${playerNumber} of ${totalPlayers}`,
+			playerProgress: (playerNumber, totalPlayers) =>
+				`Player ${playerNumber} of ${totalPlayers}`,
 			roleCardAlt: (roleLabel) => `${roleLabel} role card`,
 			youAreA: "You are a",
-			liberalDescription: "You must work to enact 5 Liberal policies or find and execute Hitler. Trust no one.",
+			liberalDescription:
+				"You must work to enact 5 Liberal policies or find and execute Hitler. Trust no one.",
 			fascistDescription:
 				"You must sabotage the government and help enact 6 Fascist policies — or get Hitler elected Chancellor after 3 Fascist policies.",
 			hitlerDescription:
@@ -387,9 +408,11 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 		legislative: {
 			session: "Legislative Session",
 			presidentTitle: (presidentName) => `President ${presidentName}`,
-			presidentInstructions: "Examine these 3 policies. Discard one and pass the remaining two to the Chancellor.",
+			presidentInstructions:
+				"Examine these 3 policies. Discard one and pass the remaining two to the Chancellor.",
 			chancellorTitle: (chancellorName) => `Chancellor ${chancellorName}`,
-			chancellorInstructions: "The President has passed you 2 policies. Enact one into law.",
+			chancellorInstructions:
+				"The President has passed you 2 policies. Enact one into law.",
 			discard: "Discard",
 			enact: "Enact",
 			discardSelectedPolicy: "Discard Selected Policy",
@@ -407,25 +430,31 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 			investigationResult: "Investigation Result",
 			isPartyMember: "is a member of the...",
 			partyLabel: (partyName) => `${partyName} Party`,
-			investigationNote: "Only the President knows this information. Use it wisely — or lie about it.",
+			investigationNote:
+				"Only the President knows this information. Use it wisely — or lie about it.",
 			peekTitle: "Policy Peek",
-			peekInstructions: (presidentName) => `President ${presidentName}, here are the top 3 policies in the deck.`,
-			peekNote: "Only the President knows this. You may share this information — or deceive.",
+			peekInstructions: (presidentName) =>
+				`President ${presidentName}, here are the top 3 policies in the deck.`,
+			peekNote:
+				"Only the President knows this. You may share this information — or deceive.",
 			peekPositions: ["Next", "2nd", "3rd"],
 			specialElectionTitle: "Special Election",
 			specialElectionInstructions: (presidentName) =>
 				`President ${presidentName}, choose the next Presidential Candidate.`,
 			specialElectionConfirm: (playerName) => `Appoint ${playerName}`,
 			executionTitle: "Execution",
-			executionInstructions: (presidentName) => `President ${presidentName}, choose a player to execute.`,
+			executionInstructions: (presidentName) =>
+				`President ${presidentName}, choose a player to execute.`,
 			executionWarning: "This action is irreversible.",
 			executionConfirm: (playerName) => `Execute ${playerName}`,
 		},
 		veto: {
 			title: "Veto Requested",
 			vetoCallout: "Veto!",
-			requestDescription: (chancellorName) => `Chancellor ${chancellorName} has requested to veto the entire agenda.`,
-			consentPrompt: (presidentName) => `President ${presidentName}, do you consent?`,
+			requestDescription: (chancellorName) =>
+				`Chancellor ${chancellorName} has requested to veto the entire agenda.`,
+			consentPrompt: (presidentName) =>
+				`President ${presidentName}, do you consent?`,
 			explanation:
 				"If approved, both policies are discarded and the election tracker advances. If rejected, the Chancellor must enact a policy.",
 			approve: "Approve Veto",
@@ -433,13 +462,15 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 		},
 		policyEnacted: {
 			chaosTitle: "The Country Is in Chaos!",
-			chaosDescription: "3 elections failed in a row. A policy was enacted automatically from the top of the deck.",
+			chaosDescription:
+				"3 elections failed in a row. A policy was enacted automatically from the top of the deck.",
 			chaosPolicy: "Chaos Policy",
 			policyEnacted: "Policy Enacted",
 			policyTitle: (policyName) => `A ${policyName} Policy`,
 			hasBeenEnacted: "has been enacted!",
 			vetoUnlocked: "Veto Power Unlocked!",
-			vetoUnlockedDescription: "The Chancellor may now propose to veto the agenda.",
+			vetoUnlockedDescription:
+				"The Chancellor may now propose to veto the agenda.",
 		},
 		gameOver: {
 			liberalsWin: "Liberals Win!",
@@ -459,7 +490,8 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 	tr: {
 		document: {
 			title: "Secret Hitler — Sırayla Oyna",
-			description: "Secret Hitler için 5-10 oyunculu, tek cihazda sırayla oynanan bir masa oyunu.",
+			description:
+				"Secret Hitler için 5-10 oyunculu, tek cihazda sırayla oynanan bir masa oyunu.",
 		},
 		brand: {
 			title: "SECRET HITLER",
@@ -471,7 +503,8 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 				en: "English",
 				tr: "Türkçe",
 			},
-			buttonLabel: (languageLabel) => `Dili ${languageLabel} olarak değiştir`,
+			buttonLabel: (languageLabel) =>
+				`Dili ${languageLabel} olarak değiştir`,
 		},
 		enums: {
 			phases: {
@@ -530,10 +563,14 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 				execution: "İnfaz",
 			},
 			victoryReasons: {
-				liberal_policies: "5 Liberal yasa yürürlüğe girdi. Demokrasi kazandı!",
-				fascist_policies: "6 Faşist yasa yürürlüğe girdi. Hükümet düştü.",
-				hitler_executed: "Hitler bulundu ve infaz edildi. Özgürlük geri geldi!",
-				hitler_elected_chancellor: "Masada 3+ Faşist yasa varken Hitler Şansölye seçildi. Komplo başarıya ulaştı.",
+				liberal_policies:
+					"5 Liberal yasa yürürlüğe girdi. Demokrasi kazandı!",
+				fascist_policies:
+					"6 Faşist yasa yürürlüğe girdi. Hükümet düştü.",
+				hitler_executed:
+					"Hitler bulundu ve infaz edildi. Özgürlük geri geldi!",
+				hitler_elected_chancellor:
+					"Masada 3+ Faşist yasa varken Hitler Şansölye seçildi. Komplo başarıya ulaştı.",
 			},
 		},
 		common: {
@@ -556,7 +593,8 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 		resumePrompt: {
 			title: "Oyun Devam Ediyor",
 			savedGameFound: "Kaydedilmiş bir oyun bulundu:",
-			summary: (playerCount, round) => `${playerCount} oyuncu · Tur ${round}`,
+			summary: (playerCount, round) =>
+				`${playerCount} oyuncu · Tur ${round}`,
 		},
 		setup: {
 			playerInitialization: "Oyuncu Kurulumu",
@@ -565,21 +603,26 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 			playerNamePlaceholder: "Oyuncu adı",
 			addPlayer: "Ekle",
 			nameTaken: "Bu ad zaten kullanılıyor.",
-			playerCount: (playerCount, maxPlayers) => `${playerCount} / ${maxPlayers} oyuncu`,
-			morePlayersNeeded: (remainingPlayers) => `${remainingPlayers} oyuncu daha gerekli`,
+			playerCount: (playerCount, maxPlayers) =>
+				`${playerCount} / ${maxPlayers} oyuncu`,
+			morePlayersNeeded: (remainingPlayers) =>
+				`${remainingPlayers} oyuncu daha gerekli`,
 			startGame: "Oyunu Baslat",
 			seatingOrder: "Oturma Sırası",
 			reorderHint: "Yeniden sıralamak için tutamacı sürükle",
 			addPlayersToBegin: "Başlamak için oyuncu ekle",
-			dragToMove: (playerName) => `${playerName} oyuncusunu taşımak için sürükle`,
+			dragToMove: (playerName) =>
+				`${playerName} oyuncusunu taşımak için sürükle`,
 			dragToReorder: "Yeniden sıralamak için sürükle",
 			removePlayer: (playerName) => `${playerName} oyuncusunu çıkar`,
 			projectOpenSource: {
 				beforeLicense: "Bu proje açık kaynaklıdır ve ",
-				afterLicense: " lisansı ile yayımlanmıştır. Proje hakkında GitHub'da daha fazla bilgi bulabilirsin.",
+				afterLicense:
+					" lisansı ile yayımlanmıştır. Proje hakkında GitHub'da daha fazla bilgi bulabilirsin.",
 			},
 			adaptedFromOriginal: {
-				beforeTitle: "Goat, Wolf, & Cabbage'ın (c) 2016-2020 tarihli özgün ",
+				beforeTitle:
+					"Goat, Wolf, & Cabbage'ın (c) 2016-2020 tarihli özgün ",
 				afterTitle: " kutu oyunundan uyarlanmıştır.",
 			},
 		},
@@ -594,13 +637,15 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 			fascistBoardAlt: "Faşist yasa tahtası",
 			liberalPolicyAlt: (position) => `Liberal yasa ${position}`,
 			fascistPolicyAlt: (position) => `Faşist yasa ${position}`,
-			electionTrackerPosition: (position) => `Seçim göstergesi konumu ${position}`,
+			electionTrackerPosition: (position) =>
+				`Seçim göstergesi konumu ${position}`,
 			veto: "Veto",
 		},
 		nomination: {
 			governmentFormation: "Hükümet Kurulumu",
 			title: "Şansölye Adayını Seç",
-			instructions: (presidentName) => `Başkan ${presidentName}, bir Şansölye adayı seç`,
+			instructions: (presidentName) =>
+				`Başkan ${presidentName}, bir Şansölye adayı seç`,
 			eligible: "Uygun",
 			unavailable: "Uygun değil",
 			ineligibleReasons: {
@@ -614,24 +659,28 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 			electionResult: "Seçim Sonucu",
 			electionPasses: "JA! Hükümet Kuruldu",
 			electionFails: "NEIN! Hükümet Kurulamadı",
-			voteCount: (jaCount, neinCount) => `${jaCount} Ja — ${neinCount} Nein`,
+			voteCount: (jaCount, neinCount) =>
+				`${jaCount} Ja — ${neinCount} Nein`,
 			voterTitle: (playerName) => `${playerName} oy veriyor`,
 			voteOnGovernment: "Hükümet İçin Oy Ver",
-			governmentSummary: (presidentName, chancellorName) => `Başkan ${presidentName} · Şansölye ${chancellorName}`,
+			governmentSummary: (presidentName, chancellorName) =>
+				`Başkan ${presidentName} · Şansölye ${chancellorName}`,
 			tableShortcut: "Masa Kısayolu",
 			tableShortcutDescription:
 				"Masadaki herkes Ja diyorsa, bu seçimi tek dokunuşla geçirip normal sonucu hemen açabilirsin.",
 			passElectionAsAllJa: "Seçimi Herkes Ja Oylamıs Gibi Geçir",
 		},
 		night: {
-			playerProgress: (playerNumber, totalPlayers) => `Oyuncu ${playerNumber} / ${totalPlayers}`,
+			playerProgress: (playerNumber, totalPlayers) =>
+				`Oyuncu ${playerNumber} / ${totalPlayers}`,
 			roleCardAlt: (roleLabel) => `${roleLabel} rol kartı`,
 			youAreA: "Sen bir...",
 			liberalDescription:
 				"5 Liberal yasa çıkarmak ya da Hitler'i bulup infaz etmek zorundasın. Kimseye tamamen güvenme.",
 			fascistDescription:
 				"Hükümeti sabote edip 6 Faşist yasanın çıkmasına yardım et ya da masada 3 Faşist yasa varken Hitler'i Şansölye seçtir.",
-			hitlerDescription: "Faşist ekiptesin, ama kimliğini gizli tutmalısın. İnfaz edilirsen Liberaller kazanır.",
+			hitlerDescription:
+				"Faşist ekiptesin, ama kimliğini gizli tutmalısın. İnfaz edilirsen Liberaller kazanır.",
 			yourTeammates: "Takım Arkadaşların",
 			yourFascistAlly: "Faşist Müttefikin",
 			unknownFascists: "Diğer Faşistlerin kim olduğunu bilmiyorsun.",
@@ -639,9 +688,11 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 		legislative: {
 			session: "Yasa Oturumu",
 			presidentTitle: (presidentName) => `Başkan ${presidentName}`,
-			presidentInstructions: "Bu 3 yasayı incele. Birini elden çıkar ve kalan ikisini Şansölyeye ver.",
+			presidentInstructions:
+				"Bu 3 yasayı incele. Birini elden çıkar ve kalan ikisini Şansölyeye ver.",
 			chancellorTitle: (chancellorName) => `Şansölye ${chancellorName}`,
-			chancellorInstructions: "Başkan sana 2 yasa verdi. Birini yürürlüğe sok.",
+			chancellorInstructions:
+				"Başkan sana 2 yasa verdi. Birini yürürlüğe sok.",
 			discard: "Elden Çıkar",
 			enact: "Yürürlüğe Sok",
 			discardSelectedPolicy: "Seçili Yasayı Elden Çıkar",
@@ -655,28 +706,38 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 			investigateTitle: "Soruşturma",
 			investigateInstructions: (presidentName) =>
 				`Başkan ${presidentName}, parti üyeliğini soruşturmak için bir oyuncu seç.`,
-			investigateConfirm: (playerName) => `${playerName} oyuncusunu soruştur`,
+			investigateConfirm: (playerName) =>
+				`${playerName} oyuncusunu soruştur`,
 			investigationResult: "Soruşturma Sonucu",
 			isPartyMember: "şu partinin üyesi...",
 			partyLabel: (partyName) => `${partyName} Partisi`,
-			investigationNote: "Bu bilgiyi yalnızca Başkan biliyor. İstersen paylaş, istersen blöf yap.",
+			investigationNote:
+				"Bu bilgiyi yalnızca Başkan biliyor. İstersen paylaş, istersen blöf yap.",
 			peekTitle: "Politika İncelemesi",
-			peekInstructions: (presidentName) => `Başkan ${presidentName}, destenin üstündeki 3 yasa burada.`,
-			peekNote: "Bunu yalnızca Başkan bilir. Bu bilgiyi paylaşabilir ya da yanıltabilirsin.",
+			peekInstructions: (presidentName) =>
+				`Başkan ${presidentName}, destenin üstündeki 3 yasa burada.`,
+			peekNote:
+				"Bunu yalnızca Başkan bilir. Bu bilgiyi paylaşabilir ya da yanıltabilirsin.",
 			peekPositions: ["Sıradaki", "2.", "3."],
 			specialElectionTitle: "Özel Seçim",
-			specialElectionInstructions: (presidentName) => `Başkan ${presidentName}, sıradaki Başkan adayını seç.`,
-			specialElectionConfirm: (playerName) => `${playerName} oyuncusunu ata`,
+			specialElectionInstructions: (presidentName) =>
+				`Başkan ${presidentName}, sıradaki Başkan adayını seç.`,
+			specialElectionConfirm: (playerName) =>
+				`${playerName} oyuncusunu ata`,
 			executionTitle: "İnfaz",
-			executionInstructions: (presidentName) => `Başkan ${presidentName}, infaz edilecek oyuncuyu seç.`,
+			executionInstructions: (presidentName) =>
+				`Başkan ${presidentName}, infaz edilecek oyuncuyu seç.`,
 			executionWarning: "Bu hamle geri alınamaz.",
-			executionConfirm: (playerName) => `${playerName} oyuncusunu infaz et`,
+			executionConfirm: (playerName) =>
+				`${playerName} oyuncusunu infaz et`,
 		},
 		veto: {
 			title: "Veto İstendi",
 			vetoCallout: "Veto!",
-			requestDescription: (chancellorName) => `Şansölye ${chancellorName}, tüm gündemi veto etmeyi istedi.`,
-			consentPrompt: (presidentName) => `Başkan ${presidentName}, bunu kabul ediyor musun?`,
+			requestDescription: (chancellorName) =>
+				`Şansölye ${chancellorName}, tüm gündemi veto etmeyi istedi.`,
+			consentPrompt: (presidentName) =>
+				`Başkan ${presidentName}, bunu kabul ediyor musun?`,
 			explanation:
 				"Onaylanırsa iki yasa da elden çıkarılır ve seçim göstergesi ilerler. Reddedilirse Şansölye bir yasa yürürlüğe sokmak zorundadır.",
 			approve: "Vetoyu Onayla",
@@ -684,13 +745,15 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 		},
 		policyEnacted: {
 			chaosTitle: "Ülke Kaos İçinde!",
-			chaosDescription: "Üst üste 3 seçim başarısız oldu. Destenin en üstündeki yasa otomatik olarak çıkarıldı.",
+			chaosDescription:
+				"Üst üste 3 seçim başarısız oldu. Destenin en üstündeki yasa otomatik olarak çıkarıldı.",
 			chaosPolicy: "Kaos Yasası",
 			policyEnacted: "Yasa Çıkarıldı",
 			policyTitle: (policyName) => `Bir ${policyName} Yasa`,
 			hasBeenEnacted: "yürürlüğe girdi!",
 			vetoUnlocked: "Veto Yetkisi Açıldı!",
-			vetoUnlockedDescription: "Şansölye artık gündemi veto etmeyi önerebilir.",
+			vetoUnlockedDescription:
+				"Şansölye artık gündemi veto etmeyi önerebilir.",
 		},
 		gameOver: {
 			liberalsWin: "Liberaller Kazandı!",

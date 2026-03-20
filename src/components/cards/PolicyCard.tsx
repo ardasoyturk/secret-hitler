@@ -5,10 +5,10 @@
  * policy type with the appropriate imagery and a scale-pop animation.
  */
 
-import policyFascistImg from "@assets/cards/policy-fascist.png";
-import policyBackImg from "@assets/cards/policy-folder-cover-back.png";
-import policyLiberalImg from "@assets/cards/policy-liberal.png";
-import { useOptimizedAsset } from "@components/game/OptimizedAssets";
+import policyFascistImg from "@/assets/cards/policy-fascist.png";
+import policyBackImg from "@/assets/cards/policy-folder-cover-back.png";
+import policyLiberalImg from "@/assets/cards/policy-liberal.png";
+import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
 import { memo } from "preact/compat";
 
 import { useI18n } from "@/i18n";

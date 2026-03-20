@@ -6,20 +6,20 @@
  * - NightReveal: Show the player's role card, team info, and teammates.
  */
 
-import roleFascist1 from "@assets/roles/role-fascist-1.png";
-import roleFascist2 from "@assets/roles/role-fascist-2.png";
-import roleFascist3 from "@assets/roles/role-fascist-3.png";
-import roleHitler from "@assets/roles/role-hitler.png";
-import roleLiberal1 from "@assets/roles/role-liberal-1.png";
-import roleLiberal2 from "@assets/roles/role-liberal-2.png";
-import roleLiberal3 from "@assets/roles/role-liberal-3.png";
-import roleLiberal4 from "@assets/roles/role-liberal-4.png";
-import roleLiberal5 from "@assets/roles/role-liberal-5.png";
-import roleLiberal6 from "@assets/roles/role-liberal-6.png";
-import { useOptimizedAsset } from "@components/game/OptimizedAssets";
-import { ViewportOverlay } from "@components/layout/ViewportOverlay";
-import type { GameState, GameAction } from "@engine/types";
-import { GamePhase, Role } from "@engine/types";
+import roleFascist1 from "@/assets/roles/role-fascist-1.png";
+import roleFascist2 from "@/assets/roles/role-fascist-2.png";
+import roleFascist3 from "@/assets/roles/role-fascist-3.png";
+import roleHitler from "@/assets/roles/role-hitler.png";
+import roleLiberal1 from "@/assets/roles/role-liberal-1.png";
+import roleLiberal2 from "@/assets/roles/role-liberal-2.png";
+import roleLiberal3 from "@/assets/roles/role-liberal-3.png";
+import roleLiberal4 from "@/assets/roles/role-liberal-4.png";
+import roleLiberal5 from "@/assets/roles/role-liberal-5.png";
+import roleLiberal6 from "@/assets/roles/role-liberal-6.png";
+import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
+import { ViewportOverlay } from "@/components/layout/ViewportOverlay";
+import type { GameState, GameAction } from "@/engine/types";
+import { GamePhase, Role } from "@/engine/types";
 import { Crown, Shield } from "lucide-preact";
 
 import { getNightInfo } from "@/hooks/useGame";

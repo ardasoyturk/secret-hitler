@@ -4,9 +4,9 @@
  * Also handles the ChaosPolicy phase (3 failed elections → auto-enacted).
  */
 
-import { PolicyCard } from "@components/cards/PolicyCard";
-import type { GameState, GameAction } from "@engine/types";
-import { GamePhase, PolicyType } from "@engine/types";
+import { PolicyCard } from "@/components/cards/PolicyCard";
+import type { GameState, GameAction } from "@/engine/types";
+import { GamePhase, PolicyType } from "@/engine/types";
 
 import { useI18n } from "@/i18n";
 

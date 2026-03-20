@@ -11,15 +11,16 @@
  * Layout: flex flex-col h-full — fits inside Game layout (no min-h-dvh).
  */
 
-import { PartyCard } from "@components/cards/PartyCard";
-import { PolicyCard } from "@components/cards/PolicyCard";
-import { getPartyMembership } from "@engine/reducer";
-import type { GameState, GameAction } from "@engine/types";
-import { GamePhase, PartyMembership } from "@engine/types";
+import { PartyCard } from "@/components/cards/PartyCard";
+import { PolicyCard } from "@/components/cards/PolicyCard";
+import { getPartyMembership } from "@/engine/reducer";
+import type { GameState, GameAction } from "@/engine/types";
+import { GamePhase, PartyMembership } from "@/engine/types";
+import { getPolicyKey } from "@/engine/utils";
 import { memo, useCallback, useState } from "preact/compat";
 
-import { useI18n } from "@/i18n";
 import { PORTRAITS } from "@/engine/constants";
+import { useI18n } from "@/i18n";
 
 const EMPTY_IDS: number[] = [];
 
@@ -33,11 +34,6 @@ type ExecutiveScreenProps = ScreenProps & {
 	specialElectionEligibleIds?: number[];
 	executionEligibleIds?: number[];
 };
-
-function getPolicyKey(policies: readonly string[], policy: string, index: number): string {
-	const duplicateIndex = policies.slice(0, index).filter((value) => value === policy).length;
-	return `${policy}-${duplicateIndex}`;
-}
 
 // ── Shared player selection grid ────────────────────────────────────
 

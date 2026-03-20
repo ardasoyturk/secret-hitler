@@ -1,5 +1,5 @@
-import { MIN_PLAYERS, MAX_PLAYERS, PORTRAITS } from "@engine/constants";
-import type { GameState, GameAction, Player } from "@engine/types";
+import { MIN_PLAYERS, MAX_PLAYERS, PORTRAITS } from "@/engine/constants";
+import type { GameState, GameAction, Player } from "@/engine/types";
 import { GripVertical, Trash2, UserPlus } from "lucide-preact";
 import type { TargetedKeyboardEvent, TargetedPointerEvent } from "preact";
 import { memo, useCallback, useReducer, useRef } from "preact/compat";

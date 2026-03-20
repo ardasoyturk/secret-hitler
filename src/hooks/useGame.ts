@@ -6,7 +6,7 @@
  * Accepts an optional initial state for resuming saved games.
  */
 
-import { HITLER_KNOWS_FASCISTS_MAX_PLAYERS } from "@engine/constants";
+import { HITLER_KNOWS_FASCISTS_MAX_PLAYERS } from "@/engine/constants";
 import {
 	getEligibleChancellorIds,
 	getInvestigablePlayerIds,
@@ -14,16 +14,16 @@ import {
 	getExecutionEligibleIds,
 	getAlivePlayers,
 	getAlivePlayerCount,
-} from "@engine/eligibility";
+} from "@/engine/eligibility";
 import {
 	gameReducer,
 	createInitialState,
 	getCurrentPresident,
 	getChancellor,
 	getPartyMembership,
-} from "@engine/reducer";
-import type { GameState, GameAction } from "@engine/types";
-import { Role } from "@engine/types";
+} from "@/engine/reducer";
+import type { GameState, GameAction } from "@/engine/types";
+import { Role } from "@/engine/types";
 import { useMemo, useRef, useState } from "preact/compat";
 
 import { syncGameState } from "./useGamePersistence";

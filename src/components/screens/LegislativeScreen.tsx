@@ -10,10 +10,11 @@
  * Privacy gates use .privacy-screen (fixed overlay).
  */
 
-import { PolicyCard } from "@components/cards/PolicyCard";
-import { ViewportOverlay } from "@components/layout/ViewportOverlay";
-import type { GameState, GameAction } from "@engine/types";
-import { GamePhase } from "@engine/types";
+import { PolicyCard } from "@/components/cards/PolicyCard";
+import { PrivacyGate } from "@/components/cards/PrivacyGate";
+import type { GameState, GameAction } from "@/engine/types";
+import { GamePhase } from "@/engine/types";
+import { getPolicyKey } from "@/engine/utils";
 import { memo, useCallback, useState } from "preact/compat";
 
 import { useI18n } from "@/i18n";
@@ -21,30 +22,6 @@ import { useI18n } from "@/i18n";
 interface ScreenProps {
 	state: GameState;
 	dispatch: (action: GameAction) => void;
-}
-
-function getPolicyKey(policies: readonly string[], policy: string, index: number): string {
-	const duplicateIndex = policies.slice(0, index).filter((value) => value === policy).length;
-	return `${policy}-${duplicateIndex}`;
-}
-
-function PrivacyGate({ playerName, onReady }: { playerName: string; onReady: () => void }) {
-	const { headingText, messages } = useI18n();
-
-	return (
-		<ViewportOverlay>
-			<div className="privacy-screen">
-				<div className="privacy-dialog text-center">
-					<h2 className="privacy-title">{headingText(messages.common.passDevice)}</h2>
-					<p className="privacy-subtitle">{messages.common.handDeviceTo}</p>
-					<p className="privacy-name">{headingText(playerName)}</p>
-					<button type="button" onClick={onReady} className="primary-action-button">
-						{headingText(messages.common.ready)}
-					</button>
-				</div>
-			</div>
-		</ViewportOverlay>
-	);
 }
 
 const PolicyChoice = memo(function PolicyChoice({
