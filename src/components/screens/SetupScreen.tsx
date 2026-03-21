@@ -103,7 +103,7 @@ const LanguageSelector = memo(function LanguageSelector() {
 	const { language, setLanguage, messages } = useI18n();
 
 	return (
-		<section className="mb-4 rounded-[var(--radius-panel)] border border-white/8 bg-black/18 px-4 py-3">
+		<section className="rounded-[var(--radius-panel)] border border-white/8 bg-black/18 px-4 py-2.5">
 			<div className="flex flex-wrap items-center justify-between gap-3">
 				<p className="section-label">{messages.language.label}</p>
 				<div className="inline-flex items-center gap-1 rounded-[var(--radius-button)] border border-white/10 bg-black/20 p-1">
@@ -169,7 +169,7 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 	const { headingText, messages } = useI18n();
 
 	return (
-		<section className="flex min-h-0 flex-col justify-between rounded-[var(--radius-panel)] border border-white/8 bg-black/18 px-5 py-5 md:px-6 md:py-6">
+		<section className="flex h-full min-h-0 flex-col justify-between rounded-[var(--radius-panel)] border border-white/8 bg-black/18 px-5 py-5 md:px-6 md:py-6">
 			<div className="space-y-4">
 				<p className="section-label text-center">{messages.setup.playerInitialization}</p>
 
@@ -571,9 +571,9 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 				</div>
 
 				<div className="border-gold/15 mt-3 min-h-0 flex-1 overflow-hidden rounded-[var(--radius-panel)] border bg-[linear-gradient(180deg,rgba(43,31,22,0.88),rgba(25,17,12,0.9))] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.34)] md:p-6">
-					<div className="flex h-full min-h-0 flex-col gap-4">
-						<LanguageSelector />
-						<div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(380px,520px)_minmax(260px,1fr)]">
+					<div className="grid h-full min-h-0 gap-4 lg:grid-cols-[minmax(320px,480px)_minmax(300px,1fr)]">
+						<div className="flex min-h-0 flex-col gap-4">
+							<LanguageSelector />
 							<PlayerSetupPanel
 								players={state.players}
 								playerCount={playerCount}
@@ -591,17 +591,17 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 								onAddPlayer={handleAddPlayer}
 								onStartGame={handleStartGame}
 							/>
-
-							<SeatingOrderPanel
-								players={state.players}
-								draggingPlayerId={uiState.draggingPlayerId}
-								dropTargetPlayerId={uiState.dropTargetPlayerId}
-								onBeginDrag={beginDrag}
-								onDragMove={handleDragMove}
-								onDragEnd={handleDragEnd}
-								onRemovePlayer={handleRemovePlayer}
-							/>
 						</div>
+
+						<SeatingOrderPanel
+							players={state.players}
+							draggingPlayerId={uiState.draggingPlayerId}
+							dropTargetPlayerId={uiState.dropTargetPlayerId}
+							onBeginDrag={beginDrag}
+							onDragMove={handleDragMove}
+							onDragEnd={handleDragEnd}
+							onRemovePlayer={handleRemovePlayer}
+						/>
 					</div>
 				</div>
 
