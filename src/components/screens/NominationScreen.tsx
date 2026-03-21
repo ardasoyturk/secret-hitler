@@ -50,9 +50,7 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 	return (
 		<form className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-1 py-3 md:gap-5 md:py-5" onSubmit={handleSubmit}>
 			<div className="flex-shrink-0 text-center">
-				<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
-					{messages.nomination.governmentFormation}
-				</p>
+				<p className="section-label mb-1">{messages.nomination.governmentFormation}</p>
 				<h2 className="font-heading text-gold text-3xl leading-tight md:text-4xl">
 					{headingText(messages.nomination.title)}
 				</h2>
@@ -73,7 +71,7 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 						<label
 							key={player.id}
 							className={[
-								"relative overflow-hidden rounded-[22px] border transition-all duration-150",
+								"relative overflow-hidden rounded-[var(--radius-panel)] border transition-all duration-150",
 								isEligible
 									? "border-white/8 bg-bg-card/80 cursor-pointer hover:border-gold/35 has-[:checked]:border-gold/45 has-[:checked]:bg-gold/8 has-[:checked]:shadow-[0_0_0_1px_rgba(255,202,97,0.24)]"
 									: "border-transparent bg-bg-card/40 opacity-45 cursor-not-allowed",
@@ -113,7 +111,7 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 									>
 										{player.name}
 									</span>
-									<span className="text-text-muted mt-1 block text-left text-[11px] tracking-[0.18em] uppercase">
+									<span className="label-text mt-1 block text-left">
 										{isEligible
 											? messages.nomination.eligible
 											: reason
@@ -123,7 +121,7 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 								</div>
 							</div>
 							{reason && (
-								<span className="border-text-muted/20 bg-bg-darker/90 text-text-muted absolute top-2 right-2 rounded-full border px-2 py-0.5 text-[10px] font-medium whitespace-nowrap">
+								<span className="border-text-muted/20 bg-bg-darker/90 text-text-muted absolute top-2 right-2 rounded-[var(--radius-button)] border px-2 py-0.5 text-[10px] font-medium whitespace-nowrap">
 									{messages.nomination.ineligibleReasons[reason]}
 								</span>
 							)}
@@ -133,10 +131,7 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 			</div>
 
 			<div className="phase-action-bar flex flex-shrink-0 justify-center">
-				<button
-					type="submit"
-					className="bg-fascist font-heading hover:bg-fascist-hover w-full max-w-2xl cursor-pointer rounded-[18px] px-6 py-3 text-xl tracking-wide text-white shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-200 active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-fascist-dark)]"
-				>
+				<button type="submit" className="btn-primary w-full max-w-2xl">
 					{headingText(messages.nomination.confirm)}
 				</button>
 			</div>

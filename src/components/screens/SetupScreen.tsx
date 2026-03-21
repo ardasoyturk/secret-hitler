@@ -103,12 +103,10 @@ const LanguageSelector = memo(function LanguageSelector() {
 	const { language, setLanguage, messages } = useI18n();
 
 	return (
-		<section className="mb-4 rounded-[18px] border border-white/8 bg-black/18 px-4 py-3">
+		<section className="mb-4 rounded-[var(--radius-panel)] border border-white/8 bg-black/18 px-4 py-3">
 			<div className="flex flex-wrap items-center justify-between gap-3">
-				<p className="text-text-muted text-[11px] font-semibold tracking-[0.24em] uppercase">
-					{messages.language.label}
-				</p>
-				<div className="inline-flex rounded-full border border-white/10 bg-black/25 p-1">
+				<p className="section-label">{messages.language.label}</p>
+				<div className="inline-flex items-center gap-1 rounded-[var(--radius-button)] border border-white/10 bg-black/20 p-1">
 					{LANGUAGE_OPTIONS.map((option) => {
 						const isActive = option === language;
 						const label = messages.language.options[option];
@@ -120,12 +118,11 @@ const LanguageSelector = memo(function LanguageSelector() {
 								aria-label={messages.language.buttonLabel(label)}
 								aria-pressed={isActive}
 								className={[
-									"min-w-28 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-150",
-									isActive
-										? "bg-gold text-bg-overlay shadow-[0_4px_0_var(--color-gold-dark)]"
-										: "text-text-secondary hover:text-text-primary cursor-pointer",
+									"relative min-w-[5.5rem] px-3.5 py-1.5 text-sm font-medium transition-all duration-150 rounded-[calc(var(--radius-button)-2px)]",
+									isActive ? "text-gold" : "text-text-muted hover:text-text-secondary cursor-pointer",
 								].join(" ")}
 							>
+								{isActive && <span className="bg-gold absolute inset-x-2 -bottom-0.5 h-[2px] rounded-full" />}
 								{label}
 							</button>
 						);
@@ -172,11 +169,9 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 	const { headingText, messages } = useI18n();
 
 	return (
-		<section className="flex min-h-0 flex-col justify-between rounded-[20px] border border-white/8 bg-black/18 px-5 py-5 md:px-6 md:py-6">
+		<section className="flex min-h-0 flex-col justify-between rounded-[var(--radius-panel)] border border-white/8 bg-black/18 px-5 py-5 md:px-6 md:py-6">
 			<div className="space-y-4">
-				<p className="text-text-muted text-center text-[11px] font-semibold tracking-[0.24em] uppercase">
-					{messages.setup.playerInitialization}
-				</p>
+				<p className="section-label text-center">{messages.setup.playerInitialization}</p>
 
 				<div className="mx-auto flex w-full max-w-[560px] items-center justify-center gap-3 px-1 md:px-2">
 					<button
@@ -190,7 +185,7 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 							alt={messages.setup.choosePortrait}
 							className="h-full w-full object-cover"
 						/>
-						<span className="text-gold absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent py-1 text-[10px] font-semibold tracking-[0.18em] uppercase">
+						<span className="text-gold absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent py-1 text-[10px] font-medium">
 							{messages.setup.pickPortrait}
 						</span>
 					</button>
@@ -227,10 +222,8 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 				)}
 
 				{showPortraitPicker && (
-					<div className="rounded-xl border border-white/10 bg-black/20 p-3">
-						<p className="text-text-muted mb-2 text-center text-[10px] font-semibold tracking-[0.2em] uppercase">
-							{messages.setup.choosePortrait}
-						</p>
+					<div className="rounded-[var(--radius-card)] border border-white/10 bg-black/20 p-3">
+						<p className="label-text mb-2 text-center">{messages.setup.choosePortrait}</p>
 						<div className="grid grid-cols-10 gap-1.5">
 							{PORTRAITS.map((portrait, index) => {
 								const isUsed = players.some((player) => player.portraitIndex === index);
@@ -340,7 +333,7 @@ const SeatingRow = memo(function SeatingRow({
 
 			<div className="min-w-0 flex-1">
 				<p className="text-text-primary truncate text-lg font-semibold">{player.name}</p>
-				<p className="text-text-muted text-xs tracking-[0.16em] uppercase">{messages.common.player}</p>
+				<p className="label-text">{messages.common.player}</p>
 			</div>
 
 			<button
@@ -388,11 +381,9 @@ const SeatingOrderPanel = memo(function SeatingOrderPanel({
 	const { messages } = useI18n();
 
 	return (
-		<section className="flex min-h-0 flex-col rounded-[20px] border border-white/8 bg-black/18 p-4 md:p-5">
+		<section className="flex min-h-0 flex-col rounded-[var(--radius-panel)] border border-white/8 bg-black/18 p-4 md:p-5">
 			<div className="mb-2 flex items-center justify-between">
-				<p className="text-text-muted text-[11px] font-semibold tracking-[0.22em] uppercase">
-					{messages.setup.seatingOrder}
-				</p>
+				<p className="section-label">{messages.setup.seatingOrder}</p>
 				<p className="text-text-muted text-xs">{messages.setup.reorderHint}</p>
 			</div>
 
@@ -579,7 +570,7 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 					<p className="font-flavor text-text-muted mt-1 text-xs">{messages.brand.subtitle}</p>
 				</div>
 
-				<div className="border-gold/15 mt-3 min-h-0 flex-1 overflow-hidden rounded-[24px] border bg-[linear-gradient(180deg,rgba(43,31,22,0.88),rgba(25,17,12,0.9))] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.34)] md:p-6">
+				<div className="border-gold/15 mt-3 min-h-0 flex-1 overflow-hidden rounded-[var(--radius-panel)] border bg-[linear-gradient(180deg,rgba(43,31,22,0.88),rgba(25,17,12,0.9))] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.34)] md:p-6">
 					<div className="flex h-full min-h-0 flex-col gap-4">
 						<LanguageSelector />
 						<div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(380px,520px)_minmax(260px,1fr)]">

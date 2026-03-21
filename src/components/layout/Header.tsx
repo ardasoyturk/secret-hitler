@@ -50,7 +50,7 @@ export const Header = memo(function Header({
 				<div className="min-w-0 flex-1 text-center">
 					<span
 						className={[
-							"inline-block max-w-full truncate px-4 text-[12px] font-semibold uppercase tracking-[0.28em] md:text-sm",
+							"inline-block max-w-full truncate px-4 text-[12px] font-semibold tracking-wide md:text-sm",
 							phase === GamePhase.GameOver
 								? "text-fascist"
 								: phase === GamePhase.ChaosPolicy

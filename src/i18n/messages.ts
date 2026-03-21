@@ -601,7 +601,7 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 			governmentFormation: "Hükümet Kurulumu",
 			title: "Şansölye Adayını Seç",
 			instructions: (presidentName) => `Başkan ${presidentName}, bir Şansölye adayı seç`,
-			eligible: "Uygun",
+			eligible: "Oyuncu",
 			unavailable: "Uygun değil",
 			ineligibleReasons: {
 				dead: "Ölü",

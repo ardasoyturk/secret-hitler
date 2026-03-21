@@ -134,9 +134,7 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 					</div>
 
 					{/* Role declaration */}
-					<p className="font-body text-text-secondary mx-auto mb-1 text-sm tracking-widest uppercase">
-						{messages.night.youAreA}
-					</p>
+					<p className="font-body text-text-secondary mx-auto mb-1 text-sm">{messages.night.youAreA}</p>
 					<h2 className={["font-heading text-4xl sm:text-5xl mb-6 tracking-wide", teamColor].join(" ")}>{roleLabel}</h2>
 
 					{/* Team description */}

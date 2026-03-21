@@ -100,7 +100,7 @@ function GameInner({ initialState }: { initialState: GameState | undefined }) {
 					/>
 
 					<div className="pt-2 md:pt-3">
-						<div className="tabletop-stage mx-auto w-full max-w-7xl rounded-[26px] px-4 py-4 md:px-6 md:py-5">
+						<div className="tabletop-stage mx-auto w-full max-w-7xl rounded-[var(--radius-panel)] px-4 py-4 md:px-6 md:py-5">
 							<BoardTrack
 								board={state.board}
 								electionTracker={state.electionTracker}
@@ -203,18 +203,10 @@ function ResumePrompt({
 				{messages.resumePrompt.summary(savedState.players.length, savedState.round)}
 			</p>
 			<div className="flex w-full max-w-xs flex-col gap-3">
-				<button
-					type="button"
-					onClick={onResume}
-					className="bg-fascist hover:bg-fascist-hover w-full cursor-pointer rounded-lg px-6 py-4 text-lg font-bold text-white shadow-[0_4px_0_var(--color-fascist-dark)] transition-all duration-150 active:translate-y-0.5 active:shadow-[0_2px_0_var(--color-fascist-dark)]"
-				>
+				<button type="button" onClick={onResume} className="btn-primary w-full py-4">
 					{headingText(messages.common.resumeGame)}
 				</button>
-				<button
-					type="button"
-					onClick={onNewGame}
-					className="bg-bg-card hover:bg-bg-primary border-text-muted/30 w-full cursor-pointer rounded-lg border px-6 py-4 text-lg font-bold text-white shadow-[0_4px_0_var(--color-bg-darker)] transition-all duration-150 active:translate-y-0.5 active:shadow-[0_2px_0_var(--color-bg-darker)]"
-				>
+				<button type="button" onClick={onNewGame} className="btn-ghost w-full py-4">
 					{headingText(messages.common.newGame)}
 				</button>
 			</div>

@@ -178,8 +178,12 @@ function BoardPanel({
 				<p className={["font-heading text-xl tracking-[0.12em]", accentClass].join(" ")}>{headingText(title)}</p>
 				<span className={["h-px w-8 bg-gradient-to-l from-transparent to-current opacity-55", accentClass].join(" ")} />
 			</div>
-			<div className="relative overflow-hidden rounded-[20px] border border-white/8 bg-[#1a120d] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_34px_rgba(0,0,0,0.28)]">
-				<div className={["relative overflow-hidden rounded-[16px]", aspectClass ?? "aspect-[1683/650]"].join(" ")}>
+			<div className="relative overflow-hidden rounded-[var(--radius-panel)] border border-white/8 bg-[#1a120d] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_34px_rgba(0,0,0,0.28)]">
+				<div
+					className={["relative overflow-hidden rounded-[var(--radius-card)]", aspectClass ?? "aspect-[1683/650]"].join(
+						" ",
+					)}
+				>
 					<img src={assetSrc(imageSrc)} alt={imageAlt} className="h-full w-full object-cover" draggable={false} />
 					<div className="absolute inset-0">{children}</div>
 				</div>

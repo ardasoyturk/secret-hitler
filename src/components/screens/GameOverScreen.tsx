@@ -93,18 +93,18 @@ export function GameOverScreen({ state, dispatch }: ScreenProps) {
 			<div className="mb-3 flex flex-shrink-0 items-center justify-center gap-8">
 				<div className="text-center">
 					<p className="text-liberal font-heading text-2xl">{state.board.liberalPolicies}</p>
-					<p className="text-text-muted font-body text-xs tracking-wider uppercase">{messages.enums.teams.liberal}</p>
+					<p className="label-text">{messages.enums.teams.liberal}</p>
 				</div>
 				<div className="bg-text-muted/30 h-6 w-px" />
 				<div className="text-center">
 					<p className="text-fascist font-heading text-2xl">{state.board.fascistPolicies}</p>
-					<p className="text-text-muted font-body text-xs tracking-wider uppercase">{messages.enums.teams.fascist}</p>
+					<p className="label-text">{messages.enums.teams.fascist}</p>
 				</div>
 			</div>
 
 			{/* All roles revealed — scrollable */}
 			<div className="mx-auto mb-3 min-h-0 w-full max-w-md flex-1 overflow-y-auto">
-				<p className="text-text-muted font-body bg-bg-dark sticky top-0 mb-2 py-1 text-center text-xs tracking-widest uppercase">
+				<p className="section-label bg-bg-dark sticky top-0 mb-2 py-1 text-center">
 					{messages.gameOver.allRolesRevealed}
 				</p>
 				<div className="space-y-1.5">
@@ -153,7 +153,7 @@ export function GameOverScreen({ state, dispatch }: ScreenProps) {
 								{/* Role badge */}
 								<span
 									className={[
-										"px-2.5 py-0.5 rounded-full text-xs font-body font-semibold uppercase tracking-wider",
+										"px-2.5 py-0.5 rounded-[var(--radius-button)] text-xs font-body font-semibold uppercase tracking-wider",
 										badge.className,
 									].join(" ")}
 								>
@@ -179,7 +179,7 @@ export function GameOverScreen({ state, dispatch }: ScreenProps) {
 			<button
 				type="button"
 				onClick={() => dispatch({ type: "NEW_GAME" })}
-				className="font-heading bg-fascist text-text-primary hover:bg-fascist-hover mx-auto w-full max-w-md flex-shrink-0 cursor-pointer rounded-[var(--radius-button)] py-3 text-xl tracking-wide shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)]"
+				className="btn-primary mx-auto w-full max-w-md flex-shrink-0"
 			>
 				{headingText(messages.common.newGame)}
 			</button>

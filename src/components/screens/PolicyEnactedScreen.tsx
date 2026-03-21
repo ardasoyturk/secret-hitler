@@ -38,16 +38,16 @@ export function PolicyEnactedScreen({ state, dispatch }: ScreenProps) {
 
 			<div
 				className={[
-					"w-full max-w-3xl rounded-[24px] px-6 py-6 flex-shrink-0 border border-white/8 shadow-[var(--shadow-card)]",
+					"w-full max-w-3xl rounded-[var(--radius-panel)] px-6 py-6 flex-shrink-0 border border-white/8 shadow-[var(--shadow-card)]",
 					bgAccent,
 				].join(" ")}
 			>
-				<p className="text-text-secondary mb-5 text-center text-[11px] font-semibold tracking-[0.28em] uppercase">
+				<p className="section-label mb-5 text-center">
 					{isChaos ? messages.policyEnacted.chaosPolicy : messages.policyEnacted.policyEnacted}
 				</p>
 
 				<div className="flex flex-col items-center gap-4 md:flex-row md:items-center md:justify-center md:gap-7">
-					<div className={["stamp", glowClass].join(" ")}>
+					<div className="stamp">
 						<PolicyCard type={policy} size="md" revealed />
 					</div>
 
@@ -63,12 +63,12 @@ export function PolicyEnactedScreen({ state, dispatch }: ScreenProps) {
 			<div className="bg-bg-card/70 flex flex-shrink-0 items-center gap-8 rounded-full border border-white/8 px-8 py-3">
 				<div className="text-center">
 					<p className="text-liberal font-heading text-2xl">{state.board.liberalPolicies}</p>
-					<p className="text-text-muted font-body text-xs tracking-wider uppercase">{messages.enums.teams.liberal}</p>
+					<p className="label-text">{messages.enums.teams.liberal}</p>
 				</div>
 				<div className="bg-text-muted/30 h-6 w-px" />
 				<div className="text-center">
 					<p className="text-fascist font-heading text-2xl">{state.board.fascistPolicies}</p>
-					<p className="text-text-muted font-body text-xs tracking-wider uppercase">{messages.enums.teams.fascist}</p>
+					<p className="label-text">{messages.enums.teams.fascist}</p>
 				</div>
 			</div>
 
@@ -88,7 +88,7 @@ export function PolicyEnactedScreen({ state, dispatch }: ScreenProps) {
 							type: isChaos ? "ACKNOWLEDGE_CHAOS" : "ACKNOWLEDGE_POLICY",
 						})
 					}
-					className="bg-fascist font-heading text-text-primary hover:bg-fascist-hover w-full flex-shrink-0 cursor-pointer rounded-[18px] py-3 text-xl shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)]"
+					className={["btn-primary w-full flex-shrink-0", glowClass].join(" ")}
 				>
 					{headingText(messages.common.continue)}
 				</button>

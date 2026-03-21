@@ -40,9 +40,7 @@ const PolicyChoice = memo(function PolicyChoice({
 	return (
 		<div className="flex flex-col items-center gap-2">
 			<PolicyCard type={policy} size="lg" onClick={() => onSelectIndex(index)} selected={isSelected} />
-			{isSelected && (
-				<span className="font-body fade-in text-xs font-semibold tracking-wider uppercase">{selectionLabel}</span>
-			)}
+			{isSelected && <span className="label-text fade-in font-semibold">{selectionLabel}</span>}
 		</div>
 	);
 });
@@ -76,9 +74,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:gap-6 md:py-5">
 				<div className="slide-up flex-shrink-0 text-center">
-					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
-						{messages.legislative.session}
-					</p>
+					<p className="section-label mb-1">{messages.legislative.session}</p>
 					<h2 className="font-heading text-gold mb-1 text-3xl">
 						{headingText(messages.legislative.presidentTitle(president.name))}
 					</h2>
@@ -111,10 +107,10 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 						}}
 						disabled={selectedIndex === null}
 						className={[
-							"flex-shrink-0 w-full rounded-[18px] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
+							"flex-shrink-0 w-full rounded-[var(--radius-button)] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
 							selectedIndex !== null
 								? "bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] cursor-pointer"
-								: "bg-btn-disabled text-gray-900 cursor-not-allowed",
+								: "bg-btn-disabled text-text-muted cursor-not-allowed",
 						].join(" ")}
 					>
 						{headingText(
@@ -146,9 +142,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:gap-6 md:py-5">
 				<div className="slide-up flex-shrink-0 text-center">
-					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
-						{messages.legislative.session}
-					</p>
+					<p className="section-label mb-1">{messages.legislative.session}</p>
 					<h2 className="font-heading text-gold mb-1 text-3xl">
 						{headingText(messages.legislative.chancellorTitle(chancellor.name))}
 					</h2>
@@ -180,10 +174,10 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 						}}
 						disabled={selectedIndex === null}
 						className={[
-							"w-full rounded-[18px] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
+							"w-full rounded-[var(--radius-button)] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
 							selectedIndex !== null
 								? "bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] cursor-pointer"
-								: "bg-btn-disabled text-gray-900 cursor-not-allowed",
+								: "bg-btn-disabled text-text-muted cursor-not-allowed",
 						].join(" ")}
 					>
 						{headingText(
@@ -196,7 +190,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 						<button
 							type="button"
 							onClick={() => dispatch({ type: "REQUEST_VETO" })}
-							className="border-fascist/45 text-fascist hover:bg-fascist/10 w-full cursor-pointer rounded-[16px] border-2 bg-transparent py-3 text-base font-semibold transition-all duration-[var(--transition-fast)]"
+							className="btn-ghost border-fascist/45 text-fascist hover:bg-fascist/10 w-full"
 						>
 							{messages.legislative.requestVeto}
 						</button>

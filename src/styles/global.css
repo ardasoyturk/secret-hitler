@@ -54,7 +54,7 @@
 	--color-btn-primary: #e05b2b;
 	--color-btn-primary-hover: #e67a53;
 	--color-btn-primary-shadow: #b4431a;
-	--color-btn-disabled: #928079;
+	--color-btn-disabled: #3d3229;
 
 	--color-btn-alt: #5a9ba6;
 	--color-btn-alt-hover: #7abcca;
@@ -95,6 +95,8 @@
 	/* Border radius */
 	--radius-card: 12px;
 	--radius-button: 8px;
+	--radius-panel: 12px;
+	--radius-dialog: 16px;
 	--radius-portrait: 50%;
 
 	/* Z-index layers */
@@ -291,7 +293,7 @@ h3 {
 		linear-gradient(180deg, rgba(76, 54, 39, 0.92), rgba(54, 38, 28, 0.94)),
 		linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 24%);
 	border: 1px solid rgba(255, 232, 190, 0.08);
-	border-radius: 20px;
+	border-radius: var(--radius-panel);
 	box-shadow: var(--shadow-card);
 	backdrop-filter: blur(12px);
 }
@@ -313,7 +315,7 @@ h3 {
 .privacy-dialog {
 	width: min(100%, 38rem);
 	border: 1px solid rgba(255, 232, 190, 0.09);
-	border-radius: 28px;
+	border-radius: var(--radius-dialog);
 	padding: 2rem 2.25rem;
 	background: linear-gradient(180deg, rgba(78, 56, 41, 0.96), rgba(56, 40, 29, 0.95));
 	box-shadow:
@@ -338,13 +340,41 @@ h3 {
 	@apply bg-btn-primary font-heading text-text-primary hover:bg-btn-primary-hover cursor-pointer rounded-[var(--radius-button)] px-10 py-4 text-xl shadow-[var(--shadow-button)] transition-all duration-[var(--transition-fast)] active:translate-y-[2px] active:shadow-none;
 }
 
+/* ── Button variants ──────── */
+
+.btn-primary {
+	@apply bg-fascist font-heading text-text-primary hover:bg-fascist-hover cursor-pointer rounded-[var(--radius-button)] px-6 py-3 text-xl tracking-wide shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-fascist-dark)];
+}
+
+.btn-secondary {
+	@apply bg-liberal font-heading text-text-primary hover:bg-liberal-hover cursor-pointer rounded-[var(--radius-button)] px-6 py-3 text-xl tracking-wide shadow-[0_6px_0_var(--color-liberal-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-liberal-dark)];
+}
+
+.btn-ghost {
+	@apply font-heading text-text-secondary hover:text-text-primary cursor-pointer rounded-[var(--radius-button)] border border-white/15 bg-transparent px-6 py-3 text-xl tracking-wide transition-all duration-[var(--transition-fast)] hover:border-white/25 hover:bg-white/5 active:translate-y-[2px];
+}
+
+.btn-danger {
+	@apply bg-fascist font-heading text-text-primary hover:bg-fascist-hover cursor-pointer rounded-[var(--radius-button)] px-6 py-3 text-xl tracking-wide shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-fascist-dark)];
+}
+
+/* ── Label / section text ──── */
+
+.label-text {
+	@apply text-text-muted text-xs font-medium;
+}
+
+.section-label {
+	@apply text-text-muted text-xs font-semibold tracking-wide;
+}
+
 .phase-action-bar {
 	position: sticky;
 	bottom: 0;
 	width: 100%;
 	padding-top: 1rem;
 	padding-bottom: 0.25rem;
-	background: linear-gradient(180deg, rgba(49, 35, 26, 0), rgba(49, 35, 26, 0.92) 34%, rgba(49, 35, 26, 0.98));
+	/* background: linear-gradient(180deg, rgba(49, 35, 26, 0), rgba(49, 35, 26, 0.92) 34%, rgba(49, 35, 26, 0.98)); */
 }
 
 .night-role-description {
@@ -368,7 +398,7 @@ h3 {
 }
 
 .night-team-card-title {
-	@apply mb-3 flex items-center gap-2 text-xs font-semibold tracking-widest uppercase;
+	@apply mb-3 flex items-center gap-2 text-xs font-semibold;
 }
 
 .night-team-list {
@@ -376,7 +406,7 @@ h3 {
 }
 
 .night-team-member {
-	@apply flex items-center justify-between gap-3 rounded-xl border border-white/8 bg-black/18 px-3 py-2;
+	@apply flex items-center justify-between gap-3 rounded-[var(--radius-card)] border border-white/8 bg-black/18 px-3 py-2;
 }
 
 .night-team-member-name {
@@ -384,7 +414,7 @@ h3 {
 }
 
 .night-team-member-badge {
-	@apply inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-semibold tracking-[0.18em] uppercase;
+	@apply inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-semibold;
 }
 
 .night-team-member-badge-fascist {
@@ -396,7 +426,7 @@ h3 {
 }
 
 .home-credit-card {
-	@apply text-text-muted mx-auto mt-4 w-full max-w-5xl rounded-[18px] border border-white/8 bg-black/18 px-4 py-3 text-center text-xs leading-6 md:px-5;
+	@apply text-text-muted mx-auto mt-4 w-full max-w-5xl rounded-[var(--radius-panel)] border border-white/8 bg-black/18 px-4 py-3 text-center text-xs leading-6 md:px-5;
 }
 
 .home-credit-link {
@@ -445,4 +475,24 @@ h3 {
 /* Safe area padding for mobile */
 .safe-bottom {
 	padding-bottom: max(1rem, var(--spacing-safe-bottom));
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+	.gold-shimmer,
+	.pulse,
+	.slide-up,
+	.fade-in,
+	.scale-pop,
+	.stamp {
+		animation: none;
+	}
+
+	.gold-shimmer {
+		background-position: 50% center;
+	}
+
+	* {
+		transition-duration: 0.01ms !important;
+	}
 }

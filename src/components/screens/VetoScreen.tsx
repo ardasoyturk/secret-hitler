@@ -23,11 +23,9 @@ export function VetoScreen({ state, dispatch }: ScreenProps) {
 	return (
 		<div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 px-1 py-3 md:gap-7 md:py-5">
 			<div className="slide-up text-center">
-				<p className="text-text-muted mb-3 text-[11px] font-semibold tracking-[0.28em] uppercase">
-					{messages.veto.title}
-				</p>
+				<p className="section-label mb-3">{messages.veto.title}</p>
 
-				<div className="border-fascist/30 bg-fascist/10 mx-auto mb-5 max-w-lg rounded-[22px] border px-6 py-5 shadow-[var(--shadow-card)]">
+				<div className="border-fascist/30 bg-fascist/10 mx-auto mb-5 max-w-lg rounded-[var(--radius-panel)] border px-6 py-5 shadow-[var(--shadow-card)]">
 					<h2 className="font-heading text-fascist mb-2 text-3xl">{headingText(messages.veto.vetoCallout)}</h2>
 					<p className="text-text-secondary text-sm md:text-base">
 						{messages.veto.requestDescription(chancellor.name)}
@@ -39,19 +37,11 @@ export function VetoScreen({ state, dispatch }: ScreenProps) {
 			</div>
 
 			<div className="phase-action-bar max-w-2xl space-y-3">
-				<button
-					type="button"
-					onClick={() => dispatch({ type: "APPROVE_VETO" })}
-					className="bg-btn-alt font-heading text-text-primary hover:bg-btn-alt-hover w-full cursor-pointer rounded-[18px] py-3 text-xl tracking-wide shadow-[0_6px_0_var(--color-btn-alt-shadow),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-btn-alt-shadow)]"
-				>
+				<button type="button" onClick={() => dispatch({ type: "APPROVE_VETO" })} className="btn-secondary w-full">
 					{headingText(messages.veto.approve)}
 				</button>
 
-				<button
-					type="button"
-					onClick={() => dispatch({ type: "REJECT_VETO" })}
-					className="bg-fascist font-heading text-text-primary hover:bg-fascist-hover w-full cursor-pointer rounded-[18px] py-3 text-xl tracking-wide shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)]"
-				>
+				<button type="button" onClick={() => dispatch({ type: "REJECT_VETO" })} className="btn-primary w-full">
 					{headingText(messages.veto.reject)}
 				</button>
 			</div>

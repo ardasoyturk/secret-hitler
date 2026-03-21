@@ -58,7 +58,7 @@ const PlayerSelectionCard = memo(function PlayerSelectionCard({
 			onClick={() => isEligible && onSelect(playerId)}
 			disabled={!isEligible}
 			className={[
-				"flex min-h-[118px] flex-col items-center justify-center gap-2 rounded-[20px] border-2 p-3 transition-all duration-[var(--transition-fast)]",
+				"flex min-h-[118px] flex-col items-center justify-center gap-2 rounded-[var(--radius-panel)] border-2 p-3 transition-all duration-[var(--transition-fast)]",
 				isSelected
 					? dangerConfirm
 						? "border-fascist bg-fascist/10 ring-2 ring-fascist/30 scale-[1.03]"
@@ -142,7 +142,7 @@ function PlayerSelectionGrid({
 					onClick={onConfirm}
 					disabled={selectedId === null}
 					className={[
-						"flex-shrink-0 w-full rounded-[18px] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
+						"flex-shrink-0 w-full rounded-[var(--radius-button)] py-3 font-heading text-xl tracking-wide transition-all duration-[var(--transition-normal)]",
 						selectedId !== null
 							? dangerConfirm
 								? "bg-fascist text-text-primary shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] hover:bg-fascist-hover active:shadow-[0_2px_0_var(--color-fascist-dark)] active:translate-y-[4px] cursor-pointer"
@@ -195,9 +195,7 @@ export function ExecutiveScreen({
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
 				<div className="slide-up flex-shrink-0 text-center">
-					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
-						{messages.executive.executivePower}
-					</p>
+					<p className="section-label mb-1">{messages.executive.executivePower}</p>
 					<h2 className="font-heading text-gold mb-1 text-3xl">{headingText(messages.executive.investigateTitle)}</h2>
 					<p className="text-text-secondary text-sm md:text-base">
 						{messages.executive.investigateInstructions(president.name)}
@@ -227,9 +225,7 @@ export function ExecutiveScreen({
 		return (
 			<div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-5 px-1 py-3 md:py-5">
 				<div className="slide-up flex-shrink-0 text-center">
-					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
-						{messages.executive.investigationResult}
-					</p>
+					<p className="section-label mb-1">{messages.executive.investigationResult}</p>
 					<h2 className="font-heading text-text-primary mb-0.5 text-3xl">{headingText(target.name)}</h2>
 					<p className="text-text-secondary text-sm md:text-base">{messages.executive.isPartyMember}</p>
 				</div>
@@ -248,7 +244,7 @@ export function ExecutiveScreen({
 				<button
 					type="button"
 					onClick={() => dispatch({ type: "ACKNOWLEDGE_INVESTIGATION" })}
-					className="bg-fascist font-heading text-text-primary hover:bg-fascist-hover w-full max-w-2xl flex-shrink-0 cursor-pointer rounded-[18px] py-3 text-xl shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)]"
+					className="btn-primary w-full max-w-2xl flex-shrink-0"
 				>
 					{headingText(messages.common.understood)}
 				</button>
@@ -260,9 +256,7 @@ export function ExecutiveScreen({
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:py-4">
 				<div className="slide-up flex-shrink-0 text-center">
-					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
-						{messages.executive.executivePower}
-					</p>
+					<p className="section-label mb-1">{messages.executive.executivePower}</p>
 					<h2 className="font-heading text-gold mb-1 text-3xl">{headingText(messages.executive.peekTitle)}</h2>
 					<p className="text-text-secondary text-sm md:text-base">
 						{messages.executive.peekInstructions(president.name)}
@@ -286,7 +280,7 @@ export function ExecutiveScreen({
 				<button
 					type="button"
 					onClick={() => dispatch({ type: "ACKNOWLEDGE_PEEK" })}
-					className="bg-fascist font-heading text-text-primary hover:bg-fascist-hover w-full max-w-2xl flex-shrink-0 cursor-pointer rounded-[18px] py-3 text-xl shadow-[0_6px_0_var(--color-fascist-dark),var(--shadow-card)] transition-all duration-[var(--transition-normal)] active:translate-y-[4px] active:shadow-[0_2px_0_var(--color-fascist-dark)]"
+					className="btn-primary w-full max-w-2xl flex-shrink-0"
 				>
 					{headingText(messages.common.understood)}
 				</button>
@@ -298,9 +292,7 @@ export function ExecutiveScreen({
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
 				<div className="slide-up flex-shrink-0 text-center">
-					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
-						{messages.executive.executivePower}
-					</p>
+					<p className="section-label mb-1">{messages.executive.executivePower}</p>
 					<h2 className="font-heading text-gold mb-1 text-3xl">
 						{headingText(messages.executive.specialElectionTitle)}
 					</h2>
@@ -327,9 +319,7 @@ export function ExecutiveScreen({
 		return (
 			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
 				<div className="slide-up flex-shrink-0 text-center">
-					<p className="text-text-muted mb-1 text-[11px] font-semibold tracking-[0.28em] uppercase">
-						{messages.executive.executivePower}
-					</p>
+					<p className="section-label mb-1">{messages.executive.executivePower}</p>
 					<h2 className="font-heading text-fascist mb-1 text-3xl">{headingText(messages.executive.executionTitle)}</h2>
 					<p className="text-text-secondary text-sm md:text-base">
 						{messages.executive.executionInstructions(president.name)}
