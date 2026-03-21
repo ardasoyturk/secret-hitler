@@ -2,7 +2,6 @@ import cloudflare from "@astrojs/cloudflare";
 import preact from "@astrojs/preact";
 import tailwindcss from "@tailwindcss/vite";
 import AstroPWA from "@vite-pwa/astro";
-// @ts-check
 import { defineConfig } from "astro/config";
 
 // https://astro.build/config
@@ -62,7 +61,7 @@ export default defineConfig({
 		plugins: [tailwindcss()],
 	},
 
-	output: "static",
+	output: "server",
 	adapter: cloudflare({
 		imageService: "compile",
 	}),
