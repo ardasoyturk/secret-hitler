@@ -430,7 +430,7 @@ h3 {
 }
 
 .home-credit-link {
-	@apply text-gold hover:text-gold/80 underline-offset-2 transition-colors hover:underline;
+	@apply text-gold underline underline-offset-2 hover:text-gold/80 transition-colors;
 }
 
 /* Scale pop */
