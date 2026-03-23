@@ -8,16 +8,6 @@
 
 import { Crown, Shield } from "lucide-preact";
 
-import roleFascist1 from "@/assets/roles/role-fascist-1.png";
-import roleFascist2 from "@/assets/roles/role-fascist-2.png";
-import roleFascist3 from "@/assets/roles/role-fascist-3.png";
-import roleHitler from "@/assets/roles/role-hitler.png";
-import roleLiberal1 from "@/assets/roles/role-liberal-1.png";
-import roleLiberal2 from "@/assets/roles/role-liberal-2.png";
-import roleLiberal3 from "@/assets/roles/role-liberal-3.png";
-import roleLiberal4 from "@/assets/roles/role-liberal-4.png";
-import roleLiberal5 from "@/assets/roles/role-liberal-5.png";
-import roleLiberal6 from "@/assets/roles/role-liberal-6.png";
 import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
 import { ViewportOverlay } from "@/components/layout/ViewportOverlay";
 import type { GameState, GameAction } from "@/engine/types";
@@ -25,32 +15,32 @@ import { GamePhase, Role } from "@/engine/types";
 import { getNightInfo } from "@/hooks/useGame";
 import { useI18n } from "@/i18n";
 
-const LIBERAL_ROLE_IMAGES = [
-	{ image: roleLiberal1, key: "roles/role-liberal-1.png" },
-	{ image: roleLiberal2, key: "roles/role-liberal-2.png" },
-	{ image: roleLiberal3, key: "roles/role-liberal-3.png" },
-	{ image: roleLiberal4, key: "roles/role-liberal-4.png" },
-	{ image: roleLiberal5, key: "roles/role-liberal-5.png" },
-	{ image: roleLiberal6, key: "roles/role-liberal-6.png" },
+const LIBERAL_ROLE_KEYS = [
+	"roles/role-liberal-1.png",
+	"roles/role-liberal-2.png",
+	"roles/role-liberal-3.png",
+	"roles/role-liberal-4.png",
+	"roles/role-liberal-5.png",
+	"roles/role-liberal-6.png",
 ];
 
-const FASCIST_ROLE_IMAGES = [
-	{ image: roleFascist1, key: "roles/role-fascist-1.png" },
-	{ image: roleFascist2, key: "roles/role-fascist-2.png" },
-	{ image: roleFascist3, key: "roles/role-fascist-3.png" },
+const FASCIST_ROLE_KEYS = [
+	"roles/role-fascist-1.png",
+	"roles/role-fascist-2.png",
+	"roles/role-fascist-3.png",
 ];
 
 /** Get a deterministic role card image based on player index */
 function getRoleImage(role: Role, playerIndex: number, optimizedAssets: Record<string, string>) {
 	if (role === Role.Hitler) {
-		return optimizedAssets["roles/role-hitler.png"] ?? roleHitler.src;
+		return optimizedAssets["roles/role-hitler.png"];
 	}
 	if (role === Role.Fascist) {
-		const card = FASCIST_ROLE_IMAGES[playerIndex % FASCIST_ROLE_IMAGES.length];
-		return optimizedAssets[card.key] ?? card.image.src;
+		const key = FASCIST_ROLE_KEYS[playerIndex % FASCIST_ROLE_KEYS.length];
+		return optimizedAssets[key];
 	}
-	const card = LIBERAL_ROLE_IMAGES[playerIndex % LIBERAL_ROLE_IMAGES.length];
-	return optimizedAssets[card.key] ?? card.image.src;
+	const key = LIBERAL_ROLE_KEYS[playerIndex % LIBERAL_ROLE_KEYS.length];
+	return optimizedAssets[key];
 }
 
 interface ScreenProps {
@@ -63,16 +53,16 @@ export function NightScreen({ state, dispatch }: ScreenProps) {
 	const playerIndex = state.nightRoundPlayerIndex;
 	const player = state.players[playerIndex];
 	const optimizedRoleAssets = {
-		"roles/role-hitler.png": useOptimizedAsset("roles/role-hitler.png", roleHitler.src),
-		"roles/role-fascist-1.png": useOptimizedAsset("roles/role-fascist-1.png", roleFascist1.src),
-		"roles/role-fascist-2.png": useOptimizedAsset("roles/role-fascist-2.png", roleFascist2.src),
-		"roles/role-fascist-3.png": useOptimizedAsset("roles/role-fascist-3.png", roleFascist3.src),
-		"roles/role-liberal-1.png": useOptimizedAsset("roles/role-liberal-1.png", roleLiberal1.src),
-		"roles/role-liberal-2.png": useOptimizedAsset("roles/role-liberal-2.png", roleLiberal2.src),
-		"roles/role-liberal-3.png": useOptimizedAsset("roles/role-liberal-3.png", roleLiberal3.src),
-		"roles/role-liberal-4.png": useOptimizedAsset("roles/role-liberal-4.png", roleLiberal4.src),
-		"roles/role-liberal-5.png": useOptimizedAsset("roles/role-liberal-5.png", roleLiberal5.src),
-		"roles/role-liberal-6.png": useOptimizedAsset("roles/role-liberal-6.png", roleLiberal6.src),
+		"roles/role-hitler.png": useOptimizedAsset("roles/role-hitler.png"),
+		"roles/role-fascist-1.png": useOptimizedAsset("roles/role-fascist-1.png"),
+		"roles/role-fascist-2.png": useOptimizedAsset("roles/role-fascist-2.png"),
+		"roles/role-fascist-3.png": useOptimizedAsset("roles/role-fascist-3.png"),
+		"roles/role-liberal-1.png": useOptimizedAsset("roles/role-liberal-1.png"),
+		"roles/role-liberal-2.png": useOptimizedAsset("roles/role-liberal-2.png"),
+		"roles/role-liberal-3.png": useOptimizedAsset("roles/role-liberal-3.png"),
+		"roles/role-liberal-4.png": useOptimizedAsset("roles/role-liberal-4.png"),
+		"roles/role-liberal-5.png": useOptimizedAsset("roles/role-liberal-5.png"),
+		"roles/role-liberal-6.png": useOptimizedAsset("roles/role-liberal-6.png"),
 	};
 
 	if (!player) return null;

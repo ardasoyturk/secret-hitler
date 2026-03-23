@@ -7,9 +7,6 @@
 
 import { memo } from "preact/compat";
 
-import policyFascistImg from "@/assets/cards/policy-fascist.png";
-import policyBackImg from "@/assets/cards/policy-folder-cover-back.png";
-import policyLiberalImg from "@/assets/cards/policy-liberal.png";
 import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
 import { useI18n } from "@/i18n";
 
@@ -39,12 +36,8 @@ export const PolicyCard = memo(function PolicyCard({
 	const { messages } = useI18n();
 	const isClickable = !!onClick;
 
-	const policyImg = type === "fascist" ? policyFascistImg : policyLiberalImg;
-	const revealedSrc = useOptimizedAsset(
-		type === "fascist" ? "cards/policy-fascist.png" : "cards/policy-liberal.png",
-		policyImg.src,
-	);
-	const backSrc = useOptimizedAsset("cards/policy-folder-cover-back.png", policyBackImg.src);
+	const revealedSrc = useOptimizedAsset(type === "fascist" ? "cards/policy-fascist.png" : "cards/policy-liberal.png");
+	const backSrc = useOptimizedAsset("cards/policy-folder-cover-back.png");
 	const imgSrc = revealed ? revealedSrc : backSrc;
 	const altText = revealed ? messages.cards.policy(messages.enums.policyTypes[type]) : messages.cards.faceDownPolicy;
 

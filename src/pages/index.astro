@@ -5,6 +5,8 @@ import { APP_LANGUAGE_STORAGE_KEY, DOCUMENT_COPY } from "../i18n";
 import { buildOptimizedAssetMap } from "../lib/optimized-assets";
 import { pwaInfo } from "virtual:pwa-info";
 
+export const prerender = true;
+
 const optimizedAssets = await buildOptimizedAssetMap();
 const languageBootstrapScript = `
 (() => {

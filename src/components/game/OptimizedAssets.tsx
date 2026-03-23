@@ -15,7 +15,7 @@ export function OptimizedAssetsProvider({
 	return <OptimizedAssetsContext.Provider value={assets}>{children}</OptimizedAssetsContext.Provider>;
 }
 
-export function useOptimizedAsset(assetKey: string, fallbackSrc: string) {
+export function useOptimizedAsset(assetKey: string) {
 	const assets = useContext(OptimizedAssetsContext);
-	return assets[assetKey] ?? fallbackSrc;
+	return assets[assetKey] ?? assetKey;
 }

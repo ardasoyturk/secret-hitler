@@ -6,8 +6,6 @@
 
 import { memo } from "preact/compat";
 
-import voteNoImg from "@/assets/votes/vote-no.png";
-import voteYesImg from "@/assets/votes/vote-yes.png";
 import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
 import { useI18n } from "@/i18n";
 
@@ -33,8 +31,8 @@ export const VoteCard = memo(function VoteCard({
 	className = "",
 }: VoteCardProps) {
 	const { messages } = useI18n();
-	const yesSrc = useOptimizedAsset("votes/vote-yes.png", voteYesImg.src);
-	const noSrc = useOptimizedAsset("votes/vote-no.png", voteNoImg.src);
+	const yesSrc = useOptimizedAsset("votes/vote-yes.png");
+	const noSrc = useOptimizedAsset("votes/vote-no.png");
 	const imgSrc = vote === "ja" ? yesSrc : noSrc;
 	const altText = vote === "ja" ? messages.cards.voteJa : messages.cards.voteNein;
 

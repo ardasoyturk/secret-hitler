@@ -6,8 +6,6 @@
 
 import { memo } from "preact/compat";
 
-import partyFascistImg from "@/assets/cards/party-membership-fascist.png";
-import partyLiberalImg from "@/assets/cards/party-membership-liberal.png";
 import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
 import { useI18n } from "@/i18n";
 
@@ -18,8 +16,8 @@ interface PartyCardProps {
 
 export const PartyCard = memo(function PartyCard({ party, className = "" }: PartyCardProps) {
 	const { messages } = useI18n();
-	const liberalSrc = useOptimizedAsset("cards/party-membership-liberal.png", partyLiberalImg.src);
-	const fascistSrc = useOptimizedAsset("cards/party-membership-fascist.png", partyFascistImg.src);
+	const liberalSrc = useOptimizedAsset("cards/party-membership-liberal.png");
+	const fascistSrc = useOptimizedAsset("cards/party-membership-fascist.png");
 	const imgSrc = party === "liberal" ? liberalSrc : fascistSrc;
 	const altText = messages.cards.partyMembership(messages.enums.partyMemberships[party]);
 

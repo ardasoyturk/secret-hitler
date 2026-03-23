@@ -1,20 +1,13 @@
 import type { ComponentChildren } from "preact";
 import { memo } from "preact/compat";
 
-import boardFascist56Img from "@/assets/boards/board-fascist-5-6.png";
-import boardFascist78Img from "@/assets/boards/board-fascist-7-8.png";
-import boardFascist910Img from "@/assets/boards/board-fascist-9-10.png";
-import boardLiberalImg from "@/assets/boards/board-liberal.png";
-import policyFascistImg from "@/assets/boards/board-policy-fascist.png";
-import policyLiberalImg from "@/assets/boards/board-policy-liberal.png";
-import trackerMarkerImg from "@/assets/boards/board-tracker.png";
 import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
 import { getPlayerCountBracket, EXECUTIVE_POWERS } from "@/engine/constants";
 import type { Board, ElectionTracker } from "@/engine/types";
 import { ExecutivePower } from "@/engine/types";
 import { useI18n } from "@/i18n";
 
-type AssetRef = string | { src: string };
+type AssetRef = string;
 
 interface SlotRect {
 	x: number;
@@ -67,10 +60,10 @@ const FASCIST_LAYOUT: SvgLayout = {
 	trackerSlots: [],
 };
 
-const FASCIST_BOARD_MAP: Record<string, { assetKey: string; fallbackSrc: AssetRef; layout: SvgLayout }> = {
-	"5-6": { assetKey: "boards/board-fascist-5-6.png", fallbackSrc: boardFascist56Img, layout: FASCIST_LAYOUT },
-	"7-8": { assetKey: "boards/board-fascist-7-8.png", fallbackSrc: boardFascist78Img, layout: FASCIST_LAYOUT },
-	"9-10": { assetKey: "boards/board-fascist-9-10.png", fallbackSrc: boardFascist910Img, layout: FASCIST_LAYOUT },
+const FASCIST_BOARD_MAP: Record<string, { assetKey: string; layout: SvgLayout }> = {
+	"5-6": { assetKey: "boards/board-fascist-5-6.png", layout: FASCIST_LAYOUT },
+	"7-8": { assetKey: "boards/board-fascist-7-8.png", layout: FASCIST_LAYOUT },
+	"9-10": { assetKey: "boards/board-fascist-9-10.png", layout: FASCIST_LAYOUT },
 };
 
 const EXECUTIVE_POWER_ICONS: Record<ExecutivePower, string> = {
@@ -116,7 +109,7 @@ function PolicySlots({
 				>
 					{index < count && (
 						<img
-							src={assetSrc(imageSrc)}
+							src={imageSrc}
 							alt={getAltText(index + 1)}
 							className="scale-pop h-full w-full object-contain drop-shadow-[0_10px_12px_rgba(0,0,0,0.24)]"
 							draggable={false}
@@ -145,7 +138,7 @@ function TrackerSlot({ position, slots, imageSrc }: { position: number; slots: S
 			}}
 		>
 			<img
-				src={assetSrc(imageSrc)}
+				src={imageSrc}
 				alt={messages.board.electionTrackerPosition(position)}
 				className="scale-pop h-full w-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.32)]"
 				draggable={false}
@@ -184,16 +177,12 @@ function BoardPanel({
 						" ",
 					)}
 				>
-					<img src={assetSrc(imageSrc)} alt={imageAlt} className="h-full w-full object-cover" draggable={false} />
+					<img src={imageSrc} alt={imageAlt} className="h-full w-full object-cover" draggable={false} />
 					<div className="absolute inset-0">{children}</div>
 				</div>
 			</div>
 		</section>
 	);
-}
-
-function assetSrc(asset: AssetRef): string {
-	return typeof asset === "string" ? asset : asset.src;
 }
 
 export const BoardTrack = memo(function BoardTrack({
@@ -207,11 +196,11 @@ export const BoardTrack = memo(function BoardTrack({
 	const bracket = getPlayerCountBracket(playerCount);
 	const fascistBoard = FASCIST_BOARD_MAP[bracket] ?? FASCIST_BOARD_MAP["5-6"];
 	const executivePowers = EXECUTIVE_POWERS[bracket];
-	const liberalBoardSrc = useOptimizedAsset("boards/board-liberal.png", assetSrc(boardLiberalImg));
-	const fascistBoardSrc = useOptimizedAsset(fascistBoard.assetKey, assetSrc(fascistBoard.fallbackSrc));
-	const liberalPolicySrc = useOptimizedAsset("boards/board-policy-liberal.png", assetSrc(policyLiberalImg));
-	const fascistPolicySrc = useOptimizedAsset("boards/board-policy-fascist.png", assetSrc(policyFascistImg));
-	const trackerSrc = useOptimizedAsset("boards/board-tracker.png", assetSrc(trackerMarkerImg));
+	const liberalBoardSrc = useOptimizedAsset("boards/board-liberal.png");
+	const fascistBoardSrc = useOptimizedAsset(fascistBoard.assetKey);
+	const liberalPolicySrc = useOptimizedAsset("boards/board-policy-liberal.png");
+	const fascistPolicySrc = useOptimizedAsset("boards/board-policy-fascist.png");
+	const trackerSrc = useOptimizedAsset("boards/board-tracker.png");
 
 	return (
 		<div className={["mx-auto w-full max-w-6xl", className].filter(Boolean).join(" ")}>

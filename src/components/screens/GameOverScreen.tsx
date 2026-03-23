@@ -3,10 +3,6 @@
  * victory reason, and all player roles revealed.
  */
 
-import victoryFascistFooter from "@/assets/victory/victory-fascist-footer.png";
-import victoryFascistHeader from "@/assets/victory/victory-fascist-header.png";
-import victoryLiberalFooter from "@/assets/victory/victory-liberal-footer.png";
-import victoryLiberalHeader from "@/assets/victory/victory-liberal-header.png";
 import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
 import { PORTRAITS } from "@/engine/constants";
 import type { GameState, GameAction } from "@/engine/types";
@@ -42,10 +38,10 @@ export function GameOverScreen({ state, dispatch }: ScreenProps) {
 	const { headingText, messages } = useI18n();
 	const winner = state.winner;
 	const reason = state.victoryReason;
-	const liberalHeaderSrc = useOptimizedAsset("victory/victory-liberal-header.png", victoryLiberalHeader.src);
-	const liberalFooterSrc = useOptimizedAsset("victory/victory-liberal-footer.png", victoryLiberalFooter.src);
-	const fascistHeaderSrc = useOptimizedAsset("victory/victory-fascist-header.png", victoryFascistHeader.src);
-	const fascistFooterSrc = useOptimizedAsset("victory/victory-fascist-footer.png", victoryFascistFooter.src);
+	const liberalHeaderSrc = useOptimizedAsset("victory/victory-liberal-header.png");
+	const liberalFooterSrc = useOptimizedAsset("victory/victory-liberal-footer.png");
+	const fascistHeaderSrc = useOptimizedAsset("victory/victory-fascist-header.png");
+	const fascistFooterSrc = useOptimizedAsset("victory/victory-fascist-footer.png");
 
 	if (!winner || !reason) return null;
 
