@@ -44,6 +44,10 @@ export default defineConfig({
 			},
 			workbox: {
 				globPatterns: ["**/*.{js,css,html,svg,webp,png,ico,json,webmanifest,woff,woff2}"],
+				navigateFallback: "/",
+			},
+			experimental: {
+				directoryAndTrailingSlashHandler: true,
 			},
 			devOptions: {
 				enabled: false,
