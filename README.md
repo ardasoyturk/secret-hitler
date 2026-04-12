@@ -1,6 +1,6 @@
 # Secret Hitler — Pass & Play Edition
 
-A single-device, pass-and-play implementation of the [Secret Hitler](https://secrethitler.com) board game for 5–10 players. The current app is built as a tablet-first Astro + Preact Progressive Web App with offline caching, install support, optimized assets, a bilingual English/Turkish UI, and a rules-accurate engine.
+A single-device, pass-and-play implementation of the [Secret Hitler](https://secrethitler.com) board game for 5–10 players. The current app is built as a responsive Astro + Preact Progressive Web App with smart phone and tablet support, offline caching, install support, optimized assets, a bilingual English/Turkish UI, and a rules-accurate engine.
 
 ![Secret Hitler Game Screenshot](https://github.com/user-attachments/assets/833ce11e-fed1-42ac-af89-c800e9e810f6)
 
@@ -41,7 +41,8 @@ This implementation is faithful to the official Secret Hitler rules:
 
 - **Pass-and-play** — one device, pass it around the table
 - **Bilingual game UI** — play the app in English or Turkish, with the selection saved in localStorage
-- **Tablet-first gameplay shell** — fixed board rail with a scrollable action area for mixed tablet sizes
+- **Responsive gameplay shell** — adapts to tablet and smart phone sizes with compact layouts, horizontal board scrolling, and portrait-landscape orientation handling
+- **Mobile landscape prompt** — smart phone users in portrait mode are prompted to rotate for optimal gameplay
 - **Privacy gates** — role reveals and votes are hidden behind "hand the device to…" screens
 - **Offline-capable PWA** — installable, aggressively cached, works without internet after first load
 - **Game persistence** — saves to localStorage, survives page refresh

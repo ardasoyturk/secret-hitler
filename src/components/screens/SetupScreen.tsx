@@ -103,10 +103,10 @@ const LanguageSelector = memo(function LanguageSelector() {
 	const { language, setLanguage, messages } = useI18n();
 
 	return (
-		<section className="rounded-[var(--radius-panel)] border border-white/8 bg-black/18 px-4 py-2.5">
-			<div className="flex flex-wrap items-center justify-between gap-3">
+		<section className="rounded-[var(--radius-panel)] border border-white/8 bg-black/18 px-3 py-2.5 md:px-4">
+			<div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
 				<p className="section-label">{messages.language.label}</p>
-				<div className="inline-flex items-center gap-1 rounded-[var(--radius-button)] border border-white/10 bg-black/20 p-1">
+				<div className="inline-flex w-full items-center gap-1 rounded-[var(--radius-button)] border border-white/10 bg-black/20 p-1 sm:w-auto">
 					{LANGUAGE_OPTIONS.map((option) => {
 						const isActive = option === language;
 						const label = messages.language.options[option];
@@ -118,7 +118,7 @@ const LanguageSelector = memo(function LanguageSelector() {
 								aria-label={messages.language.buttonLabel(label)}
 								aria-pressed={isActive}
 								className={[
-									"relative min-w-[5.5rem] px-3.5 py-1.5 text-sm font-medium transition-all duration-150 rounded-[calc(var(--radius-button)-2px)]",
+									"relative min-w-0 flex-1 px-3 py-1.5 text-xs font-medium transition-all duration-150 rounded-[calc(var(--radius-button)-2px)] sm:min-w-[5rem] sm:px-3.5 sm:text-sm",
 									isActive ? "text-gold" : "text-text-muted hover:text-text-secondary cursor-pointer",
 								].join(" ")}
 							>
@@ -169,11 +169,11 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 	const { headingText, messages } = useI18n();
 
 	return (
-		<section className="flex h-full min-h-0 flex-col justify-between rounded-[var(--radius-panel)] border border-white/8 bg-black/18 px-5 py-5 md:px-6 md:py-6">
-			<div className="space-y-4">
+		<section className="flex min-h-0 flex-col gap-3 rounded-[var(--radius-panel)] border border-white/8 bg-black/18 px-3 py-3.5 md:h-full md:justify-between md:gap-0 md:px-6 md:py-6">
+			<div className="space-y-3 md:space-y-4">
 				<p className="section-label text-center">{messages.setup.playerInitialization}</p>
 
-				<div className="mx-auto flex w-full max-w-[560px] items-center justify-center gap-3 px-1 md:px-2">
+				<div className="mx-auto hidden w-full max-w-[560px] items-center justify-center gap-3 px-2 md:flex">
 					<button
 						type="button"
 						onClick={onTogglePortraitPicker}
@@ -217,14 +217,59 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 					</div>
 				</div>
 
+				<div className="mx-auto flex w-full max-w-[560px] flex-col gap-2.5 px-0.5 md:hidden">
+					<input
+						type="text"
+						value={name}
+						onChange={(event) => onNameChange(event.currentTarget.value)}
+						onKeyDown={onNameKeyDown}
+						placeholder={messages.setup.playerNamePlaceholder}
+						maxLength={20}
+						className="border-gold/25 bg-bg-card/80 text-text-primary placeholder:text-text-muted focus:border-gold focus:ring-gold/30 h-11 w-full rounded-xl border px-3.5 text-[15px] focus:ring-2 focus:outline-none"
+					/>
+
+					<div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2.5">
+						<button
+							type="button"
+							onClick={onTogglePortraitPicker}
+							className="border-gold relative h-14 w-14 flex-shrink-0 cursor-pointer overflow-hidden rounded-full border-2 shadow-[0_8px_20px_rgba(0,0,0,0.3)]"
+							aria-label={messages.setup.choosePortrait}
+						>
+							<img
+								src={PORTRAITS[selectedPortrait].src}
+								alt={messages.setup.choosePortrait}
+								className="h-full w-full object-cover"
+							/>
+							<span className="text-gold absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent pb-0.5 text-[8px] font-medium leading-none">
+								{messages.setup.pickPortrait}
+							</span>
+						</button>
+
+						<button
+							type="button"
+							onClick={onAddPlayer}
+							disabled={!canAdd}
+							className={[
+								"inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl px-3 font-semibold text-sm transition-all duration-150",
+								canAdd
+									? "bg-gold text-bg-overlay shadow-[0_4px_0_var(--color-gold-dark)] active:translate-y-[2px] active:shadow-[0_2px_0_var(--color-gold-dark)] cursor-pointer"
+									: "bg-btn-disabled text-bg-dark/55 cursor-not-allowed",
+							].join(" ")}
+						>
+							<UserPlus className="h-4 w-4" strokeWidth={2.2} />
+							{messages.setup.addPlayer}
+						</button>
+					</div>
+				</div>
+
 				{trimmedName.length > 0 && isDuplicate && (
 					<p className="text-fascist text-center text-sm">{messages.setup.nameTaken}</p>
 				)}
 
 				{showPortraitPicker && (
-					<div className="rounded-[var(--radius-card)] border border-white/10 bg-black/20 p-3">
+					<div className="rounded-[var(--radius-card)] border border-white/10 bg-black/20 p-2.5 md:p-3">
 						<p className="label-text mb-2 text-center">{messages.setup.choosePortrait}</p>
-						<div className="grid grid-cols-10 gap-1.5">
+						<div className="grid grid-cols-5 gap-1.5 sm:grid-cols-8 md:grid-cols-10">
 							{PORTRAITS.map((portrait, index) => {
 								const isUsed = players.some((player) => player.portraitIndex === index);
 								const isSelected = selectedPortrait === index;
@@ -253,20 +298,20 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 				)}
 			</div>
 
-			<div className="pt-4">
-				<div className="text-text-muted mb-3 text-center text-sm">
+			<div className="pt-2 md:pt-4">
+				<div className="text-text-muted mb-2.5 text-center text-sm md:mb-3">
 					{messages.setup.playerCount(playerCount, MAX_PLAYERS)}
 					{!canStart && playerCount > 0 && playerCount < MIN_PLAYERS
 						? ` • ${messages.setup.morePlayersNeeded(MIN_PLAYERS - playerCount)}`
 						: ""}
 				</div>
-				<div className="flex flex-col items-center gap-3">
+				<div className="flex flex-col items-center gap-2.5 md:gap-3">
 					<button
 						type="button"
 						onClick={onStartGame}
 						disabled={!canStart}
 						className={[
-							"w-full max-w-sm rounded-[16px] py-3 font-heading text-3xl tracking-[0.04em] transition-all duration-200",
+							"w-full max-w-sm rounded-[16px] py-2.5 font-heading text-[2rem] tracking-[0.04em] transition-all duration-200 md:py-3 md:text-3xl",
 							canStart
 								? "bg-fascist text-white shadow-[0_6px_0_var(--color-fascist-dark),0_14px_24px_rgba(0,0,0,0.28)] hover:bg-fascist-hover active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-fascist-dark)] cursor-pointer"
 								: "bg-btn-disabled text-bg-dark/55 cursor-not-allowed",
@@ -280,7 +325,7 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 						target="_blank"
 						rel="noreferrer"
 						className={[
-							"w-full max-w-sm rounded-[16px] py-3 font-heading text-3xl tracking-[0.04em] transition-all duration-200",
+							"w-full max-w-sm rounded-[16px] py-2.5 font-heading text-[2rem] tracking-[0.04em] transition-all duration-200 md:py-3 md:text-3xl",
 							"bg-liberal text-white text-center shadow-[0_6px_0_var(--color-liberal-dark),0_14px_24px_rgba(0,0,0,0.28)] hover:bg-liberal-hover active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-liberal-dark)] cursor-pointer",
 						].join(" ")}
 					>
@@ -317,22 +362,22 @@ const SeatingRow = memo(function SeatingRow({
 		<div
 			data-player-id={player.id}
 			className={[
-				"fade-in flex items-center gap-3 rounded-xl border border-white/8 bg-bg-card/70 px-3 py-3 shadow-[0_10px_16px_rgba(0,0,0,0.18)] transition-all",
+				"fade-in flex items-center gap-2.5 rounded-xl border border-white/8 bg-bg-card/70 px-2.5 py-2.5 shadow-[0_10px_16px_rgba(0,0,0,0.18)] transition-all md:gap-3 md:px-3 md:py-3",
 				PLAYER_COLOR_STYLES[player.color] ?? "border-text-muted",
 				isDragging ? "scale-[1.01] ring-2 ring-gold/50 opacity-85" : "",
 				isDropTarget ? "ring-2 ring-liberal/50" : "",
 			].join(" ")}
 		>
-			<span className="text-text-muted w-6 text-right text-sm font-semibold">{index + 1}</span>
+			<span className="text-text-muted w-5 text-right text-xs font-semibold md:w-6 md:text-sm">{index + 1}</span>
 
 			<img
 				src={PORTRAITS[player.portraitIndex]?.src}
 				alt={player.name}
-				className="h-14 w-14 rounded-full object-cover ring-2 ring-white/20"
+				className="h-11 w-11 rounded-full object-cover ring-2 ring-white/20 md:h-14 md:w-14"
 			/>
 
 			<div className="min-w-0 flex-1">
-				<p className="text-text-primary truncate text-lg font-semibold">{player.name}</p>
+				<p className="text-text-primary truncate text-base font-semibold md:text-lg">{player.name}</p>
 				<p className="label-text">{messages.common.player}</p>
 			</div>
 
@@ -342,17 +387,17 @@ const SeatingRow = memo(function SeatingRow({
 				onPointerMove={onDragMove}
 				onPointerUp={onDragEnd}
 				onPointerCancel={onDragEnd}
-				className="border-gold/35 text-gold inline-flex h-10 w-10 cursor-grab touch-none items-center justify-center rounded-lg border bg-black/25 active:cursor-grabbing"
+				className="border-gold/35 text-gold inline-flex h-9 w-9 cursor-grab touch-none items-center justify-center rounded-lg border bg-black/25 active:cursor-grabbing md:h-10 md:w-10"
 				aria-label={messages.setup.dragToMove(player.name)}
 				title={messages.setup.dragToReorder}
 			>
-				<GripVertical className="h-5 w-5" strokeWidth={2.2} />
+				<GripVertical className="h-4 w-4 md:h-5 md:w-5" strokeWidth={2.2} />
 			</button>
 
 			<button
 				type="button"
 				onClick={() => onRemovePlayer(player.id)}
-				className="text-text-muted hover:text-fascist cursor-pointer rounded-md p-2 transition-colors"
+				className="text-text-muted hover:text-fascist cursor-pointer rounded-md p-1.5 transition-colors md:p-2"
 				aria-label={messages.setup.removePlayer(player.name)}
 			>
 				<Trash2 className="h-4 w-4" strokeWidth={2.1} />
@@ -381,18 +426,18 @@ const SeatingOrderPanel = memo(function SeatingOrderPanel({
 	const { messages } = useI18n();
 
 	return (
-		<section className="flex min-h-0 flex-col rounded-[var(--radius-panel)] border border-white/8 bg-black/18 p-4 md:p-5">
-			<div className="mb-2 flex items-center justify-between">
+		<section className="flex flex-col rounded-[var(--radius-panel)] border border-white/8 bg-black/18 p-3 md:min-h-0 md:p-5">
+			<div className="mb-2 flex items-center justify-between gap-2">
 				<p className="section-label">{messages.setup.seatingOrder}</p>
-				<p className="text-text-muted text-xs">{messages.setup.reorderHint}</p>
+				<p className="text-text-muted text-[11px] md:text-xs">{messages.setup.reorderHint}</p>
 			</div>
 
 			{players.length === 0 ? (
-				<div className="text-text-muted flex flex-1 items-center justify-center rounded-xl border border-dashed border-white/15">
+				<div className="text-text-muted flex min-h-20 flex-1 items-center justify-center rounded-xl border border-dashed border-white/15 text-center text-sm">
 					{messages.setup.addPlayersToBegin}
 				</div>
 			) : (
-				<div className="min-h-0 flex-1 overflow-y-auto pr-1">
+				<div className="flex-1 overflow-visible md:min-h-0 md:overflow-y-auto md:pr-1">
 					<div className="space-y-2">
 						{players.map((player, index) => {
 							return (
@@ -562,16 +607,16 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 
 	return (
 		<div className="bg-bg-darker h-dvh w-full overflow-hidden">
-			<div className="mx-auto flex h-full w-full max-w-7xl flex-col px-4 pt-3 pb-4 md:px-6 md:pb-6">
+			<div className="mx-auto flex h-full w-full max-w-7xl flex-col overflow-y-auto px-4 pt-3 pb-4 md:overflow-hidden md:px-6 md:pb-6">
 				<div className="flex-shrink-0 text-center">
-					<h1 className="font-heading text-fascist text-4xl leading-none tracking-wide md:text-5xl">
+					<h1 className="font-heading text-fascist text-[2.35rem] leading-none tracking-wide md:text-5xl">
 						{headingText(messages.brand.title)}
 					</h1>
 					<p className="font-flavor text-text-muted mt-1 text-xs">{messages.brand.subtitle}</p>
 				</div>
 
-				<div className="border-gold/15 mt-3 min-h-0 flex-1 overflow-hidden rounded-[var(--radius-panel)] border bg-[linear-gradient(180deg,rgba(43,31,22,0.88),rgba(25,17,12,0.9))] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.34)] md:p-6">
-					<div className="grid h-full min-h-0 gap-4 lg:grid-cols-[minmax(320px,480px)_minmax(300px,1fr)]">
+				<div className="border-gold/15 mt-3 min-h-0 flex-1 overflow-y-auto rounded-[var(--radius-panel)] border bg-[linear-gradient(180deg,rgba(43,31,22,0.88),rgba(25,17,12,0.9))] p-2.5 shadow-[0_20px_40px_rgba(0,0,0,0.34)] md:overflow-hidden md:p-6">
+					<div className="grid min-h-full gap-3 md:gap-4 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(320px,480px)_minmax(300px,1fr)]">
 						<div className="flex min-h-0 flex-col gap-4">
 							<LanguageSelector />
 							<PlayerSetupPanel

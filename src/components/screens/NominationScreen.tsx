@@ -48,20 +48,20 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 	}
 
 	return (
-		<form className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-1 py-3 md:gap-5 md:py-5" onSubmit={handleSubmit}>
+		<form className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-0.5 py-1.5 md:gap-5 md:px-1 md:py-5" onSubmit={handleSubmit}>
 			<div className="flex-shrink-0 text-center">
 				<p className="section-label mb-1">{messages.nomination.governmentFormation}</p>
-				<h2 className="font-heading text-gold text-3xl leading-tight md:text-4xl">
+				<h2 className="font-heading text-gold text-xl leading-tight md:text-4xl">
 					{headingText(messages.nomination.title)}
 				</h2>
-				<p className="text-text-secondary mt-1 text-sm md:text-base">
+				<p className="text-text-secondary mt-0.5 text-[11px] md:mt-1 md:text-base">
 					{messages.nomination.instructions(president.name)}
 				</p>
 			</div>
 
 			<div
-				className="grid content-start gap-3 md:gap-4"
-				style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
+				className="grid content-start gap-2 md:gap-4"
+				style={{ gridTemplateColumns: "repeat(auto-fit, minmax(118px, 1fr))" }}
 			>
 				{state.players.map((player) => {
 					const isEligible = eligibleSet.has(player.id);
@@ -86,10 +86,10 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 								required
 							/>
 							<div className="via-gold/35 absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-150 peer-checked:opacity-100" />
-							<div className="flex min-h-[92px] items-center gap-3 p-3 md:min-h-[96px] md:p-3.5">
+							<div className="flex min-h-[64px] items-center gap-2 p-2 md:min-h-[96px] md:gap-3 md:p-3.5">
 								<div
 									className={[
-										"h-13 w-13 rounded-full overflow-hidden border-2 flex-shrink-0 shadow-[0_8px_16px_rgba(0,0,0,0.22)] md:h-14 md:w-14",
+										"h-9 w-9 rounded-full overflow-hidden border-2 flex-shrink-0 shadow-[0_8px_16px_rgba(0,0,0,0.22)] md:h-14 md:w-14",
 										"border-text-muted/30 peer-checked:border-gold",
 										!isEligible && "grayscale",
 									].join(" ")}
@@ -104,14 +104,14 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 								<div className="min-w-0 flex-1">
 									<span
 										className={[
-											"block truncate text-left text-sm font-medium leading-tight md:text-base",
+											"block truncate text-left text-[11px] font-medium leading-tight md:text-base",
 											"text-text-primary peer-checked:text-gold",
 											!isEligible && "text-text-muted",
 										].join(" ")}
 									>
 										{player.name}
 									</span>
-									<span className="label-text mt-1 block text-left">
+									<span className="label-text mt-0.5 block text-left md:mt-1">
 										{isEligible
 											? messages.nomination.eligible
 											: reason
@@ -121,7 +121,7 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 								</div>
 							</div>
 							{reason && (
-								<span className="border-text-muted/20 bg-bg-darker/90 text-text-muted absolute top-2 right-2 rounded-[var(--radius-button)] border px-2 py-0.5 text-[10px] font-medium whitespace-nowrap">
+								<span className="border-text-muted/20 bg-bg-darker/90 text-text-muted absolute top-1.5 right-1.5 hidden rounded-[var(--radius-button)] border px-1.5 py-0.5 text-[9px] font-medium whitespace-nowrap sm:block md:top-2 md:right-2 md:px-2 md:text-[10px]">
 									{messages.nomination.ineligibleReasons[reason]}
 								</span>
 							)}
@@ -130,8 +130,8 @@ export function NominationScreen({ state, dispatch, eligibleIds }: NominationScr
 				})}
 			</div>
 
-			<div className="phase-action-bar flex flex-shrink-0 justify-center">
-				<button type="submit" className="btn-primary w-full max-w-2xl">
+			<div className="phase-action-bar flex flex-shrink-0 justify-center pt-1 md:pt-4">
+				<button type="submit" className="btn-primary w-full max-w-2xl py-2.5 text-lg md:py-3 md:text-xl">
 					{headingText(messages.nomination.confirm)}
 				</button>
 			</div>

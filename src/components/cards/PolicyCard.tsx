@@ -11,9 +11,9 @@ import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
 import { useI18n } from "@/i18n";
 
 const SIZE_CLASSES = {
-	sm: "w-[60px]",
-	md: "w-[90px]",
-	lg: "w-[130px]",
+	sm: "w-[52px] md:w-[60px]",
+	md: "w-[74px] md:w-[90px]",
+	lg: "w-[96px] md:w-[130px]",
 } as const;
 
 interface PolicyCardProps {

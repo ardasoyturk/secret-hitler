@@ -72,16 +72,16 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 		}
 
 		return (
-			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:gap-6 md:py-5">
+			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-3 px-1 py-2 md:gap-6 md:py-5">
 				<div className="slide-up flex-shrink-0 text-center">
 					<p className="section-label mb-1">{messages.legislative.session}</p>
-					<h2 className="font-heading text-gold mb-1 text-3xl">
+					<h2 className="font-heading text-gold mb-1 text-2xl md:text-3xl">
 						{headingText(messages.legislative.presidentTitle(president.name))}
 					</h2>
-					<p className="text-text-secondary text-sm md:text-base">{messages.legislative.presidentInstructions}</p>
+					<p className="text-text-secondary text-xs md:text-base">{messages.legislative.presidentInstructions}</p>
 				</div>
 
-				<div className="flex w-full max-w-3xl flex-wrap items-start justify-center gap-3 md:gap-4">
+				<div className="mobile-card-strip flex w-full max-w-3xl items-start justify-start gap-3 md:flex-wrap md:justify-center md:gap-4">
 					{state.presidentHand.map((policy, index) => (
 						<PolicyChoice
 							key={getPolicyKey(state.presidentHand, policy, index)}
@@ -95,7 +95,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 				</div>
 
 				{/* Confirm discard */}
-				<div className="phase-action-bar max-w-2xl">
+				<div className="phase-action-bar max-w-2xl pt-2 md:pt-4">
 					<button
 						type="button"
 						onClick={() => {
@@ -140,16 +140,16 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 		}
 
 		return (
-			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:gap-6 md:py-5">
+			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-3 px-1 py-2 md:gap-6 md:py-5">
 				<div className="slide-up flex-shrink-0 text-center">
 					<p className="section-label mb-1">{messages.legislative.session}</p>
-					<h2 className="font-heading text-gold mb-1 text-3xl">
+					<h2 className="font-heading text-gold mb-1 text-2xl md:text-3xl">
 						{headingText(messages.legislative.chancellorTitle(chancellor.name))}
 					</h2>
-					<p className="text-text-secondary text-sm md:text-base">{messages.legislative.chancellorInstructions}</p>
+					<p className="text-text-secondary text-xs md:text-base">{messages.legislative.chancellorInstructions}</p>
 				</div>
 
-				<div className="flex w-full max-w-2xl flex-wrap items-start justify-center gap-4 md:gap-6">
+				<div className="mobile-card-strip flex w-full max-w-2xl items-start justify-start gap-4 md:flex-wrap md:justify-center md:gap-6">
 					{state.chancellorHand.map((policy, index) => (
 						<PolicyChoice
 							key={getPolicyKey(state.chancellorHand, policy, index)}
@@ -162,7 +162,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 					))}
 				</div>
 
-				<div className="phase-action-bar max-w-2xl space-y-3">
+				<div className="phase-action-bar max-w-2xl space-y-2.5 pt-2 md:space-y-3 md:pt-4">
 					<button
 						type="button"
 						onClick={() => {

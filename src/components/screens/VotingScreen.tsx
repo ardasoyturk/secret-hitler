@@ -78,18 +78,18 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 		const passed = jaCount > neinCount;
 
 		return (
-			<div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-1 py-3 md:gap-5 md:py-5">
+			<div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-1 py-2 md:gap-5 md:py-5">
 				<div className="slide-up flex-shrink-0 text-center">
 					<p className="section-label mb-1">{messages.voting.electionResult}</p>
 					<h2
-						className={["mb-1 font-heading text-3xl md:text-4xl", passed ? "text-liberal" : "text-fascist"].join(" ")}
+						className={["mb-1 font-heading text-2xl md:text-4xl", passed ? "text-liberal" : "text-fascist"].join(" ")}
 					>
 						{headingText(passed ? messages.voting.electionPasses : messages.voting.electionFails)}
 					</h2>
-					<p className="text-text-secondary text-sm md:text-base">{messages.voting.voteCount(jaCount, neinCount)}</p>
+					<p className="text-text-secondary text-xs md:text-base">{messages.voting.voteCount(jaCount, neinCount)}</p>
 				</div>
 
-				<div className="bg-bg-card/70 grid flex-shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-5 rounded-[var(--radius-panel)] border border-white/8 px-4 py-3 shadow-[var(--shadow-card)]">
+				<div className="bg-bg-card/70 grid flex-shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-[var(--radius-panel)] border border-white/8 px-3 py-2.5 shadow-[var(--shadow-card)] md:gap-5 md:px-4 md:py-3">
 					{president && (
 						<div className="text-center">
 							<div className="border-gold mx-auto mb-1 h-14 w-14 overflow-hidden rounded-full border-2">
@@ -119,7 +119,7 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 					)}
 				</div>
 
-				<div className="min-h-0 flex-1 space-y-2 overflow-y-auto">
+				<div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto md:space-y-2">
 					{state.votes.map((voteRecord) => {
 						const player = state.players.find((p) => p.id === voteRecord.playerId);
 						if (!player) return null;
@@ -127,7 +127,7 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 						return (
 							<div
 								key={voteRecord.playerId}
-								className="fade-in bg-bg-card/70 flex items-center gap-3 rounded-[var(--radius-panel)] border border-white/6 px-4 py-3"
+							className="fade-in bg-bg-card/70 flex items-center gap-2.5 rounded-[var(--radius-panel)] border border-white/6 px-3 py-2.5 md:gap-3 md:px-4 md:py-3"
 							>
 								<div className="h-7 w-7 flex-shrink-0 overflow-hidden rounded-full">
 									<img
@@ -146,7 +146,7 @@ export function VotingScreen({ state, dispatch }: ScreenProps) {
 				</div>
 
 				{/* Continue button */}
-				<div className="phase-action-bar">
+				<div className="phase-action-bar pt-2 md:pt-4">
 					<button
 						type="button"
 						onClick={() => dispatch({ type: "ACKNOWLEDGE_VOTE_RESULT" })}
@@ -187,25 +187,25 @@ const VoteCastView = memo(function VoteCastView({
 	}
 
 	return (
-		<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-6 px-1 py-3 md:gap-7 md:py-5">
+		<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-7 md:py-5">
 			<div className="slide-up text-center">
 				<p className="section-label mb-2">{messages.voting.voterTitle(voter.name)}</p>
-				<h2 className="font-heading text-text-primary mb-1 text-3xl md:text-4xl">
+				<h2 className="font-heading text-text-primary mb-1 text-2xl md:text-4xl">
 					{headingText(messages.voting.voteOnGovernment)}
 				</h2>
-				<p className="text-text-secondary text-sm md:text-base">
+				<p className="text-text-secondary text-xs md:text-base">
 					{messages.voting.governmentSummary(presidentName, chancellorName)}
 				</p>
 			</div>
 
-			<div className="flex w-full flex-wrap items-center justify-center gap-6 md:gap-10">
+			<div className="mobile-card-strip flex w-full items-center justify-start gap-4 md:flex-wrap md:justify-center md:gap-10">
 				<VoteCard vote="ja" size="lg" onClick={() => handleVote(Vote.Ja)} />
 				<VoteCard vote="nein" size="lg" onClick={() => handleVote(Vote.Nein)} />
 			</div>
 
-			<div className="bg-bg-card/70 w-full max-w-2xl rounded-[var(--radius-panel)] border border-white/8 px-4 py-4 text-center shadow-[var(--shadow-card)]">
+			<div className="bg-bg-card/70 w-full max-w-2xl rounded-[var(--radius-panel)] border border-white/8 px-3 py-3 text-center shadow-[var(--shadow-card)] md:px-4 md:py-4">
 				<p className="section-label">{messages.voting.tableShortcut}</p>
-				<p className="text-text-secondary mt-2 text-sm md:text-base">{messages.voting.tableShortcutDescription}</p>
+				<p className="text-text-secondary mt-1.5 text-xs md:mt-2 md:text-base">{messages.voting.tableShortcutDescription}</p>
 				<div className="mt-4">
 					<button
 						type="button"

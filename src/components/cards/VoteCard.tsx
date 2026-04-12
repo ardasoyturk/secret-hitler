@@ -10,9 +10,9 @@ import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
 import { useI18n } from "@/i18n";
 
 const SIZE_CLASSES = {
-	sm: "w-[80px]",
-	md: "w-[120px]",
-	lg: "w-[160px]",
+	sm: "w-[68px] md:w-[80px]",
+	md: "w-[92px] md:w-[120px]",
+	lg: "w-[116px] md:w-[160px]",
 } as const;
 
 interface VoteCardProps {

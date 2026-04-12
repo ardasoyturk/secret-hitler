@@ -28,21 +28,21 @@ export function PolicyEnactedScreen({ state, dispatch }: ScreenProps) {
 	const bgAccent = isLiberal ? "bg-liberal-deep/20" : "bg-fascist-deep/20";
 
 	return (
-		<div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-5 px-1 py-3 md:gap-6 md:py-5">
+		<div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 px-1 py-2 md:gap-6 md:py-5">
 			{isChaos && (
 				<div className="slide-up flex-shrink-0 text-center">
-					<h3 className="font-heading text-fascist mb-1 text-2xl">{headingText(messages.policyEnacted.chaosTitle)}</h3>
-					<p className="text-text-secondary max-w-md text-sm">{messages.policyEnacted.chaosDescription}</p>
+					<h3 className="font-heading text-fascist mb-1 text-xl md:text-2xl">{headingText(messages.policyEnacted.chaosTitle)}</h3>
+					<p className="text-text-secondary max-w-md text-xs md:text-sm">{messages.policyEnacted.chaosDescription}</p>
 				</div>
 			)}
 
 			<div
 				className={[
-					"w-full max-w-3xl rounded-[var(--radius-panel)] px-6 py-6 flex-shrink-0 border border-white/8 shadow-[var(--shadow-card)]",
+					"w-full max-w-3xl rounded-[var(--radius-panel)] px-4 py-4 flex-shrink-0 border border-white/8 shadow-[var(--shadow-card)] md:px-6 md:py-6",
 					bgAccent,
 				].join(" ")}
 			>
-				<p className="section-label mb-5 text-center">
+				<p className="section-label mb-3 text-center md:mb-5">
 					{isChaos ? messages.policyEnacted.chaosPolicy : messages.policyEnacted.policyEnacted}
 				</p>
 
@@ -52,10 +52,10 @@ export function PolicyEnactedScreen({ state, dispatch }: ScreenProps) {
 					</div>
 
 					<div className="text-center md:text-left">
-						<h2 className={["mb-1 font-heading text-4xl", teamColor].join(" ")}>
+						<h2 className={["mb-1 font-heading text-3xl md:text-4xl", teamColor].join(" ")}>
 							{headingText(messages.policyEnacted.policyTitle(teamLabel))}
 						</h2>
-						<p className="text-text-secondary text-base">{messages.policyEnacted.hasBeenEnacted}</p>
+						<p className="text-text-secondary text-sm md:text-base">{messages.policyEnacted.hasBeenEnacted}</p>
 					</div>
 				</div>
 			</div>
@@ -80,7 +80,7 @@ export function PolicyEnactedScreen({ state, dispatch }: ScreenProps) {
 				</div>
 			)}
 
-			<div className="phase-action-bar max-w-2xl">
+			<div className="phase-action-bar max-w-2xl pt-2 md:pt-4">
 				<button
 					type="button"
 					onClick={() =>

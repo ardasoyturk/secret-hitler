@@ -9,7 +9,7 @@
  * - Privacy screens (night, voting gates, legislative gates) are fixed overlays.
  */
 
-import { useState } from "preact/compat";
+import { useEffect, useState } from "preact/compat";
 
 import { OptimizedAssetsProvider, type OptimizedAssetMap } from "@/components/game/OptimizedAssets";
 import { BoardTrack } from "@/components/layout/BoardTrack";
@@ -64,11 +64,42 @@ export function Game({ optimizedAssets = {} }: { optimizedAssets?: OptimizedAsse
 function GameInner({ initialState }: { initialState: GameState | undefined }) {
 	const game = useGame(initialState);
 	const { state } = game;
+	const [isCompactMobile, setIsCompactMobile] = useState(false);
+	const [isLandscape, setIsLandscape] = useState(true);
+
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+
+		const narrowPhoneMediaQuery = window.matchMedia("(max-width: 767px)");
+		const shortTouchViewportMediaQuery = window.matchMedia("(max-height: 560px) and (pointer: coarse)");
+		const landscapeMediaQuery = window.matchMedia("(orientation: landscape)");
+
+		const syncViewportFlags = () => {
+			setIsCompactMobile(narrowPhoneMediaQuery.matches || shortTouchViewportMediaQuery.matches);
+			setIsLandscape(landscapeMediaQuery.matches);
+		};
+
+		syncViewportFlags();
+
+		narrowPhoneMediaQuery.addEventListener("change", syncViewportFlags);
+		shortTouchViewportMediaQuery.addEventListener("change", syncViewportFlags);
+		landscapeMediaQuery.addEventListener("change", syncViewportFlags);
+		window.addEventListener("resize", syncViewportFlags);
+
+		return () => {
+			narrowPhoneMediaQuery.removeEventListener("change", syncViewportFlags);
+			shortTouchViewportMediaQuery.removeEventListener("change", syncViewportFlags);
+			landscapeMediaQuery.removeEventListener("change", syncViewportFlags);
+			window.removeEventListener("resize", syncViewportFlags);
+		};
+	}, []);
 
 	const isSetup = state.phase === GamePhase.Setup;
 	const isGameOver = state.phase === GamePhase.GameOver;
 	const isNight = state.phase === GamePhase.NightRound || state.phase === GamePhase.NightReveal;
 	const isFullscreen = isSetup || isGameOver || isNight;
+	const needsLandscape = isCompactMobile && !isSetup && !isLandscape;
+	const shouldShowBoardTrack = !isFullscreen && (!isCompactMobile || shouldShowBoardOnPhone(state.phase));
 
 	// During active play (not setup/gameover/night):
 	// the layout is: Header (shrink-0) + BoardTrack (shrink-0) + Screen (flex-1 overflow auto)
@@ -79,6 +110,7 @@ function GameInner({ initialState }: { initialState: GameState | undefined }) {
 		return (
 			<div className="h-dvh w-full overflow-hidden">
 				<PhaseRouter phase={state.phase} game={game} />
+				{needsLandscape && <RotateForMobileOverlay />}
 			</div>
 		);
 	}
@@ -90,8 +122,13 @@ function GameInner({ initialState }: { initialState: GameState | undefined }) {
 
 	return (
 		<div className="game-shell relative h-dvh w-full overflow-x-hidden overflow-y-auto select-none">
-			<div className="relative z-10 min-h-full px-3 pb-5 md:px-5 md:pb-6">
-				<div className="game-sticky-stage sticky top-0 z-30 -mx-3 px-3 pb-3 md:-mx-5 md:px-5 md:pb-4">
+			<div className="relative z-10 min-h-full px-2.5 pb-3 md:px-5 md:pb-6">
+				<div
+					className={[
+						"game-sticky-stage z-30 -mx-2.5 px-2.5 pb-2 md:-mx-5 md:px-5 md:pb-4",
+						isCompactMobile ? "relative" : "sticky top-0",
+					].join(" ")}
+				>
 					<Header
 						round={state.round}
 						phase={state.phase}
@@ -99,27 +136,53 @@ function GameInner({ initialState }: { initialState: GameState | undefined }) {
 						chancellorName={chancellor?.name}
 					/>
 
-					<div className="pt-2 md:pt-3">
-						<div className="tabletop-stage mx-auto w-full max-w-7xl rounded-[var(--radius-panel)] px-4 py-4 md:px-6 md:py-5">
-							<BoardTrack
-								board={state.board}
-								electionTracker={state.electionTracker}
-								playerCount={state.players.length}
-								trackerPosition={trackerPosition}
-								vetoUnlocked={state.vetoUnlocked}
-							/>
+					{shouldShowBoardTrack && (
+						<div className="pt-1.5 md:pt-3">
+							<div className="tabletop-stage mx-auto w-full max-w-7xl rounded-[var(--radius-panel)] px-2 py-2 md:px-6 md:py-5">
+								<BoardTrack
+									board={state.board}
+									electionTracker={state.electionTracker}
+									playerCount={state.players.length}
+									trackerPosition={trackerPosition}
+									vetoUnlocked={state.vetoUnlocked}
+									compact={isCompactMobile}
+								/>
+							</div>
 						</div>
-					</div>
+					)}
 				</div>
 
-				<div className="pt-1 md:pt-2">
-					<div className="gameplay-panel mx-auto w-full max-w-7xl px-4 py-4 md:px-6 md:py-6">
+				<div className="pt-0.5 md:pt-2">
+					<div className="gameplay-panel mx-auto w-full max-w-7xl px-2.5 py-2.5 md:px-6 md:py-6">
 						<PhaseRouter phase={state.phase} game={game} />
 					</div>
 				</div>
 			</div>
+			{needsLandscape && <RotateForMobileOverlay />}
 		</div>
 	);
+}
+
+function shouldShowBoardOnPhone(phase: GamePhase): boolean {
+	switch (phase) {
+		case GamePhase.ChancellorNomination:
+		case GamePhase.Election:
+		case GamePhase.VoteCast:
+		case GamePhase.VoteResult:
+		case GamePhase.PresidentLegislation:
+		case GamePhase.ChancellorLegislation:
+		case GamePhase.VetoRequested:
+		case GamePhase.ExecutiveInvestigate:
+		case GamePhase.InvestigationResult:
+		case GamePhase.ExecutivePeek:
+		case GamePhase.ExecutiveSpecialElection:
+		case GamePhase.ExecutiveExecution:
+		case GamePhase.PolicyEnacted:
+		case GamePhase.ChaosPolicy:
+			return true;
+		default:
+			return false;
+	}
 }
 
 function PhaseRouter({ phase, game }: { phase: GamePhase; game: ReturnType<typeof useGame> }) {
@@ -209,6 +272,20 @@ function ResumePrompt({
 				<button type="button" onClick={onNewGame} className="btn-ghost w-full py-4">
 					{headingText(messages.common.newGame)}
 				</button>
+			</div>
+		</div>
+	);
+}
+
+function RotateForMobileOverlay() {
+	const { headingText, messages } = useI18n();
+
+	return (
+		<div className="mobile-rotate-overlay">
+			<div className="mobile-rotate-dialog">
+				<h2 className="font-heading text-gold text-4xl leading-none">{headingText(messages.mobile.rotateTitle)}</h2>
+				<p className="text-text-secondary mt-3 text-center text-sm">{messages.mobile.rotateDescription}</p>
+				<p className="text-text-muted mt-2 text-center text-xs">{messages.mobile.setupPortraitHint}</p>
 			</div>
 		</div>
 	);

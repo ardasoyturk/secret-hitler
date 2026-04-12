@@ -80,6 +80,7 @@ interface BoardTrackProps {
 	playerCount: number;
 	trackerPosition: number;
 	vetoUnlocked: boolean;
+	compact?: boolean;
 	className?: string;
 }
 
@@ -154,6 +155,7 @@ function BoardPanel({
 	accentClass,
 	children,
 	aspectClass,
+	compact = false,
 }: {
 	title: string;
 	imageSrc: AssetRef;
@@ -161,19 +163,22 @@ function BoardPanel({
 	accentClass: string;
 	children: ComponentChildren;
 	aspectClass?: string;
+	compact?: boolean;
 }) {
 	const { headingText } = useI18n();
 
 	return (
-		<section className="min-w-0 flex-1">
-			<div className="mb-2 flex items-center justify-center gap-3">
-				<span className={["h-px w-8 bg-gradient-to-r from-transparent to-current opacity-55", accentClass].join(" ")} />
-				<p className={["font-heading text-xl tracking-[0.12em]", accentClass].join(" ")}>{headingText(title)}</p>
-				<span className={["h-px w-8 bg-gradient-to-l from-transparent to-current opacity-55", accentClass].join(" ")} />
+		<section className={[ "min-w-0", compact ? "snap-center" : "" ].join(" ")}>
+			<div className={["mb-1.5 flex items-center justify-center gap-2 md:mb-2 md:gap-3", compact ? "md:mb-2" : ""].join(" ")}>
+				<span className={["h-px w-4 bg-gradient-to-r from-transparent to-current opacity-55 md:w-8", accentClass].join(" ")} />
+				<p className={["font-heading text-sm tracking-[0.1em] md:text-xl md:tracking-[0.12em]", accentClass].join(" ")}>
+					{headingText(title)}
+				</p>
+				<span className={["h-px w-4 bg-gradient-to-l from-transparent to-current opacity-55 md:w-8", accentClass].join(" ")} />
 			</div>
-			<div className="relative overflow-hidden rounded-[var(--radius-panel)] border border-white/8 bg-[#1a120d] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_34px_rgba(0,0,0,0.28)]">
+			<div className="relative overflow-hidden rounded-[var(--radius-panel)] border border-white/8 bg-[#1a120d] p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_24px_rgba(0,0,0,0.24)] md:p-2 md:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_34px_rgba(0,0,0,0.28)]">
 				<div
-					className={["relative overflow-hidden rounded-[var(--radius-card)]", aspectClass ?? "aspect-[1683/650]"].join(
+					className={["relative overflow-hidden rounded-[10px] md:rounded-[var(--radius-card)]", aspectClass ?? "aspect-[1683/650]"].join(
 						" ",
 					)}
 				>
@@ -190,6 +195,7 @@ export const BoardTrack = memo(function BoardTrack({
 	playerCount,
 	trackerPosition,
 	vetoUnlocked,
+	compact = false,
 	className = "",
 }: BoardTrackProps) {
 	const { messages } = useI18n();
@@ -204,12 +210,20 @@ export const BoardTrack = memo(function BoardTrack({
 
 	return (
 		<div className={["mx-auto w-full max-w-6xl", className].filter(Boolean).join(" ")}>
-			<div className="grid items-center gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+			<div
+				className={[
+					"grid items-start gap-2 md:gap-4",
+					compact
+						? "grid-flow-col auto-cols-[78%] overflow-x-auto pb-1.5 snap-x snap-mandatory [scrollbar-width:none]"
+						: "mobile-board-rail lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]",
+				].join(" ")}
+			>
 				<BoardPanel
 					title={messages.board.liberalBoard}
 					imageSrc={liberalBoardSrc}
 					imageAlt={messages.board.liberalBoardAlt}
 					accentClass="text-liberal"
+					compact={compact}
 				>
 					<PolicySlots
 						count={board.liberalPolicies}
@@ -225,6 +239,7 @@ export const BoardTrack = memo(function BoardTrack({
 					imageSrc={fascistBoardSrc}
 					imageAlt={messages.board.fascistBoardAlt}
 					accentClass="text-fascist"
+					compact={compact}
 				>
 					<PolicySlots
 						count={board.fascistPolicies}
@@ -241,7 +256,7 @@ export const BoardTrack = memo(function BoardTrack({
 						return (
 							<span
 								key={getSlotKey(`power-${power}`, slot)}
-								className="text-text-secondary absolute rounded-full bg-black/52 px-1.5 py-0.5 text-[8px] font-semibold tracking-[0.18em] uppercase"
+								className="text-text-secondary absolute rounded-full bg-black/52 px-1 py-0.5 text-[6px] font-semibold tracking-[0.14em] uppercase md:px-1.5 md:text-[8px] md:tracking-[0.18em]"
 								style={{
 									left: `${(slot.x + slot.width / 2) * 100}%`,
 									top: `${(slot.y + slot.height / 2) * 100 + 18.2}%`,
@@ -254,7 +269,7 @@ export const BoardTrack = memo(function BoardTrack({
 					})}
 					{vetoUnlocked && fascistBoard.layout.policySlots[4] && (
 						<span
-							className="border-gold/30 text-gold absolute rounded-full border bg-black/62 px-2 py-0.5 text-[8px] font-bold tracking-[0.2em] uppercase"
+							className="border-gold/30 text-gold absolute rounded-full border bg-black/62 px-1.5 py-0.5 text-[6px] font-bold tracking-[0.16em] uppercase md:px-2 md:text-[8px] md:tracking-[0.2em]"
 							style={{
 								left: `${(fascistBoard.layout.policySlots[4].x + fascistBoard.layout.policySlots[4].width / 2) * 100}%`,
 								top: `${(fascistBoard.layout.policySlots[4].y + fascistBoard.layout.policySlots[4].height / 2) * 100 - 18.8}%`,
@@ -273,6 +288,7 @@ export const BoardTrack = memo(function BoardTrack({
 function areBoardTrackPropsEqual(previous: BoardTrackProps, next: BoardTrackProps) {
 	return (
 		previous.className === next.className &&
+		previous.compact === next.compact &&
 		previous.playerCount === next.playerCount &&
 		previous.trackerPosition === next.trackerPosition &&
 		previous.vetoUnlocked === next.vetoUnlocked &&

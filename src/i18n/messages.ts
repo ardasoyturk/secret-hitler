@@ -194,6 +194,11 @@ export interface MessageCatalog {
 		dead: string;
 		victoryBannerAlt: (teamName: string) => string;
 	};
+	mobile: {
+		rotateTitle: string;
+		rotateDescription: string;
+		setupPortraitHint: string;
+	};
 	cards: {
 		partyMembership: (partyName: string) => string;
 		policy: (policyName: string) => string;
@@ -448,6 +453,11 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 			dead: "(dead)",
 			victoryBannerAlt: (teamName) => `${teamName} victory`,
 		},
+		mobile: {
+			rotateTitle: "Rotate Device",
+			rotateDescription: "Gameplay is available in landscape on phones. Turn your phone sideways to continue.",
+			setupPortraitHint: "Setup works in portrait mode.",
+		},
 		cards: {
 			partyMembership: (partyName) => `Party Membership: ${partyName}`,
 			policy: (policyName) => `${policyName} policy`,
@@ -698,6 +708,11 @@ export const MESSAGE_CATALOGS: Record<AppLanguage, MessageCatalog> = {
 			allRolesRevealed: "Tüm Roller Açıldı",
 			dead: "(ölü)",
 			victoryBannerAlt: (teamName) => `${teamName} zaferi`,
+		},
+		mobile: {
+			rotateTitle: "Cihazı Döndür",
+			rotateDescription: "Telefonlarda oyun ekranları yatay modda kullanılabilir. Devam etmek için telefonu yan çevir.",
+			setupPortraitHint: "Kurulum ekranı dikey modda çalışır.",
 		},
 		cards: {
 			partyMembership: (partyName) => `Parti üyeliği: ${partyName}`,

@@ -114,11 +114,11 @@ function PlayerSelectionGrid({
 	const eligibleSet = new Set(eligibleIds);
 	const alivePlayers = state.players.filter((p) => p.isAlive);
 	// Scale columns: ≤4 alive → 2 cols, 5-6 → 3 cols, 7+ → 4 cols
-	const colClass = alivePlayers.length <= 4 ? "grid-cols-2" : alivePlayers.length <= 6 ? "grid-cols-3" : "grid-cols-4";
+	const colClass = alivePlayers.length <= 4 ? "grid-cols-2" : alivePlayers.length <= 6 ? "grid-cols-2 md:grid-cols-3" : "grid-cols-3 md:grid-cols-4";
 
 	return (
 		<>
-			<div className={`grid w-full max-w-4xl ${colClass} gap-3 md:gap-4`}>
+			<div className={`grid w-full max-w-4xl ${colClass} gap-2.5 md:gap-4`}>
 				{alivePlayers.map((player) => {
 					const isEligible = eligibleSet.has(player.id);
 					return (
@@ -136,7 +136,7 @@ function PlayerSelectionGrid({
 				})}
 			</div>
 
-			<div className="phase-action-bar max-w-2xl">
+			<div className="phase-action-bar max-w-2xl pt-2 md:pt-4">
 				<button
 					type="button"
 					onClick={onConfirm}
@@ -193,11 +193,11 @@ export function ExecutiveScreen({
 
 	if (state.phase === GamePhase.ExecutiveInvestigate) {
 		return (
-			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
+			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-3 px-1 py-2 md:gap-5 md:py-4">
 				<div className="slide-up flex-shrink-0 text-center">
 					<p className="section-label mb-1">{messages.executive.executivePower}</p>
-					<h2 className="font-heading text-gold mb-1 text-3xl">{headingText(messages.executive.investigateTitle)}</h2>
-					<p className="text-text-secondary text-sm md:text-base">
+					<h2 className="font-heading text-gold mb-1 text-2xl md:text-3xl">{headingText(messages.executive.investigateTitle)}</h2>
+					<p className="text-text-secondary text-xs md:text-base">
 						{messages.executive.investigateInstructions(president.name)}
 					</p>
 				</div>
@@ -223,11 +223,11 @@ export function ExecutiveScreen({
 		const membership = getPartyMembership(target);
 		const isLiberal = membership === PartyMembership.Liberal;
 		return (
-			<div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-5 px-1 py-3 md:py-5">
+			<div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-5">
 				<div className="slide-up flex-shrink-0 text-center">
 					<p className="section-label mb-1">{messages.executive.investigationResult}</p>
-					<h2 className="font-heading text-text-primary mb-0.5 text-3xl">{headingText(target.name)}</h2>
-					<p className="text-text-secondary text-sm md:text-base">{messages.executive.isPartyMember}</p>
+					<h2 className="font-heading text-text-primary mb-0.5 text-2xl md:text-3xl">{headingText(target.name)}</h2>
+					<p className="text-text-secondary text-xs md:text-base">{messages.executive.isPartyMember}</p>
 				</div>
 
 				{/* Party membership card */}
@@ -254,17 +254,17 @@ export function ExecutiveScreen({
 
 	if (state.phase === GamePhase.ExecutivePeek) {
 		return (
-			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-1 py-3 md:py-4">
+			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
 				<div className="slide-up flex-shrink-0 text-center">
 					<p className="section-label mb-1">{messages.executive.executivePower}</p>
-					<h2 className="font-heading text-gold mb-1 text-3xl">{headingText(messages.executive.peekTitle)}</h2>
-					<p className="text-text-secondary text-sm md:text-base">
+					<h2 className="font-heading text-gold mb-1 text-2xl md:text-3xl">{headingText(messages.executive.peekTitle)}</h2>
+					<p className="text-text-secondary text-xs md:text-base">
 						{messages.executive.peekInstructions(president.name)}
 					</p>
 				</div>
 
 				{/* Peeked policy cards */}
-				<div className="flex flex-shrink-0 items-end gap-4 sm:gap-6">
+				<div className="mobile-card-strip flex w-full flex-shrink-0 items-end gap-3 md:w-auto md:justify-center md:gap-6">
 					{state.peekedPolicies.map((policy, index) => (
 						<div key={getPolicyKey(state.peekedPolicies, policy, index)} className="flex flex-col items-center gap-1.5">
 							<PolicyCard type={policy} size="lg" revealed />
@@ -290,13 +290,13 @@ export function ExecutiveScreen({
 
 	if (state.phase === GamePhase.ExecutiveSpecialElection) {
 		return (
-			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
+			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-3 px-1 py-2 md:gap-5 md:py-4">
 				<div className="slide-up flex-shrink-0 text-center">
 					<p className="section-label mb-1">{messages.executive.executivePower}</p>
-					<h2 className="font-heading text-gold mb-1 text-3xl">
+					<h2 className="font-heading text-gold mb-1 text-2xl md:text-3xl">
 						{headingText(messages.executive.specialElectionTitle)}
 					</h2>
-					<p className="text-text-secondary text-sm md:text-base">
+					<p className="text-text-secondary text-xs md:text-base">
 						{messages.executive.specialElectionInstructions(president.name)}
 					</p>
 				</div>
@@ -317,11 +317,11 @@ export function ExecutiveScreen({
 
 	if (state.phase === GamePhase.ExecutiveExecution) {
 		return (
-			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-1 py-2 md:gap-5 md:py-4">
+			<div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-3 px-1 py-2 md:gap-5 md:py-4">
 				<div className="slide-up flex-shrink-0 text-center">
 					<p className="section-label mb-1">{messages.executive.executivePower}</p>
-					<h2 className="font-heading text-fascist mb-1 text-3xl">{headingText(messages.executive.executionTitle)}</h2>
-					<p className="text-text-secondary text-sm md:text-base">
+					<h2 className="font-heading text-fascist mb-1 text-2xl md:text-3xl">{headingText(messages.executive.executionTitle)}</h2>
+					<p className="text-text-secondary text-xs md:text-base">
 						{messages.executive.executionInstructions(president.name)}
 					</p>
 					<p className="text-text-muted font-flavor mt-1 text-xs italic">{messages.executive.executionWarning}</p>
