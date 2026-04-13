@@ -198,7 +198,7 @@ const VoteCastView = memo(function VoteCastView({
 				</p>
 			</div>
 
-			<div className="mobile-card-strip flex w-full items-center justify-start gap-4 md:flex-wrap md:justify-center md:gap-10">
+			<div className="mobile-card-strip flex w-full items-center justify-center gap-4 md:flex-wrap md:justify-center md:gap-10">
 				<VoteCard vote="ja" size="lg" onClick={() => handleVote(Vote.Ja)} />
 				<VoteCard vote="nein" size="lg" onClick={() => handleVote(Vote.Nein)} />
 			</div>

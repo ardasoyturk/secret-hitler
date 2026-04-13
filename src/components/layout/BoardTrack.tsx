@@ -1,10 +1,11 @@
 import type { ComponentChildren } from "preact";
-import { memo } from "preact/compat";
+import { memo, useEffect, useRef, useState } from "preact/compat";
 
+import { getDefaultPhoneBoardForPhase, type BoardCarouselTarget } from "@/components/game/viewport";
 import { useOptimizedAsset } from "@/components/game/OptimizedAssets";
 import { getPlayerCountBracket, EXECUTIVE_POWERS } from "@/engine/constants";
 import type { Board, ElectionTracker } from "@/engine/types";
-import { ExecutivePower } from "@/engine/types";
+import { ExecutivePower, GamePhase } from "@/engine/types";
 import { useI18n } from "@/i18n";
 
 type AssetRef = string;
@@ -80,7 +81,8 @@ interface BoardTrackProps {
 	playerCount: number;
 	trackerPosition: number;
 	vetoUnlocked: boolean;
-	compact?: boolean;
+	layout?: "phone" | "default";
+	phase?: GamePhase;
 	className?: string;
 }
 
@@ -155,7 +157,7 @@ function BoardPanel({
 	accentClass,
 	children,
 	aspectClass,
-	compact = false,
+	snapClass = "",
 }: {
 	title: string;
 	imageSrc: AssetRef;
@@ -163,13 +165,13 @@ function BoardPanel({
 	accentClass: string;
 	children: ComponentChildren;
 	aspectClass?: string;
-	compact?: boolean;
+	snapClass?: string;
 }) {
 	const { headingText } = useI18n();
 
 	return (
-		<section className={[ "min-w-0", compact ? "snap-center" : "" ].join(" ")}>
-			<div className={["mb-1.5 flex items-center justify-center gap-2 md:mb-2 md:gap-3", compact ? "md:mb-2" : ""].join(" ")}>
+		<section className={["min-w-0", snapClass].filter(Boolean).join(" ")}>
+			<div className="mb-1.5 flex items-center justify-center gap-2 md:mb-2 md:gap-3">
 				<span className={["h-px w-4 bg-gradient-to-r from-transparent to-current opacity-55 md:w-8", accentClass].join(" ")} />
 				<p className={["font-heading text-sm tracking-[0.1em] md:text-xl md:tracking-[0.12em]", accentClass].join(" ")}>
 					{headingText(title)}
@@ -195,10 +197,12 @@ export const BoardTrack = memo(function BoardTrack({
 	playerCount,
 	trackerPosition,
 	vetoUnlocked,
-	compact = false,
+	layout = "default",
+	phase = GamePhase.ChancellorNomination,
 	className = "",
 }: BoardTrackProps) {
 	const { messages } = useI18n();
+	const carouselRef = useRef<HTMLDivElement | null>(null);
 	const bracket = getPlayerCountBracket(playerCount);
 	const fascistBoard = FASCIST_BOARD_MAP[bracket] ?? FASCIST_BOARD_MAP["5-6"];
 	const executivePowers = EXECUTIVE_POWERS[bracket];
@@ -207,15 +211,44 @@ export const BoardTrack = memo(function BoardTrack({
 	const liberalPolicySrc = useOptimizedAsset("boards/board-policy-liberal.png");
 	const fascistPolicySrc = useOptimizedAsset("boards/board-policy-fascist.png");
 	const trackerSrc = useOptimizedAsset("boards/board-tracker.png");
+	const isPhoneLayout = layout === "phone";
+	const [activeBoard, setActiveBoard] = useState<BoardCarouselTarget>(() => getDefaultPhoneBoardForPhase(phase));
+
+	useEffect(() => {
+		if (!isPhoneLayout) return;
+		setActiveBoard(getDefaultPhoneBoardForPhase(phase));
+	}, [isPhoneLayout, phase]);
+
+	useEffect(() => {
+		if (!isPhoneLayout || !carouselRef.current) return;
+
+		const container = carouselRef.current;
+		const slideIndex = activeBoard === "fascist" ? 1 : 0;
+		container.scrollTo({
+			left: container.clientWidth * slideIndex,
+			behavior: "smooth",
+		});
+	}, [activeBoard, isPhoneLayout]);
+
+	function handlePhoneCarouselScroll() {
+		if (!isPhoneLayout || !carouselRef.current) return;
+
+		const container = carouselRef.current;
+		const slideWidth = container.clientWidth;
+		if (slideWidth <= 0) return;
+
+		setActiveBoard(container.scrollLeft >= slideWidth / 2 ? "fascist" : "liberal");
+	}
 
 	return (
 		<div className={["mx-auto w-full max-w-6xl", className].filter(Boolean).join(" ")}>
 			<div
+				ref={carouselRef}
+				onScroll={isPhoneLayout ? handlePhoneCarouselScroll : undefined}
 				className={[
-					"grid items-start gap-2 md:gap-4",
-					compact
-						? "grid-flow-col auto-cols-[78%] overflow-x-auto pb-1.5 snap-x snap-mandatory [scrollbar-width:none]"
-						: "mobile-board-rail lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]",
+					isPhoneLayout
+						? "phone-board-carousel grid grid-flow-col auto-cols-[100%] items-start gap-0"
+						: "grid items-start gap-2 md:gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]",
 				].join(" ")}
 			>
 				<BoardPanel
@@ -223,7 +256,7 @@ export const BoardTrack = memo(function BoardTrack({
 					imageSrc={liberalBoardSrc}
 					imageAlt={messages.board.liberalBoardAlt}
 					accentClass="text-liberal"
-					compact={compact}
+					snapClass={isPhoneLayout ? "phone-board-slide snap-start pr-1.5" : ""}
 				>
 					<PolicySlots
 						count={board.liberalPolicies}
@@ -239,7 +272,7 @@ export const BoardTrack = memo(function BoardTrack({
 					imageSrc={fascistBoardSrc}
 					imageAlt={messages.board.fascistBoardAlt}
 					accentClass="text-fascist"
-					compact={compact}
+					snapClass={isPhoneLayout ? "phone-board-slide snap-start pl-1.5" : ""}
 				>
 					<PolicySlots
 						count={board.fascistPolicies}
@@ -288,7 +321,8 @@ export const BoardTrack = memo(function BoardTrack({
 function areBoardTrackPropsEqual(previous: BoardTrackProps, next: BoardTrackProps) {
 	return (
 		previous.className === next.className &&
-		previous.compact === next.compact &&
+		previous.layout === next.layout &&
+		previous.phase === next.phase &&
 		previous.playerCount === next.playerCount &&
 		previous.trackerPosition === next.trackerPosition &&
 		previous.vetoUnlocked === next.vetoUnlocked &&

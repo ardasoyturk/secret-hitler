@@ -81,7 +81,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 					<p className="text-text-secondary text-xs md:text-base">{messages.legislative.presidentInstructions}</p>
 				</div>
 
-				<div className="mobile-card-strip flex w-full max-w-3xl items-start justify-start gap-3 md:flex-wrap md:justify-center md:gap-4">
+				<div className="mobile-card-strip flex w-full max-w-3xl items-start justify-center gap-3 md:flex-wrap md:justify-center md:gap-4">
 					{state.presidentHand.map((policy, index) => (
 						<PolicyChoice
 							key={getPolicyKey(state.presidentHand, policy, index)}
@@ -149,7 +149,7 @@ export function LegislativeScreen({ state, dispatch }: ScreenProps) {
 					<p className="text-text-secondary text-xs md:text-base">{messages.legislative.chancellorInstructions}</p>
 				</div>
 
-				<div className="mobile-card-strip flex w-full max-w-2xl items-start justify-start gap-4 md:flex-wrap md:justify-center md:gap-6">
+				<div className="mobile-card-strip flex w-full max-w-2xl items-start justify-center gap-4 md:flex-wrap md:justify-center md:gap-6">
 					{state.chancellorHand.map((policy, index) => (
 						<PolicyChoice
 							key={getPolicyKey(state.chancellorHand, policy, index)}

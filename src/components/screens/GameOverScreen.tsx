@@ -64,7 +64,7 @@ export function GameOverScreen({ state, dispatch }: ScreenProps) {
 	});
 
 	return (
-		<div className="flex h-dvh w-full flex-col overflow-hidden px-4 py-4">
+		<div className="safe-bottom flex h-dvh w-full flex-col overflow-hidden px-4 pt-4">
 			{/* Victory header image */}
 			<div className={["w-full max-w-md mx-auto flex-shrink-0 stamp mb-3", glowClass].join(" ")}>
 				<img
@@ -172,13 +172,11 @@ export function GameOverScreen({ state, dispatch }: ScreenProps) {
 			</div>
 
 			{/* New Game button */}
-			<button
-				type="button"
-				onClick={() => dispatch({ type: "NEW_GAME" })}
-				className="btn-primary mx-auto w-full max-w-md flex-shrink-0"
-			>
-				{headingText(messages.common.newGame)}
-			</button>
+			<div className="mx-auto w-full max-w-md flex-shrink-0 pt-1">
+				<button type="button" onClick={() => dispatch({ type: "NEW_GAME" })} className="btn-primary w-full">
+					{headingText(messages.common.newGame)}
+				</button>
+			</div>
 		</div>
 	);
 }
