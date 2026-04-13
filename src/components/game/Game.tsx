@@ -125,7 +125,7 @@ function GameInner({ initialState }: { initialState: GameState | undefined }) {
 
 	return (
 		<div className="game-shell relative h-dvh w-full overflow-x-hidden overflow-y-auto select-none">
-			<div className="relative z-10 min-h-full px-2.5 pb-3 md:px-5 md:pb-6">
+			<div className="safe-top relative z-10 min-h-full px-2.5 pb-[max(0.75rem,var(--spacing-safe-bottom))] md:px-5 md:pb-6">
 				<div
 					className={[
 						"game-sticky-stage z-30 -mx-2.5 px-2.5 pb-2 md:-mx-5 md:px-5 md:pb-4",

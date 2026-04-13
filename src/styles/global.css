@@ -85,6 +85,7 @@
 	--shadow-glow-liberal: 0 0 22px rgba(123, 196, 209, 0.34);
 
 	/* Spacing */
+	--spacing-safe-top: env(safe-area-inset-top, 0px);
 	--spacing-safe-bottom: env(safe-area-inset-bottom, 0px);
 
 	/* Transitions */
@@ -475,6 +476,10 @@ h3 {
 /* Safe area padding for mobile */
 .safe-bottom {
 	padding-bottom: max(1rem, var(--spacing-safe-bottom));
+}
+
+.safe-top {
+	padding-top: max(0.75rem, var(--spacing-safe-top));
 }
 
 .mobile-card-strip {

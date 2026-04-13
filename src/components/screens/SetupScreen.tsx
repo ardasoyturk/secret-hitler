@@ -607,7 +607,7 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 
 	return (
 		<div className="bg-bg-darker min-h-dvh w-full overflow-y-auto md:h-dvh md:overflow-hidden">
-			<div className="mx-auto flex min-h-dvh w-full max-w-7xl flex-col px-4 pt-3 pb-[max(1rem,var(--spacing-safe-bottom))] md:h-full md:min-h-0 md:overflow-hidden md:px-6 md:pb-6">
+			<div className="safe-top mx-auto flex min-h-full w-full max-w-7xl flex-col px-4 pb-[max(1rem,var(--spacing-safe-bottom))] md:h-full md:min-h-0 md:overflow-hidden md:px-6 md:pb-6">
 				<div className="flex-shrink-0 text-center">
 					<h1 className="font-heading text-fascist text-[2.35rem] leading-none tracking-wide md:text-5xl">
 						{headingText(messages.brand.title)}
@@ -650,7 +650,7 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 					</div>
 				</div>
 
-				<div className="mt-4 md:mt-0">
+				<div className="mt-4 pb-1 md:mt-0 md:pb-0">
 					<ProjectFooter />
 				</div>
 			</div>
