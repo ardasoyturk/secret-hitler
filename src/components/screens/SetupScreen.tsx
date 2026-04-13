@@ -606,8 +606,8 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 	);
 
 	return (
-		<div className="bg-bg-darker h-dvh w-full overflow-hidden">
-			<div className="mx-auto flex h-full w-full max-w-7xl flex-col overflow-y-auto px-4 pt-3 pb-4 md:overflow-hidden md:px-6 md:pb-6">
+		<div className="bg-bg-darker min-h-dvh w-full overflow-y-auto md:h-dvh md:overflow-hidden">
+			<div className="mx-auto flex min-h-dvh w-full max-w-7xl flex-col px-4 pt-3 pb-[max(1rem,var(--spacing-safe-bottom))] md:h-full md:min-h-0 md:overflow-hidden md:px-6 md:pb-6">
 				<div className="flex-shrink-0 text-center">
 					<h1 className="font-heading text-fascist text-[2.35rem] leading-none tracking-wide md:text-5xl">
 						{headingText(messages.brand.title)}
@@ -615,8 +615,8 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 					<p className="font-flavor text-text-muted mt-1 text-xs">{messages.brand.subtitle}</p>
 				</div>
 
-				<div className="border-gold/15 mt-3 min-h-0 flex-1 overflow-y-auto rounded-[var(--radius-panel)] border bg-[linear-gradient(180deg,rgba(43,31,22,0.88),rgba(25,17,12,0.9))] p-2.5 shadow-[0_20px_40px_rgba(0,0,0,0.34)] md:overflow-hidden md:p-6">
-					<div className="grid min-h-full gap-3 md:gap-4 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(320px,480px)_minmax(300px,1fr)]">
+				<div className="border-gold/15 mt-3 rounded-[var(--radius-panel)] border bg-[linear-gradient(180deg,rgba(43,31,22,0.88),rgba(25,17,12,0.9))] p-2.5 shadow-[0_20px_40px_rgba(0,0,0,0.34)] md:min-h-0 md:flex-1 md:overflow-hidden md:p-6">
+					<div className="grid gap-3 md:min-h-full md:gap-4 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(320px,480px)_minmax(300px,1fr)]">
 						<div className="flex min-h-0 flex-col gap-4">
 							<LanguageSelector />
 							<PlayerSetupPanel
@@ -650,7 +650,9 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 					</div>
 				</div>
 
-				<ProjectFooter />
+				<div className="mt-4 md:mt-0">
+					<ProjectFooter />
+				</div>
 			</div>
 		</div>
 	);
