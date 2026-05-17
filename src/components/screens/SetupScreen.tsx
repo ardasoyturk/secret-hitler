@@ -240,7 +240,7 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 								alt={messages.setup.choosePortrait}
 								className="h-full w-full object-cover"
 							/>
-							<span className="text-gold absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent pb-0.5 text-[8px] font-medium leading-none">
+							<span className="text-gold absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent pb-0.5 text-[8px] leading-none font-medium">
 								{messages.setup.pickPortrait}
 							</span>
 						</button>
@@ -311,7 +311,7 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 						onClick={onStartGame}
 						disabled={!canStart}
 						className={[
-							"w-full max-w-sm rounded-[16px] py-2.5 font-heading text-[2rem] tracking-[0.04em] transition-all duration-200 md:py-3 md:text-3xl",
+							"w-full max-w-sm rounded-[16px] py-1 font-heading text-[2rem] tracking-[0.04em] transition-all duration-200 md:py-3 md:text-3xl",
 							canStart
 								? "bg-fascist text-white shadow-[0_6px_0_var(--color-fascist-dark),0_14px_24px_rgba(0,0,0,0.28)] hover:bg-fascist-hover active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-fascist-dark)] cursor-pointer"
 								: "bg-btn-disabled text-bg-dark/55 cursor-not-allowed",
@@ -325,7 +325,7 @@ const PlayerSetupPanel = memo(function PlayerSetupPanel({
 						target="_blank"
 						rel="noreferrer"
 						className={[
-							"w-full max-w-sm rounded-[16px] py-2.5 font-heading text-[2rem] tracking-[0.04em] transition-all duration-200 md:py-3 md:text-3xl",
+							"w-full max-w-sm rounded-[16px] py-1 font-heading text-[2rem] tracking-[0.04em] transition-all duration-200 md:py-3 md:text-3xl",
 							"bg-liberal text-white text-center shadow-[0_6px_0_var(--color-liberal-dark),0_14px_24px_rgba(0,0,0,0.28)] hover:bg-liberal-hover active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-liberal-dark)] cursor-pointer",
 						].join(" ")}
 					>
@@ -606,7 +606,7 @@ export function SetupScreen({ state, dispatch }: ScreenProps) {
 	);
 
 	return (
-		<div className="bg-bg-darker min-h-dvh w-full overflow-y-auto md:h-dvh md:overflow-hidden">
+		<div className="bg-bg-darker h-dvh w-full overflow-y-auto md:overflow-hidden">
 			<div className="safe-top mx-auto flex min-h-full w-full max-w-7xl flex-col px-4 pb-[max(1rem,var(--spacing-safe-bottom))] md:h-full md:min-h-0 md:overflow-hidden md:px-6 md:pb-6">
 				<div className="flex-shrink-0 text-center">
 					<h1 className="font-heading text-fascist text-[2.35rem] leading-none tracking-wide md:text-5xl">
